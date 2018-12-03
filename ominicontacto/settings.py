@@ -558,3 +558,17 @@ REST_FRAMEWORK = {
 
 assert DURACION_ASIGNACION_CONTACTO_PREVIEW is not None, \
     "Falta definir setting para DURACION_ASIGNACION_CONTACTO_PREVIEW"
+
+# ~~~~~ Check SINCRONIZACION CON PBX Variables
+
+assert SINCRONIZAR_INR_CON_PBX is not None, \
+    "Falta definir setting para SINCRONIZAR_INR_CON_PBX"
+assert PBX_DATABASE_TABLE is not None, \
+    "Falta definir setting para PBX_DATABASE_TABLE"
+assert PBX_DATABASE_FIELD is not None, \
+    "Falta definir setting para PBX_DATABASE_FIELD"
+
+# ~~~~~ Check CONSTANCE_CONFIG Variables
+
+assert CONSTANCE_CONFIG is not None, \
+    "Falta definir setting para CONSTANCE_CONFIG"

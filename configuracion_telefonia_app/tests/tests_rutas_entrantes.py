@@ -24,6 +24,7 @@ from io import BytesIO
 from mock import patch
 
 from django.core.urlresolvers import reverse
+from django.test import override_settings
 
 from configuracion_telefonia_app.forms import IVRForm
 from configuracion_telefonia_app.models import (RutaEntrante, DestinoEntrante, IVR, GrupoHorario,
@@ -109,14 +110,37 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         self.assertEqual(RutaEntrante.objects.count(), n_rutas_entrantes)
 
-    @patch('configuracion_telefonia_app.views.escribir_ruta_entrante_config')
-    def test_usuario_administrador_puede_crear_ruta_entrante(self, escribir_ruta_entrante_config):
+    @override_settings(SINCRONIZAR_INR_CON_PBX=True)
+    @patch('configuracion_telefonia_app.sincronizacion_ruta_entrante_pbx.'
+           'SincronizadorDeConfiguracionRutaEntrantePBX._efectuar_adicion')
+    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
+           'SincronizadorDeConfiguracionRutaEntranteAsterisk.regenerar_asterisk')
+    def test_usuario_administrador_puede_crear_ruta_entrante(self,
+                                                             regenerar_asterisk,
+                                                             sincronizador_pbx_agregar):
         url = reverse('crear_ruta_entrante')
         self.client.login(username=self.admin.username, password=self.PWD)
         post_data = self._obtener_post_data_ruta_entrante()
         n_rutas_entrantes = RutaEntrante.objects.count()
         self.client.post(url, post_data, follow=True)
         self.assertEqual(RutaEntrante.objects.count(), n_rutas_entrantes + 1)
+        self.assertTrue(regenerar_asterisk.called)
+        self.assertTrue(sincronizador_pbx_agregar.called)
+
+    @override_settings(SINCRONIZAR_INR_CON_PBX=False)
+    @patch('configuracion_telefonia_app.sincronizacion_ruta_entrante_pbx.'
+           'SincronizadorDeConfiguracionRutaEntrantePBX._efectuar_adicion')
+    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
+           'SincronizadorDeConfiguracionRutaEntranteAsterisk.regenerar_asterisk')
+    def test_crear_ruta_entrante_no_sincroniza_con_pbx(self,
+                                                       regenerar_asterisk,
+                                                       sincronizador_pbx_agregar):
+        url = reverse('crear_ruta_entrante')
+        self.client.login(username=self.admin.username, password=self.PWD)
+        post_data = self._obtener_post_data_ruta_entrante()
+        self.client.post(url, post_data, follow=True)
+        self.assertTrue(regenerar_asterisk.called)
+        self.assertFalse(sincronizador_pbx_agregar.called)
 
     def test_usuario_sin_administracion_no_puede_modificar_ruta_entrante(self):
         nuevo_nombre = 'ruta_entrante_modificada'
@@ -129,10 +153,20 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.ruta_entrante.refresh_from_db()
         self.assertNotEqual(self.ruta_entrante.nombre, nuevo_nombre)
 
-    @patch('configuracion_telefonia_app.views.escribir_ruta_entrante_config')
-    @patch('configuracion_telefonia_app.views.eliminar_ruta_entrante_config')
-    def test_usuario_administrador_puede_modificar_ruta_entrante(
-            self, eliminar_ruta_entrante_config, escribir_ruta_entrante_config):
+    @override_settings(SINCRONIZAR_INR_CON_PBX=True)
+    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
+           'SincronizadorDeConfiguracionRutaEntranteAsterisk.eliminar_y_regenerar_asterisk')
+    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
+           'SincronizadorDeConfiguracionRutaEntranteAsterisk.regenerar_asterisk')
+    @patch('configuracion_telefonia_app.sincronizacion_ruta_entrante_pbx.'
+           'SincronizadorDeConfiguracionRutaEntrantePBX._efectuar_eliminacion')
+    @patch('configuracion_telefonia_app.sincronizacion_ruta_entrante_pbx.'
+           'SincronizadorDeConfiguracionRutaEntrantePBX._efectuar_adicion')
+    def test_usuario_administrador_puede_modificar_ruta_entrante(self,
+                                                                 sincronizador_pbx_agregar,
+                                                                 sincronizador_pbx_eliminar,
+                                                                 regenerar_asterisk,
+                                                                 eliminar_y_regenerar_asterisk):
         nuevo_nombre = 'ruta_entrante_modificada'
         url = reverse('editar_ruta_entrante', args=[self.ruta_entrante.pk])
         self.client.login(username=self.admin.username, password=self.PWD)
@@ -143,6 +177,36 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.assertEqual(response.status_code, 200)
         self.ruta_entrante.refresh_from_db()
         self.assertEqual(self.ruta_entrante.nombre, nuevo_nombre)
+        self.assertTrue(eliminar_y_regenerar_asterisk.called)
+        self.assertTrue(regenerar_asterisk.called)
+        self.assertTrue(sincronizador_pbx_agregar.called)
+        self.assertTrue(sincronizador_pbx_eliminar.called)
+
+    @override_settings(SINCRONIZAR_INR_CON_PBX=False)
+    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
+           'SincronizadorDeConfiguracionRutaEntranteAsterisk.eliminar_y_regenerar_asterisk')
+    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
+           'SincronizadorDeConfiguracionRutaEntranteAsterisk.regenerar_asterisk')
+    @patch('configuracion_telefonia_app.sincronizacion_ruta_entrante_pbx.'
+           'SincronizadorDeConfiguracionRutaEntrantePBX._efectuar_eliminacion')
+    @patch('configuracion_telefonia_app.sincronizacion_ruta_entrante_pbx.'
+           'SincronizadorDeConfiguracionRutaEntrantePBX._efectuar_adicion')
+    def test_modificar_ruta_entrante_no_sincroniza_con_pbx(self,
+                                                           sincronizador_pbx_agregar,
+                                                           sincronizador_pbx_eliminar,
+                                                           regenerar_asterisk,
+                                                           eliminar_y_regenerar_asterisk):
+        url = reverse('editar_ruta_entrante', args=[self.ruta_entrante.pk])
+        self.client.login(username=self.admin.username, password=self.PWD)
+        post_data = self._obtener_post_data_ruta_entrante()
+        post_data['id'] = self.ruta_entrante.pk
+        post_data['nombre'] = 'nuevo_nombre'
+        response = self.client.post(url, post_data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(eliminar_y_regenerar_asterisk.called)
+        self.assertTrue(regenerar_asterisk.called)
+        self.assertFalse(sincronizador_pbx_agregar.called)
+        self.assertFalse(sincronizador_pbx_eliminar.called)
 
     def test_usuario_sin_administracion_no_puede_eliminar_ruta_entrante(self):
         url = reverse('eliminar_ruta_entrante', args=[self.ruta_entrante.pk])
@@ -151,14 +215,31 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.client.post(url, follow=True)
         self.assertEqual(RutaEntrante.objects.count(), n_rutas_entrantes)
 
+    @override_settings(SINCRONIZAR_INR_CON_PBX=True)
+    @patch('configuracion_telefonia_app.sincronizacion_ruta_entrante_pbx.'
+           'SincronizadorDeConfiguracionRutaEntrantePBX._efectuar_eliminacion')
     @patch('ominicontacto_app.services.asterisk_database.RutaEntranteFamily.delete_family')
     def test_usuario_administrador_puede_eliminar_ruta_entrante(
-            self, eliminar_ruta_entrante_config):
+            self, delete_family, sincronizador_pbx_eliminar):
         url = reverse('eliminar_ruta_entrante', args=[self.ruta_entrante.pk])
         self.client.login(username=self.admin.username, password=self.PWD)
         n_rutas_entrantes = RutaEntrante.objects.count()
         self.client.post(url, follow=True)
         self.assertEqual(RutaEntrante.objects.count(), n_rutas_entrantes - 1)
+        self.assertTrue(delete_family.called)
+        self.assertTrue(sincronizador_pbx_eliminar.called)
+
+    @override_settings(SINCRONIZAR_INR_CON_PBX=False)
+    @patch('configuracion_telefonia_app.sincronizacion_ruta_entrante_pbx.'
+           'SincronizadorDeConfiguracionRutaEntrantePBX._efectuar_eliminacion')
+    @patch('ominicontacto_app.services.asterisk_database.RutaEntranteFamily.delete_family')
+    def test_eliminar_ruta_entrante_no_sincroniza_con_pbx(
+            self, delete_family, sincronizador_pbx_eliminar):
+        url = reverse('eliminar_ruta_entrante', args=[self.ruta_entrante.pk])
+        self.client.login(username=self.admin.username, password=self.PWD)
+        self.client.post(url, follow=True)
+        self.assertTrue(delete_family.called)
+        self.assertFalse(sincronizador_pbx_eliminar.called)
 
     def _obtener_post_data_ivr(self):
         return {
@@ -203,8 +284,9 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.assertEqual(response.status_code, 403)
         self.assertEqual(IVR.objects.count(), n_ivrs)
 
-    @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
-    def test_usuario_administrador_puede_crear_ivr(self, escribir_nodo_entrante_config):
+    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
+           'SincronizadorDeConfiguracionIVRAsterisk.regenerar_asterisk')
+    def test_usuario_administrador_puede_crear_ivr(self, regenerar_asterisk):
         url = reverse('crear_ivr')
         self.client.login(username=self.admin.username, password=self.PWD)
         post_data = self._obtener_post_data_ivr()
@@ -212,6 +294,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         response = self.client.post(url, post_data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(IVR.objects.count(), n_ivrs + 1)
+        self.assertTrue(regenerar_asterisk.called)
 
     def test_usuario_sin_administracion_no_puede_modificar_ivr(self):
         url = reverse('editar_ivr', args=[self.ivr.pk])
@@ -226,8 +309,9 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.ivr.refresh_from_db()
         self.assertNotEqual(self.ivr.nombre, nuevo_nombre)
 
-    @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
-    def test_usuario_administrar_puede_modificar_ivr(self, escribir_nodo_entrante_config):
+    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
+           'SincronizadorDeConfiguracionIVRAsterisk.regenerar_asterisk')
+    def test_usuario_administrar_puede_modificar_ivr(self, regenerar_asterisk):
         url = reverse('editar_ivr', args=[self.ivr.pk])
         nuevo_nombre = 'ivr_modificado'
         self.client.login(username=self.admin.username, password=self.PWD)
@@ -239,9 +323,11 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         self.ivr.refresh_from_db()
         self.assertEqual(self.ivr.nombre, nuevo_nombre)
+        self.assertTrue(regenerar_asterisk.called)
 
-    @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
-    def test_creacion_ivr_crea_nodo_generico_correspondiente(self, escribir_nodo_entrante_config):
+    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
+           'SincronizadorDeConfiguracionIVRAsterisk.regenerar_asterisk')
+    def test_creacion_ivr_crea_nodo_generico_correspondiente(self, regenerar_asterisk):
         url = reverse('crear_ivr')
         self.client.login(username=self.admin.username, password=self.PWD)
         post_data = self._obtener_post_data_ivr()
@@ -250,6 +336,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             DestinoEntrante.objects.filter(tipo=DestinoEntrante.IVR).count(), n_dests_ivrs + 1)
+        self.assertTrue(regenerar_asterisk.called)
 
     def _obtener_post_data_grupo_horario(self):
         return {
@@ -285,6 +372,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         n_grupos_horarios = GrupoHorario.objects.count()
         self.client.post(url, post_data, follow=True)
         self.assertEqual(GrupoHorario.objects.count(), n_grupos_horarios + 1)
+        self.assertTrue(regenerar_family.called)
 
     @patch('ominicontacto_app.services.asterisk_database.GrupoHorarioFamily.regenerar_family')
     def test_usuario_administrador_puede_crear_grupo_horario(self, regenerar_family):
@@ -294,6 +382,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         n_grupos_horarios = GrupoHorario.objects.count()
         self.client.post(url, post_data, follow=True)
         self.assertEqual(GrupoHorario.objects.count(), n_grupos_horarios + 1)
+        self.assertTrue(regenerar_family.called)
 
     @patch('ominicontacto_app.services.asterisk_database.GrupoHorarioFamily.regenerar_family')
     def test_usuario_customer_no_puede_modificar_grupo_horario(self, regenerar_family):
@@ -307,6 +396,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         self.grupo_horario.refresh_from_db()
         self.assertNotEqual(self.grupo_horario.nombre, nuevo_nombre)
+        self.assertFalse(regenerar_family.called)
 
     @patch('ominicontacto_app.services.asterisk_database.GrupoHorarioFamily.regenerar_family')
     def test_usuario_supervisor_puede_modificar_grupo_horario(self, regenerar_family):
@@ -321,6 +411,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.assertEqual(response.status_code, 200)
         self.grupo_horario.refresh_from_db()
         self.assertEqual(self.grupo_horario.nombre, nuevo_nombre)
+        self.assertTrue(regenerar_family.called)
 
     @patch('ominicontacto_app.services.asterisk_database.GrupoHorarioFamily.regenerar_family')
     def test_usuario_administrador_puede_modificar_grupo_horario(self, regenerar_family):
@@ -335,6 +426,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.assertEqual(response.status_code, 200)
         self.grupo_horario.refresh_from_db()
         self.assertEqual(self.grupo_horario.nombre, nuevo_nombre)
+        self.assertTrue(regenerar_family.called)
 
     def _obtener_post_data_validacion_fecha_hora(self):
         return {
@@ -362,9 +454,10 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         self.assertEqual(ValidacionFechaHora.objects.count(), n_validaciones_fecha_hora)
 
-    @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
+    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
+           'SincronizadorDeConfiguracionValidacionFechaHoraAsterisk.regenerar_asterisk')
     def test_usuario_supervisor_puede_crear_validacion_fecha_hora(
-            self, escribir_nodo_entrante_config):
+            self, regenerar_asterisk):
         url = reverse('crear_validacion_fecha_hora')
         self.client.login(username=self.usr_sup.username, password=self.PWD)
         post_data = self._obtener_post_data_validacion_fecha_hora()
@@ -372,10 +465,12 @@ class TestsRutasEntrantes(OMLBaseTest):
         response = self.client.post(url, post_data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(ValidacionFechaHora.objects.count(), n_validaciones_fecha_hora + 1)
+        self.assertTrue(regenerar_asterisk.called)
 
-    @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
+    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
+           'SincronizadorDeConfiguracionValidacionFechaHoraAsterisk.regenerar_asterisk')
     def test_usuario_administrador_puede_crear_validacion_fecha_hora(
-            self, escribir_nodo_entrante_config):
+            self, regenerar_asterisk):
         url = reverse('crear_validacion_fecha_hora')
         self.client.login(username=self.admin.username, password=self.PWD)
         post_data = self._obtener_post_data_validacion_fecha_hora()
@@ -383,6 +478,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         response = self.client.post(url, post_data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(ValidacionFechaHora.objects.count(), n_validaciones_fecha_hora + 1)
+        self.assertTrue(regenerar_asterisk.called)
 
     def test_usuario_customer_no_puede_modificar_validacion_fecha_hora(self):
         nuevo_nombre = 'validacion_fecha_hora_modificada'
@@ -396,9 +492,10 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.validacion_fecha_hora.refresh_from_db()
         self.assertNotEqual(self.validacion_fecha_hora.nombre, nuevo_nombre)
 
-    @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
+    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
+           'SincronizadorDeConfiguracionValidacionFechaHoraAsterisk.regenerar_asterisk')
     def test_usuario_supervisor_puede_modificar_validacion_fecha_hora(
-            self, escribir_nodo_entrante_config):
+            self, regenerar_asterisk):
         nuevo_nombre = 'validacion_fecha_hora_modificada'
         url = reverse('editar_validacion_fecha_hora', args=[self.validacion_fecha_hora.pk])
         self.client.login(username=self.usr_sup.username, password=self.PWD)
@@ -410,10 +507,12 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         self.validacion_fecha_hora.refresh_from_db()
         self.assertEqual(self.validacion_fecha_hora.nombre, nuevo_nombre)
+        self.assertTrue(regenerar_asterisk.called)
 
-    @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
+    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
+           'SincronizadorDeConfiguracionValidacionFechaHoraAsterisk.regenerar_asterisk')
     def test_usuario_administrar_puede_modificar_validacion_fecha_hora(
-            self, escribir_nodo_entrante_config):
+            self, regenerar_asterisk):
         nuevo_nombre = 'validacion_fecha_hora_modificada'
         url = reverse('editar_validacion_fecha_hora', args=[self.validacion_fecha_hora.pk])
         self.client.login(username=self.admin.username, password=self.PWD)
@@ -425,10 +524,12 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         self.validacion_fecha_hora.refresh_from_db()
         self.assertEqual(self.validacion_fecha_hora.nombre, nuevo_nombre)
+        self.assertTrue(regenerar_asterisk.called)
 
-    @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
+    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
+           'SincronizadorDeConfiguracionValidacionFechaHoraAsterisk.regenerar_asterisk')
     def test_creacion_validacion_fecha_hora_crea_nodo_generico_correspondiente(
-            self, escribir_nodo_entrante_config):
+            self, regenerar_asterisk):
         url = reverse('crear_validacion_fecha_hora')
         self.client.login(username=self.admin.username, password=self.PWD)
         post_data = self._obtener_post_data_validacion_fecha_hora()
@@ -439,6 +540,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.assertEqual(
             DestinoEntrante.objects.filter(tipo=DestinoEntrante.VALIDACION_FECHA_HORA).count(),
             n_dests_validaciones_fecha_hora + 1)
+        self.assertTrue(regenerar_asterisk.called)
 
     def test_form_validacion_fecha_hora_destinos_iguales_es_invalido(self):
         url = reverse('crear_validacion_fecha_hora')

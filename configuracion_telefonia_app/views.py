@@ -43,6 +43,8 @@ from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     SincronizadorDeConfiguracionValidacionFechaHoraAsterisk,
     SincronizadorDeConfiguracionGrupoHorarioAsterisk
 )
+from configuracion_telefonia_app.sincronizacion_ruta_entrante_pbx import \
+    SincronizadorDeConfiguracionRutaEntrantePBX
 
 
 # Debería extender del AbstractConfiguracionAsterisk
@@ -92,7 +94,7 @@ def eliminar_ruta_saliente_config(self, ruta_saliente):
         )
 
 
-def escribir_ruta_entrante_config(self, ruta_entrante):
+def escribir_ruta_entrante_config(request, ruta_entrante):
     try:
         sincronizador = SincronizadorDeConfiguracionRutaEntranteAsterisk()
         sincronizador.regenerar_asterisk(ruta_entrante)
@@ -100,24 +102,40 @@ def escribir_ruta_entrante_config(self, ruta_entrante):
         message = ("<strong>¡Cuidado!</strong> "
                    "con el siguiente error: {0} .".format(e))
         messages.add_message(
-            self.request,
+            request,
             messages.WARNING,
             message,
         )
+    # Sincronizo en tabla de PBX
+    sincronizador_pbx = SincronizadorDeConfiguracionRutaEntrantePBX()
+    error = sincronizador_pbx.agregar(ruta_entrante)
+    if error is not None:
+        message = ("<strong>¡Cuidado!</strong> "
+                   "No se pudo sincronizar correctamente con el pbx."
+                   "Consulte con su administrador")
+        messages.add_message(request, messages.WARNING, message)
 
 
-def eliminar_ruta_entrante_config(self, ruta_entrante):
+def eliminar_ruta_entrante_config(request, ruta_entrante):
+    problem = False
     try:
         sincronizador = SincronizadorDeConfiguracionRutaEntranteAsterisk()
         sincronizador.eliminar_y_regenerar_asterisk(ruta_entrante)
     except RestablecerConfiguracionTelefonicaError, e:
         message = ("<strong>¡Cuidado!</strong> "
                    "con el siguiente error: {0} .".format(e))
-        messages.add_message(
-            self.request,
-            messages.WARNING,
-            message,
-        )
+        messages.add_message(request, messages.WARNING, message)
+        problem = True
+    # Sincronizo en tabla de PBX
+    sincronizador_pbx = SincronizadorDeConfiguracionRutaEntrantePBX()
+    error = sincronizador_pbx.eliminar(ruta_entrante)
+    if error is not None:
+        message = ("<strong>¡Cuidado!</strong> "
+                   "No se pudo sincronizar correctamente con el pbx. "
+                   "Consulte con su administrador")
+        messages.add_message(request, messages.WARNING, message)
+        problem = True
+    return problem
 
 
 def escribir_nodo_entrante_config(self, nodo_destino_entrante, sincronizador):
@@ -369,7 +387,7 @@ class RutaEntranteMixin(object):
     def form_valid(self, form):
         form.save()
         # escribe ruta entrante en asterisk
-        escribir_ruta_entrante_config(self, form.instance)
+        escribir_ruta_entrante_config(self.request, form.instance)
         return super(RutaEntranteMixin, self).form_valid(form)
 
 
@@ -388,7 +406,7 @@ class RutaEntranteUpdateView(RutaEntranteMixin, UpdateView):
 
     def form_valid(self, form):
         # Antes de escribir los nuevos datos de la ruta entrante, borro los viejos.
-        eliminar_ruta_entrante_config(self, self.get_object())
+        eliminar_ruta_entrante_config(self.request, self.get_object())
         return super(RutaEntranteUpdateView, self).form_valid(form)
 
 
@@ -403,19 +421,9 @@ class RutaEntranteDeleteView(DeleteView):
         return RutaEntrante.objects.get(pk=self.kwargs['pk'])
 
     def delete(self, request, *args, **kwargs):
-        try:
-            sincronizador = SincronizadorDeConfiguracionRutaEntranteAsterisk()
-            sincronizador.eliminar_y_regenerar_asterisk(self.get_object())
-        except RestablecerConfiguracionTelefonicaError, e:
-            message = ("<strong>¡Cuidado!</strong> "
-                       "con el siguiente error: {0} .".format(e))
-            messages.add_message(
-                self.request,
-                messages.WARNING,
-                message,
-            )
-
-        messages.success(request, _(u'Se ha eliminado la Ruta Entrante.'))
+        problem = eliminar_ruta_entrante_config(self.request, self.get_object())
+        if not problem:
+            messages.success(request, _(u'Se ha eliminado la Ruta Entrante.'))
         return super(RutaEntranteDeleteView, self).delete(request, *args, **kwargs)
 
 
