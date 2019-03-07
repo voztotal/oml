@@ -116,6 +116,7 @@
     - php-xml
     - redis-server
     - git
+    - gettext
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
