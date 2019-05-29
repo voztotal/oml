@@ -236,6 +236,24 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 {% endif %}
                             </ul>
                         </li>
+                        <!-- para los tipos de campanas que se definan en funcionalidades externas -->
+                        {% for tipo_campana in tipos_campanas %}
+                            <li>
+                                <a href="#{{ tipo_campana.nombre }}" role="button" data-toggle="collapse" aria-expanded="false">{{ nuevo_tipo_campana.nombre_plural }}</a>
+                                <ul class="collapse list-unstyled submenu-two" id="menu{{ tipo_campana.nombre }}" data-parent=".nav-submenu">
+                                    <li>
+                                        <a href="{{ tipo_campana.url_listar }}">{% trans 'Listado de campañas' %}</a>
+                                    </li>
+                                    {% if user.get_es_administrador_o_supervisor_normal %}
+                                        {% for vista_url, vista_nombre in tipo_campana.vistas %}
+                                            <li>
+                                                <a href="{{ vista_url }}"> {{ vista_nombre }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    {% endif  %}
+                                </ul>
+                            </li>
+                        {% endfor %}
 
                         {% if user.get_es_administrador_o_supervisor_normal %}
                         <li>
@@ -376,6 +394,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             <li>
                                 <a href="{% url 'lista_ivrs' %}">{% trans 'IVR' %}</a>
                             </li>
+                            <!-- objetos telefonicos definidos en funcionalidades externas -->
+                            {% for objeto_telefonia in objetos_telefonia %}
+                                <li>
+                                    <a href="{{ objeto_telefonia.url }}">{{ objeto_telefonia.nombre }}</a>
+                                </li>
+                            {% endfor %}
                         {% endif %}
                         <li>
                             <a href="{% url 'lista_grupos_horarios' %}">{% trans 'Grupos horarios' %}</a>
