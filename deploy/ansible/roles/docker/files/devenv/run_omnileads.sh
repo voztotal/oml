@@ -2,7 +2,7 @@
 
 DOCKER="`which docker`"
 DOCKER_COMPOSE="`which docker-compose`"
-KAM_EXEC="$DOCKER exec -i {{ kamailio_fqdn}} bash -c"
+KAM_EXEC="$DOCKER exec -i {{ kamailio_fqdn}} sh -c"
 AST_EXEC="$DOCKER exec -i {{ asterisk_fqdn }} bash -c"
 OMNIAPP_EXEC="$DOCKER exec -i {{ omniapp_fqdn }} bash -c"
 
@@ -93,6 +93,8 @@ EOF
   $DOCKER_COMPOSE -f devenv_stack.yml create omniapp
   $DOCKER_COMPOSE -f devenv_stack.yml start omniapp
   $DOCKER restart {{ asterisk_fqdn }}
+  echo "Starting EFK containers infraestructure"
+  $DOCKER_COMPOSE -f logging_stack.yml up -d
 }
 
 case "$1" in
@@ -102,6 +104,7 @@ case "$1" in
   down)
     echo "Stopping and killing Omnileads containers "
     $DOCKER_COMPOSE -f devenv_stack.yml down
+    $DOCKER_COMPOSE -f logging_stack.yml down
     ;;
   *)
     echo "Usage: used by omnileads-devenv.service"

@@ -16,6 +16,14 @@ services:
       - PGHOST={{ postgresql_fqdn }}
       - PGUSER={{ postgres_user }}
     image: freetechsolutions/asterisk:16
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        fluentd-async-connect: 'true'
+        fluentd-retry-wait: '1s'
+        fluentd-max-retries: '30'
+        tag: alpha.efk.asterisk
     privileged: true
     restart: on-failure
     stop_grace_period: 1m30s
