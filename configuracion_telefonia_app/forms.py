@@ -387,10 +387,12 @@ class IVRForm(forms.ModelForm):
             descripcion = ArchivoDeAudio.calcular_descripcion(descripcion)
             kwargs = {
                 'descripcion': descripcion,
-                'audio_original': audio_externo
+                'audio_original': audio_externo,
+                'audio_asterisk': audio_externo
             }
             archivo_de_audio = ArchivoDeAudio.crear_archivo(**kwargs)
-            convertir_archivo_audio(archivo_de_audio)
+            if audio_externo.name.endswith(".wav"):
+                convertir_archivo_audio(archivo_de_audio)
             if tipo_audio == 'audio_principal':
                 self.instance.audio_principal = archivo_de_audio
             elif tipo_audio == 'time_out_audio':

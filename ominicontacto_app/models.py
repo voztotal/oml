@@ -519,8 +519,8 @@ class ArchivoDeAudio(models.Model):
         return None
 
     @classmethod
-    def crear_archivo(cls, descripcion, audio_original):
-        return cls.objects.create(descripcion=descripcion, audio_original=audio_original)
+    def crear_archivo(cls, **kwargs):
+        return cls.objects.create(**kwargs)
 
     @classmethod
     def calcular_descripcion(cls, descripcion):

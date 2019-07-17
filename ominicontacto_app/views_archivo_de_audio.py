@@ -61,15 +61,24 @@ class ArchivoAudioListView(ListView):
 class ArchivoDeAudioMixin(object):
 
     def _procesar_archivo_de_audio(self, form):
+        audio_original = form.cleaned_data['audio_original']
+        if not audio_original.name.endswith('.wav'):
+            # solo se realiza conversión para los .wav, si es mp3 se usa el mismo archivo
+            # y se asume aceptado por Asterisk
+            form.instance.audio_asterisk = audio_original
+        else:
+            self._procesar_archivo_de_audio_convertir(form)
+
+    def _procesar_archivo_de_audio_convertir(self, form):
         try:
             convertir_archivo_audio(form.instance)
         except OmlAudioConversionError:
             form.instance.audio_original = None
             form.instance.save()
 
-            message = _('<strong>Operación Errónea!</strong> ') +\
-                _('Hubo un inconveniente en la conversión del audio. Por favor '
-                  'verifique que el archivo subido sea el indicado.')
+            message = _('<strong>Operación Errónea!</strong> '
+                        'Hubo un inconveniente en la conversión del audio. Por favor '
+                        'verifique que el archivo subido sea el indicado.')
             messages.add_message(
                 self.request,
                 messages.ERROR,
@@ -83,8 +92,8 @@ class ArchivoDeAudioMixin(object):
             logger.warn(_("convertir_audio_de_archivo_de_audio_globales(): "
                           "produjo un error inesperado. Detalle: {0}".format(e)))
 
-            message = _('<strong>Operación Errónea!</strong> ') +\
-                _('Se produjo un error inesperado en la conversión del audio.')
+            message = _('<strong>Operación Errónea!</strong> '
+                        'Se produjo un error inesperado en la conversión del audio.')
             messages.add_message(
                 self.request,
                 messages.ERROR,

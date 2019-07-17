@@ -485,3 +485,16 @@ class TestsRutasEntrantes(OMLBaseTest):
         response = self.client.post(url, post_data, follow=True)
         self.assertFalse(response.context['form'].is_valid())
         self.assertContains(response, _('Archivos permitidos: .wav'))
+
+    @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
+    def test_form_ivr_escoger_audio_ppal_externo_mp3_es_valido(
+            self, escribir_nodo_entrante_config):
+        url = reverse('crear_ivr')
+        self.client.login(username=self.admin.username, password=self.PWD)
+        post_data = self._obtener_post_data_ivr()
+        post_data['audio_ppal_escoger'] = IVRForm.AUDIO_EXTERNO
+        img = BytesIO(b'mybinarydata')
+        img.name = 'myimage.mp3'
+        post_data['audio_ppal_ext_audio'] = img
+        response = self.client.post(url, post_data, follow=True)
+        self.assertTemplateUsed(response, 'lista_ivrs.html')

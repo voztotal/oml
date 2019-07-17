@@ -19,6 +19,8 @@
 
 from __future__ import unicode_literals
 
+import re
+
 from django.conf import settings
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _
@@ -28,10 +30,13 @@ from ominicontacto_app.models import CalificacionCliente
 
 from api_app.utiles import EstadoAgentesService
 
+extension_audio_permitidas_regex = re.compile(r'.*\.(wav|mp3)$')
+
 
 def validar_extension_archivo_audio(valor):
-    if valor is not None and not valor.name.endswith('.wav'):
-        raise ValidationError(_('Archivos permitidos: .wav'), code='invalid')
+    if valor is not None and not extension_audio_permitidas_regex.match(valor.name):
+        raise ValidationError(
+            _('Archivos permitidos: .wav, .mp3'), code='invalid')
 
 
 def obtener_cantidad_no_calificados(total_llamadas_qs, fecha_desde, fecha_hasta, campana):
