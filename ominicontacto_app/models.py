@@ -444,13 +444,13 @@ class FieldFormulario(models.Model):
 def upload_to_audio_original(instance, filename):
     filename = SUBSITUTE_REGEX.sub('', filename)
     return "audios_reproduccion/%Y/%m/{0}-{1}".format(
-        str(uuid.uuid4()), filename)[:95]
+        str(uuid.uuid4().hex), filename)[:95]
 
 
 def upload_to_audio_asterisk(instance, filename):
     filename = SUBSITUTE_REGEX.sub('', filename)
     return "audios_asterisk/%Y/%m/{0}-{1}".format(
-        str(uuid.uuid4()), filename)[:95]
+        str(uuid.uuid4().hex), filename)[:95]
 
 
 class ArchivoDeAudioManager(models.Manager):

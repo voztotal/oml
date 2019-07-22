@@ -39,12 +39,12 @@ logger = logging_.getLogger(__name__)
 
 def convertir_archivo_audio(archivo_de_audio):
     """Convierte un archivo usando el conversor especificado, actualiza sus rutas"""
-    conversor_audio = ConversorDeAudioService()
-    conversor_audio.convertir_audio_de_archivo_de_audio_globales(archivo_de_audio)
+    if archivo_de_audio.audio_original.name.endswith('.wav'):
+        conversor_audio = ConversorDeAudioService()
+        conversor_audio.convertir_audio_de_archivo_de_audio_globales(archivo_de_audio)
     audio_asterisk = archivo_de_audio.audio_asterisk.name
-    if audio_asterisk:
-        audio_file_asterisk = AudioConfigFile(audio_asterisk)
-        audio_file_asterisk.copy_asterisk()
+    audio_file_asterisk = AudioConfigFile(audio_asterisk)
+    audio_file_asterisk.copy_asterisk()
 
 
 class ArchivoAudioListView(ListView):
@@ -66,6 +66,7 @@ class ArchivoDeAudioMixin(object):
             # solo se realiza conversión para los .wav, si es mp3 se usa el mismo archivo
             # y se asume aceptado por Asterisk
             form.instance.audio_asterisk = audio_original
+            form.instance.save()
         else:
             self._procesar_archivo_de_audio_convertir(form)
 
