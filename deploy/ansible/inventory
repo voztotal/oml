@@ -18,7 +18,7 @@
 ##############################################################################
 # If you are installing a devenv (PE) uncomment
 [prodenv-container]
-#localhost ansible_connection=local
+localhost ansible_connection=local
 # If you are installing a devenv (DE) uncomment
 [devenv-container]
 #localhost ansible_connection=local
@@ -56,12 +56,12 @@
 #####################################################################
 postgres_database=omnileads
 postgres_user=omnileads
-#postgres_password=my_very_strong_pass
+postgres_password=admin123
 #####################################################################
 #                           Web Admin                               #
 #                     SET WEB ADMIN PASSWORD                        #
 #####################################################################
-#admin_pass=my_very_strong_pass
+admin_pass=098098ZZZ
 #######################################
 # AMI for wombat dialer and OMniLeads #
 #######################################
@@ -72,11 +72,11 @@ ami_password=5_MeO_DMT
 #####################################################
 dialer_user=demoadmin
 dialer_password=demo
-#mysql_root_password=my_very_strong_pass
+mysql_root_password=admin123
 #################################################################################################
 # Set the timezone where the nodes are. UNCOMMENT and set this if you are doing a fresh install #
 #################################################################################################
-#TZ=America/Argentina/Cordoba
+TZ=America/Argentina/Cordoba
 #######################################################################################
 #                                OMniLeads cloud:			 	      #
 # If you are wishing to install OML in a cloud provider you must set these variables: #
