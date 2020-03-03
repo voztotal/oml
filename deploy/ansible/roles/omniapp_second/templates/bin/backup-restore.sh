@@ -43,6 +43,12 @@ Backup() {
     tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/* > /dev/null 2>&1
     rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/
 
+    echo "Making dump of Wombat Dialer database"
+    mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup/mysql_database
+    MYSQL_PWD={{ mysql_root_password }} mysqldump -B wombat -h 127.0.0.1 -u root >  /tmp/omnileads-backup/$FECHA-omnileads-backup/mysql_database/mysql_backup.sql > /dev/null 2>&1
+    tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/mysql_database.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/mysql_database/* > /dev/null 2>&1
+    rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/mysql_database/
+
     # Tar the last directory
     tar czvf $FECHA-omnileads-backup.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/ > /dev/null 2>&1
     cd /tmp/omnileads-backup && tar czvf $FECHA-omnileads-backup.tgz $FECHA-omnileads-backup
@@ -89,6 +95,12 @@ Restore() {
     echo "Restoring {{ postgres_database }} database"
     cd ../../postgres_database
     pg_restore -F t -d {{ postgres_database }} base_backup -c
+
+    rm -rf {{ install_prefix }}backup/$tar_directory
+
+    echo "Restoring mysql database"
+    cd ../../mysql_database
+    MYSQL_PWD={{ mysql_root_password }} mysql -u root -h 127.0.0.1 wombat < mysql_backup.sql
 
     rm -rf {{ install_prefix }}backup/$tar_directory
 
