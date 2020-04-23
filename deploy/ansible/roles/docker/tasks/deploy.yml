@@ -40,16 +40,13 @@
   until: result is success
   when: ansible_distribution != "Amazon"
 
-- name: Installing docker (centos)
-  command: name={{ item }}
-  with_items:
-    - amazon-linux-extras install docker
-  when: '"docker" not in docker_installed.stdout'
-  retries: 3
-  delay: 3
-  register: result
-  until: result is success
-  when: ansible_distribution == "Amazon"
+#- name: Installing docker (centos)
+#  command: amazon-linux-extras install docker
+#  retries: 3
+#  delay: 3
+#  register: result
+#  until: result is success
+#  when: ansible_distribution == "Amazon"
 
 - name: Installing docker-compose
   shell: |

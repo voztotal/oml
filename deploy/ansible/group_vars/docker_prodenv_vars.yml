@@ -10,7 +10,7 @@ root_password: Sup3rS3cr3tP4ssw0rd
 
 # Networking settings
 subnet_name: prod_net
-nginx_external_port: 444
+nginx_external_port: 443
 pg_external_port: 446
 wd_external_port: 442
 
