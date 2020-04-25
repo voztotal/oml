@@ -40,6 +40,10 @@
   until: result is success
   when: ansible_distribution != "Amazon"
 
+- name: Installing docker (amazon linux)
+  shell: "amazon-linux-extras install docker -y"
+  when: ansible_distribution == "Amazon"
+
 #- name: Installing docker (centos)
 #  command: amazon-linux-extras install docker
 #  retries: 3
