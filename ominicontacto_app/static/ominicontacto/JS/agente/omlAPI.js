@@ -46,6 +46,26 @@ class OMLAPI {
         });
     }
 
+    asteriskLogout(callback_ok, callback_error) {
+        var URL = Urls.api_agent_asterisk_logout();
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            dataType: 'json',
+            success: function(data){
+                if (data['status'] == 'ERROR') {
+                    callback_error();
+                }
+                else
+                    callback_ok();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                callback_error();
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
+            }
+        });
+    }
+
     changeStatus(status, id_agente) {
         var URL = Urls.agente_cambiar_estado(status, id_agente);
         // TODO: Este request debería ser por POST
@@ -232,4 +252,18 @@ class OMLAPI {
             }
         });
     }
+
+    agentLogout() {
+        var URL = Urls.api_agente_logout();
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            succes: function(msg) {
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
+            }
+        });
+    }
+
 }

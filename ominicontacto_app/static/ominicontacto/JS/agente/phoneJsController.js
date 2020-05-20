@@ -352,16 +352,13 @@ class PhoneJSController {
         this.phone.eventsCallbacks.onUserAgentRegistered.add(function () {
             self.view.setSipStatus('REGISTERED');
             self.view.setCallStatus(gettext('Conectando a asterisk  ..'), 'yellowgreen');
-            var login_ok = function(){
-                self.phone_fsm.registered();
-                self.view.setCallStatus(gettext('Agente conectado a asterisk'), 'orange');
-                self.phone.Sounds('Welcome', 'play');
-            };
-            var login_error = function(){
-                self.view.setCallStatus(gettext('Agente no conectado a asterisk, contacte a su administrador'), 'red');
-                self.phone_fsm.failedRegistration();
-            };
-            self.oml_api.asteriskLogin(login_ok, login_error);
+            self.asteriskLogin();
+        });
+
+        this.phone.eventsCallbacks.onUserAgentUnregistered.add(function () {
+            self.view.setSipStatus('UNREGISTERED');
+            self.view.setCallStatus(gettext('Agente desconectado de asterisk'), 'red');
+            self.phone_fsm.disconnected();
         });
 
         this.phone.eventsCallbacks.onUserAgentRegisterFail.add(function () {
@@ -370,7 +367,7 @@ class PhoneJSController {
         });
 
         this.phone.eventsCallbacks.onUserAgentDisconnect.add(function () {
-            self.view.setSipStatus('NO_SIP');
+            self.view.setSipStatus('UNREGISTERED');
             // TODO: Definir acciones a tomar.
         });
         /** Calls **/
@@ -465,6 +462,33 @@ class PhoneJSController {
             var $img = $recordCallButton.find('img');
             self.markRecordCallButtonReady(self, $img, $recordCallButton);
         });
+    }
+
+    forceDisconnect() {
+        this.phone.logout();
+    }
+
+    asteriskLogin() {
+        var self = this;
+        var login_ok = function(){
+            self.phone_fsm.registered();
+            self.view.setCallStatus(gettext('Agente conectado a asterisk'), 'orange');
+            self.phone.Sounds('Welcome', 'play');
+        };
+        var login_error = function(){
+            self.view.setCallStatus(gettext('Agente no conectado a asterisk, contacte a su administrador'), 'red');
+            self.phone_fsm.failedRegistration();
+        };
+        this.oml_api.asteriskLogin(login_ok, login_error);        
+    }
+
+    asteriskLogout() {
+        var self = this;
+        var logout_ok = function(){
+            self.view.setCallStatus(gettext('Agente desconectado de asterisk'), 'red');
+        };
+        var logout_error = function(){};
+        this.oml_api.asteriskLogout(logout_ok, logout_error);
     }
 
     callEndTransition() {

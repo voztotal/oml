@@ -36,6 +36,7 @@ var click2call = undefined;
 var keep_alive_sender = undefined;
 
 var logoffEvent = undefined;
+var agentLoggedOut = false;
 
 $(function () {
 
@@ -88,11 +89,16 @@ function subscribirEventosBotonesGenerales(oml_api, agent_id) {
 
 function preventLeaveWithoutLogoff(event) {
     // Cancel the event as stated by the standard.
-    event.preventDefault();
-    phone_controller.hangUp();
-    // Chrome requires returnValue to be set.
-    event.returnValue = gettext('Recuerde cerrar la sesión antes de salir de esta pantalla.');
-    return gettext('Recuerde cerrar la sesión antes de salir de esta pantalla.');
+    var oml_api = new OMLAPI();
+    if (!agentLoggedOut) {
+        agentLoggedOut = true;
+        event.preventDefault();
+        phone_controller.forceDisconnect();
+        oml_api.agentLogout();
+        // Chrome requires returnValue to be set.
+        event.returnValue = gettext('Recuerde cerrar la sesión antes de salir de esta pantalla.');
+        return gettext('Recuerde cerrar la sesión antes de salir de esta pantalla.');
+    }
 }
 
 function subscribirEventosBotonesOtrosMedios() {
