@@ -105,13 +105,17 @@
   postgresql_db: name={{ postgres_database }} state=present login_user={{ postgres_user }} login_password={{ postgres_password }} owner={{ postgres_user }} login_host={{ postgres_host }}
   when: postgres_host is defined and default_postgres_user is defined and default_postgres_password is defined
 
-# Se crea el lenguaje plperl en todo el cluster.
+# Se crea el lenguaje plperl, para postgres interno.
 - name: Create language plperl in database
-  shell: psql -U {{ postgres_user }} -h {{ postgres_host }} -d {{ item }} -c 'CREATE EXTENSION plperl'
+  shell: psql -U {{ postgres_user }} -d {{ item }} -h 127.0.0.1 -c 'CREATE EXTENSION plperl'
   environment:
-    - PGPASSWORD: "{{ postgres_password }}"
+    PGPASSWORD: "{{ postgres_password }}"
   with_items:
     - "{{ postgres_database }}"
     - template1
-  when: postgres_host is defined
-  failed_when: false
+  register: plperl_result
+  tags: postinstall
+  when: postgres_host is not defined
+  failed_when:
+    - "plperl_result.rc != 1"
+    - "plperl_result.rc != 0"
