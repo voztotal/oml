@@ -69,13 +69,13 @@ class LlamadaLogManager(models.Manager):
             fecha_desde = datetime_hora_minima_dia(fecha_desde)
             fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
 
-        result = LlamadaLog.objects.values_list('agente_id') \
-                                   .annotate(sum=Sum('duracion_llamada')) \
-                                   .filter(time__gte=fecha_desde, time__lte=fecha_hasta) \
-                                   .filter(event__in=eventos) \
-                                   .filter(agente_id__in=agentes) \
-                                   .exclude(campana_id=0) \
-                                   .order_by('agente_id')
+        result = self.values_list('agente_id') \
+                     .annotate(sum=Sum('duracion_llamada')) \
+                     .filter(time__gte=fecha_desde, time__lte=fecha_hasta) \
+                     .filter(event__in=eventos) \
+                     .filter(agente_id__in=agentes) \
+                     .exclude(campana_id=0) \
+                     .order_by('agente_id')
 
         return result
 
@@ -84,23 +84,15 @@ class LlamadaLogManager(models.Manager):
             fecha_desde = datetime_hora_minima_dia(fecha_desde)
             fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
 
-        cursor = connection.cursor()
-        sql = """select agente_id, count(*)
-                 from reportes_app_llamadalog where time between %(fecha_desde)s and
-                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agente_id = ANY(%(agentes)s)
-                 AND NOT campana_id = '0'
-                 GROUP BY agente_id order by agente_id
-        """
-        params = {
-            'fecha_desde': fecha_desde,
-            'fecha_hasta': fecha_hasta,
-            'eventos': eventos,
-            'agentes': agentes,
-        }
+        result = self.values_list('agente_id') \
+                     .annotate(count=Count('*')) \
+                     .filter(time__gte=fecha_desde, time__lte=fecha_hasta) \
+                     .filter(event__in=eventos) \
+                     .filter(agente_id__in=agentes) \
+                     .exclude(campana_id='0') \
+                     .order_by('agente_id')
 
-        cursor.execute(sql, params)
-        values = cursor.fetchall()
-        return values
+        return result
 
     def obtener_agentes_campanas_total(self, eventos, fecha_desde, fecha_hasta, agentes,
                                        campanas):
@@ -513,11 +505,11 @@ class ActividadAgenteLogManager(models.Manager):
             fecha_desde = datetime_hora_minima_dia(fecha_desde)
             fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
 
-        result = ActividadAgenteLog.objects.values_list('agente_id', 'time', 'event', 'pausa_id') \
-                                           .filter(time__gte=fecha_desde, time__lte=fecha_hasta) \
-                                           .filter(event__in=eventos) \
-                                           .filter(agente_id__in=agentes) \
-                                           .order_by('agente_id', '-time')
+        result = self.values_list('agente_id', 'time', 'event', 'pausa_id') \
+                     .filter(time__gte=fecha_desde, time__lte=fecha_hasta) \
+                     .filter(event__in=eventos) \
+                     .filter(agente_id__in=agentes) \
+                     .order_by('agente_id', '-time')
 
         return result
 
