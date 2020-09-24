@@ -208,7 +208,7 @@ class ParserCsv(object):
         nombre = nombre.strip()  # .upper()
         nombre = DOUBLE_SPACES.sub("_", nombre)
         nombre = elimina_tildes(nombre)
-        nombre = nombre.capitalize()
+
         return nombre
 
     def _sanear_nombres_de_columnas(self, nombres):
