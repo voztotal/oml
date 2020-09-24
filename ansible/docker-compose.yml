@@ -1,0 +1,24 @@
+version: '3.7'
+services:
+  ansible:
+    build:
+      context: .
+    command:
+      - python3
+    container_name: ansible
+    dns: 8.8.8.8
+#    environment:
+    env_file:
+      - .env
+    hostname: fts-ansible
+    image: freetechsolutions/ansible:${ANSIBLE_VERSION}
+    network_mode: "host"
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+    #  - ./../../terraform:/root/terraform
+      - ../:/root/ominicontacto
+    working_dir: /root/ominicontacto
+    tty: true
+    stdin_open: true
