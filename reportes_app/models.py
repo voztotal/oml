@@ -18,15 +18,19 @@
 #
 
 from __future__ import unicode_literals
+from django.utils.timezone import now
+from ominicontacto_app.utiles import crear_segmento_grabaciones_url, datetime_hora_maxima_dia, \
+    datetime_hora_minima_dia, fecha_local
 
 from django.db import models, connection
 from django.db.models import Count, Q
 from django.db.models.functions import TruncDate
 from django.core.exceptions import SuspiciousOperation
 from django.utils.translation import ugettext as _
+from django.conf import settings
 
-from ominicontacto_app.models import Campana
-from ominicontacto_app.utiles import datetime_hora_minima_dia, datetime_hora_maxima_dia
+from ominicontacto_app.models import AgenteProfile, CalificacionCliente, Campana, Contacto, \
+    GrabacionMarca
 
 
 class QueueLog(models.Model):
@@ -182,6 +186,60 @@ class LlamadaLogManager(models.Manager):
             event__in=['ABANDON', 'ABANDONWEL']).exclude(
                 campana_id__in=campanas_eliminadas_ids)
 
+    def obtener_grabaciones_by_fecha_intervalo_campanas(self, fecha_inicio, fecha_fin, campanas):
+        fecha_inicio = datetime_hora_minima_dia(fecha_inicio)
+        fecha_fin = datetime_hora_maxima_dia(fecha_fin)
+
+        return self.filter(time__range=(fecha_inicio, fecha_fin),
+                           campana_id__in=campanas, duracion_llamada__gt=0,
+                           archivo_grabacion__isnull=False).order_by('-time')
+
+    def obtener_grabaciones_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada, tel_cliente,
+                                      callid, id_contacto_externo, agente, campana, campanas,
+                                      marcadas, duracion, gestion):
+        campanas_id = [campana.id for campana in campanas]
+        grabaciones = self.filter(campana_id__in=campanas_id,
+                                  archivo_grabacion__isnull=False,
+                                  duracion_llamada__gt=0)
+
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime_hora_minima_dia(fecha_desde)
+            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
+            grabaciones = grabaciones.filter(time__range=(fecha_desde,
+                                                          fecha_hasta))
+        if tipo_llamada:
+            grabaciones = grabaciones.filter(tipo_llamada=tipo_llamada)
+        if tel_cliente:
+            grabaciones = grabaciones.filter(numero_marcado__contains=tel_cliente)
+        if callid:
+            grabaciones = grabaciones.filter(callid=callid)
+        if agente:
+            grabaciones = grabaciones.filter(agente_id=agente.id)
+        if campana:
+            grabaciones = grabaciones.filter(campana_id=campana)
+        if duracion and duracion > 0:
+            grabaciones = grabaciones.filter(duracion_llamada__gte=duracion)
+        if id_contacto_externo:
+            telefonos_contacto = Contacto.objects.values('telefono')
+            telefono_id_externo = telefonos_contacto.filter(id_externo=id_contacto_externo)
+            grabaciones = grabaciones.filter(numero_marcado__contains=telefono_id_externo)
+        if marcadas:
+            total_grabaciones_marcadas = self.obtener_grabaciones_marcadas()
+            grabaciones = grabaciones & total_grabaciones_marcadas
+        if gestion:
+            calificaciones_gestion_campanas = CalificacionCliente.obtener_califs_gestion_campanas(
+                campanas)
+            callids_calificaciones_gestion = list(calificaciones_gestion_campanas.values_list(
+                'callid', flat=True))
+            grabaciones = grabaciones.filter(callid__in=callids_calificaciones_gestion)
+
+        return grabaciones.order_by('-time')
+
+    def obtener_grabaciones_marcadas(self):
+        marcaciones = GrabacionMarca.objects.values_list('callid', flat=True)
+        return self.filter(callid__in=marcaciones, archivo_grabacion__isnull=False,
+                           duracion_llamada__gt=0)
+
 
 class LlamadaLog(models.Model):
     """
@@ -198,6 +256,13 @@ class LlamadaLog(models.Model):
     LLAMADA_TRANSFER_EXTERNA = 9
 
     TIPOS_LLAMADAS_SALIENTES = (LLAMADA_MANUAL, LLAMADA_PREVIEW, LLAMADA_CLICK2CALL)
+
+    TYPE_LLAMADA_CHOICES = (
+        (LLAMADA_DIALER, 'DIALER'),
+        (LLAMADA_ENTRANTE, 'INBOUND'),
+        (LLAMADA_MANUAL, 'MANUAL'),
+        (LLAMADA_PREVIEW, 'PREVIEW'),
+    )
 
     EVENTOS_NO_CONTACTACION = ('NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL', 'FAIL', 'OTHER',
                                'BLACKLIST', 'CONGESTION', 'NONDIALPLAN')
@@ -266,8 +331,42 @@ class LlamadaLog(models.Model):
 
     def __str__(self):
         return "Log de llamada con fecha {0} con id de campaña {1} con id de agente {2} " \
-               "con el evento {3} ".format(self.time, self.campana_id,
-                                           self.agente_id, self.event)
+               "con el evento {3} duraci'on {4}".format(self.time, self.campana_id,
+                                                        self.agente_id, self.event,
+                                                        self.duracion_llamada)
+
+    @property
+    def url_archivo_grabacion(self):
+        hoy = fecha_local(now())
+        dia_grabacion = fecha_local(self.time)
+        filename = "/".join([crear_segmento_grabaciones_url(),
+                             dia_grabacion.strftime("%Y-%m-%d"),
+                             self.archivo_grabacion])
+        if dia_grabacion < hoy:
+            return filename + '.' + settings.MONITORFORMAT
+        else:
+            return filename + '.wav'
+
+    @property
+    def campana(self):
+        return Campana.objects.get(id=self.campana_id)
+
+    @property
+    def tipo_llamada_show(self):
+        switcher = {
+            1: 'LLAMADA_MANUAL',
+            2: 'LLAMADA_DIALER',
+            3: 'LLAMADA_ENTRANTE',
+            4: 'LLAMADA_PREVIEW',
+            6: 'LLAMADA_CLICK2CALL',
+            8: 'LLAMADA_TRANSFER_INTERNA',
+            9: 'LLAMADA_TRANSFER_EXTERNA'
+        }
+        return switcher.get(self.tipo_llamada, None)
+
+    @property
+    def agente(self):
+        return AgenteProfile.objects.get(id=self.agente_id)
 
 
 class ActividadAgenteLogManager(models.Manager):

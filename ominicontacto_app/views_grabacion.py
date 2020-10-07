@@ -33,10 +33,9 @@ from django.core import paginator as django_paginator
 from django.http import JsonResponse
 
 from ominicontacto_app.forms import GrabacionBusquedaForm, GrabacionBusquedaSupervisorForm
-from ominicontacto_app.models import (
-    Grabacion, GrabacionMarca, Campana, CalificacionCliente,
-)
+from ominicontacto_app.models import (GrabacionMarca, Campana, CalificacionCliente)
 from .utiles import convert_fecha_datetime, fecha_local
+from reportes_app.models import LlamadaLog
 
 
 class BusquedaGrabacionFormView(FormView):
@@ -113,7 +112,7 @@ class BusquedaGrabacionFormView(FormView):
         gestion = form.cleaned_data.get('gestion', False)
         campanas = self._get_campanas()
         pagina = form.cleaned_data.get('pagina')
-        listado_de_grabaciones = Grabacion.objects.grabacion_by_filtro(
+        listado_de_grabaciones = LlamadaLog.objects.obtener_grabaciones_by_filtro(
             fecha_desde, fecha_hasta, tipo_llamada, tel_cliente, callid, id_contacto_externo,
             agente, campana, campanas, marcadas, duracion, gestion)
 
@@ -121,7 +120,7 @@ class BusquedaGrabacionFormView(FormView):
             listado_de_grabaciones=listado_de_grabaciones, pagina=pagina))
 
     def _get_calificaciones(self, grabaciones):
-        identificadores = grabaciones.object_list.values_list('id_cliente', 'campana_id', 'callid')
+        identificadores = grabaciones.object_list.values_list('contacto_id', 'campana_id', 'callid')
         filtro = Q()
         callids = []
         for contacto_id, campana_id, callid in identificadores:
@@ -152,7 +151,9 @@ class BusquedaGrabacionSupervisorFormView(BusquedaGrabacionFormView):
     def _get_grabaciones_del_dia(self):
         hoy = fecha_local(timezone.now())
         campanas = self._get_campanas()
-        return Grabacion.objects.grabacion_by_fecha_intervalo_campanas(hoy, hoy, campanas)
+        campanas_id = [campana.id for campana in campanas]
+        return LlamadaLog.objects.obtener_grabaciones_by_fecha_intervalo_campanas(hoy, hoy,
+                                                                                  campanas_id)
 
 
 class BusquedaGrabacionAgenteFormView(BusquedaGrabacionFormView):
@@ -170,8 +171,10 @@ class BusquedaGrabacionAgenteFormView(BusquedaGrabacionFormView):
     def _get_grabaciones_del_dia(self):
         hoy = fecha_local(timezone.now())
         campanas = self._get_campanas()
-        grabaciones = Grabacion.objects.grabacion_by_fecha_intervalo_campanas(hoy, hoy, campanas)
-        return grabaciones.filter(agente=self.request.user.get_agente_profile())
+        campanas_id = [campana.id for campana in campanas]
+        grabaciones = LlamadaLog.objects.obtener_grabaciones_by_fecha_intervalo_campanas(
+            hoy, hoy, campanas_id)
+        return grabaciones.filter(agente_id=self.request.user.get_agente_profile().id)
 
 
 class MarcarGrabacionView(View):
