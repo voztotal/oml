@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0062_rename_backlist'),
+        ('ominicontacto_app', '0063_grupo_obligar_calificacion'),
     ]
 
     operations = [
