@@ -327,6 +327,41 @@ Si no se encuentra el id de la opcion de calificación en la bd de la campaña, 
 .. image:: images/api_create_disposition_err_disp_opt_not_found.png
 
 
+Endpoint para subir base de contactos
+*************************************
+
+Esta endpoint habilita la posibilidad de subir una nueva base de datos de contactos en OMniLeads.
+
+Las credenciales deberán pertenecer a un Administrador, Gerente o Supervisor (:ref:`about_users`).
+
+**URL**: PUT https://<omnileads_addr>/api/v1/crear_base_contactos
+
+
++---------------------+---------+-----------------------------------------------------------------------------+
+| field name          | type    | description                                                                 |
++=====================+=========+=============================================================================+
+| filename            | file    | Archivo csv a subir.                                                        |
++---------------------+---------+-----------------------------------------------------------------------------+
+| nombre              | string  | Nombre de la base de contactos, no debe llevar espacios en blanco.          |
++---------------------+---------+-----------------------------------------------------------------------------+
+| campos_telefono     | string  | Listado de nombres de campos, separados por (,) que indican los campos en   |
+|                     |         | el csv que corresponden a teléfonos.                                        |
+|                     |         | Estos nombres deben ser iguales que sus columnas correspondientes en el cvs |
++---------------------+---------+-----------------------------------------------------------------------------+
+| id_externo          | string  | Parámetro opcional, nombre del campo en el csv que corresponde a un         |
+|                     |         | id externo.                                                                 |
+|                     |         | Este nombre debe ser igual que su columna correspondiente en el cvs         |
++---------------------+---------+-----------------------------------------------------------------------------+
+
+Si existe error se devolverá el siguiente tipo de output, indicando el error ocurrido:
+
+.. image:: images/api_subir_base_contactos_error.png
+
+Si no existe error se devolverá el siguiente tipo de output, indicando el id de la base de contactos creada:
+
+.. image:: images/api_subir_base_contactos.png
+
+
 API de Sesión de Agente en Asterisk
 ***********************************
 
