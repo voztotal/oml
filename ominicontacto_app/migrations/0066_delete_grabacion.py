@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0063_grupo_obligar_calificacion'),
+        ('ominicontacto_app', '0065_cambio_valor_setting_key_server'),
     ]
 
     operations = [

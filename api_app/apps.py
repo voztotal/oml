@@ -164,12 +164,9 @@ class ApiAppConfig(AppConfig):
         'api_status_calificacion_llamada':
             {'descripcion': _('Detecta si una llamada esta calificada.'),
              'version': '1.8.0'},
-<<<<<<< HEAD
         'reenviar_key_registro':
-            {'description': _('Reenvía la llave de la instancia registrada por email')}
-=======
+            {'description': _('Reenvía la llave de la instancia registrada por email')},
         'api_grabacion_archivo':
             {'descripcion': _('Retorna el archivo de grabación especificado'),
              'version': '1.11.0'},
->>>>>>> - manejar grabaciones en django
     }
