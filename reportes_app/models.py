@@ -36,9 +36,11 @@ from ominicontacto_app.models import AgenteProfile, CalificacionCliente, Campana
 class QueueLog(models.Model):
     """ Tabla queue_log para la insercion de Logs desde Asterisk """
     # time character varying(26) DEFAULT NULL::character varying,
-    time = models.CharField(max_length=100, blank=True, null=True, default=None)
+    time = models.CharField(max_length=100, blank=True,
+                            null=True, default=None)
     # callid character varying(32) DEFAULT ''::character varying NOT NULL,
-    callid = models.CharField(max_length=100, blank=True, null=False, default='')
+    callid = models.CharField(
+        max_length=100, blank=True, null=False, default='')
     # queuename character varying(32) DEFAULT ''::character varying NOT NULL,
     queuename = models.CharField(max_length=100, blank=True, default='')
     # agent character varying(32) DEFAULT ''::character varying NOT NULL,
@@ -184,7 +186,8 @@ class LlamadaLogManager(models.Manager):
 
         return self.filter(time__range=(fecha_inicio, fecha_fin),
                            campana_id__in=campanas, duracion_llamada__gt=0,
-                           archivo_grabacion__isnull=False).order_by('-time')
+                           archivo_grabacion__isnull=False).order_by('-time').\
+            exclude(archivo_grabacion='-1').exclude(event='ENTERQUEUE-TRANSFER')
 
     def obtener_grabaciones_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada, tel_cliente,
                                       callid, id_contacto_externo, agente, campana, campanas,
@@ -194,6 +197,9 @@ class LlamadaLogManager(models.Manager):
                                   archivo_grabacion__isnull=False,
                                   duracion_llamada__gt=0)
 
+        grabaciones = grabaciones.exclude(
+            archivo_grabacion='-1').exclude(event='ENTERQUEUE-TRANSFER')
+
         if fecha_desde and fecha_hasta:
             fecha_desde = datetime_hora_minima_dia(fecha_desde)
             fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
@@ -202,7 +208,8 @@ class LlamadaLogManager(models.Manager):
         if tipo_llamada:
             grabaciones = grabaciones.filter(tipo_llamada=tipo_llamada)
         if tel_cliente:
-            grabaciones = grabaciones.filter(numero_marcado__contains=tel_cliente)
+            grabaciones = grabaciones.filter(
+                numero_marcado__contains=tel_cliente)
         if callid:
             grabaciones = grabaciones.filter(callid=callid)
         if agente:
@@ -213,8 +220,10 @@ class LlamadaLogManager(models.Manager):
             grabaciones = grabaciones.filter(duracion_llamada__gte=duracion)
         if id_contacto_externo:
             telefonos_contacto = Contacto.objects.values('telefono')
-            telefono_id_externo = telefonos_contacto.filter(id_externo=id_contacto_externo)
-            grabaciones = grabaciones.filter(numero_marcado__contains=telefono_id_externo)
+            telefono_id_externo = telefonos_contacto.filter(
+                id_externo=id_contacto_externo)
+            grabaciones = grabaciones.filter(
+                numero_marcado__contains=telefono_id_externo)
         if marcadas:
             total_grabaciones_marcadas = self.obtener_grabaciones_marcadas()
             grabaciones = grabaciones & total_grabaciones_marcadas
@@ -223,14 +232,16 @@ class LlamadaLogManager(models.Manager):
                 campanas)
             callids_calificaciones_gestion = list(calificaciones_gestion_campanas.values_list(
                 'callid', flat=True))
-            grabaciones = grabaciones.filter(callid__in=callids_calificaciones_gestion)
+            grabaciones = grabaciones.filter(
+                callid__in=callids_calificaciones_gestion)
 
         return grabaciones.order_by('-time')
 
     def obtener_grabaciones_marcadas(self):
         marcaciones = GrabacionMarca.objects.values_list('callid', flat=True)
         return self.filter(callid__in=marcaciones, archivo_grabacion__isnull=False,
-                           duracion_llamada__gt=0)
+                           duracion_llamada__gt=0).exclude(archivo_grabacion='-1') \
+            .exclude(event='ENTERQUEUE-TRANSFER')
 
 
 class LlamadaLog(models.Model):
@@ -247,7 +258,8 @@ class LlamadaLog(models.Model):
     LLAMADA_TRANSFER_INTERNA = 8
     LLAMADA_TRANSFER_EXTERNA = 9
 
-    TIPOS_LLAMADAS_SALIENTES = (LLAMADA_MANUAL, LLAMADA_PREVIEW, LLAMADA_CLICK2CALL)
+    TIPOS_LLAMADAS_SALIENTES = (
+        LLAMADA_MANUAL, LLAMADA_PREVIEW, LLAMADA_CLICK2CALL)
 
     TYPE_LLAMADA_CHOICES = (
         (LLAMADA_DIALER, 'DIALER'),
@@ -268,7 +280,7 @@ class LlamadaLog(models.Model):
         'BT-BUSY', 'BT-CANCEL', 'BT-CHANUNAVAIL', 'BT-CONGESTION', 'BT-NOANSWER', 'BT-ABANDON',
         'CT-DISCARD', 'CT-BUSY', 'CT-CANCEL', 'CT-CHANUNAVAIL', 'CT-CONGESTION',
         'BTOUT-BUSY', 'BTOUT-CANCEL', 'BTOUT-CONGESTION', 'BTOUT-CHANUNAVAIL', 'BTOUT-ABANDON',
-        'CTOUT-BUSY', 'CTOUT-CANCEL', 'CTOUT-CHANUNAVAIL', 'CTOUT-CONGESTION'
+        'CTOUT-DISCARD', 'CTOUT-BUSY', 'CTOUT-CANCEL', 'CTOUT-CHANUNAVAIL', 'CTOUT-CONGESTION'
     ]
 
     # Eventos que marcan el fin de la conexion con un agente. (Puede ser por conectar con otro)
@@ -277,14 +289,15 @@ class LlamadaLog(models.Model):
                             'CAMPT-COMPLETE', 'CAMPT-FAIL', 'COMPLETE-CAMPT',
                             'CT-COMPLETE', 'COMPLETE-CT',
                             'BTOUT-TRY',
-                            'CTOUT-COMPLETE', 'ABANDON-CTOUT']
+                            'CTOUT-COMPLETE', ]
 
     # Marcan el fin de la conexion por una transferencia para el agente original
     EVENTOS_FIN_CONEXION_POR_TRANSFER = ['BT-TRY', 'BTOUT-TRY',
                                          'CAMPT-COMPLETE', 'CAMPT-FAIL',
                                          'CT_COMPLETE', 'CTOUT-COMPLETE']
 
-    EVENTOS_INICIO_CONEXION = ['CONNECT', 'ANSWER', 'BT-ANSWER', 'CT-ACCEPT']  # Con id_agente
+    EVENTOS_INICIO_CONEXION = ['CONNECT', 'ANSWER',
+                               'BT-ANSWER', 'CT-ACCEPT']  # Con id_agente
 
     # EVENTOS_TRANSFER_TRY_IN = ['BT-TRY', 'ENTERQUEUE-TRANSFER', 'CT-TRY']
     # EVENTOS_TRANSFER_TRY_OUT = ['BTOUT-TRY', 'CTOUT-TRY']
@@ -318,7 +331,8 @@ class LlamadaLog(models.Model):
 
     # campos sólo para algunos logs transferencias
     agente_extra_id = models.IntegerField(db_index=True, blank=True, null=True)
-    campana_extra_id = models.IntegerField(db_index=True, blank=True, null=True)
+    campana_extra_id = models.IntegerField(
+        db_index=True, blank=True, null=True)
     numero_extra = models.CharField(max_length=128, blank=True, null=True)
 
     def __str__(self):
