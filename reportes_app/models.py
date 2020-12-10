@@ -221,7 +221,7 @@ class LlamadaLogManager(models.Manager):
         if id_contacto_externo:
             telefonos_contacto = Contacto.objects.values('telefono')
             telefono_id_externo = telefonos_contacto.filter(
-                id_externo=id_contacto_externo)
+                id_externo=id_contacto_externo).first()
             grabaciones = grabaciones.filter(
                 numero_marcado__contains=telefono_id_externo)
         if marcadas:
