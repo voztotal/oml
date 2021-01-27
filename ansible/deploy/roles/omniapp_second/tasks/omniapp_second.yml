@@ -83,23 +83,6 @@
   become_user: "{{ usuario }}"
   tags: postinstall
 
-# Se sube el archivo de config de nginx
-- name: Upload nginx.conf configuration
-  template: src=templates/etc/nginx.conf.j2 dest=/etc/nginx/nginx.conf
-  tags: postinstall
-
-# Se sube el archivo de configuracion de omnileads para nginx
-- name: Create of ominicontacto.conf
-  template: src=templates/etc/ominicontacto.conf dest=/etc/nginx/conf.d/ominicontacto.conf owner={{ usuario }} group={{ usuario }}
-  tags: postinstall
-
-# Se pasan los certificados creados en kamailio a la carpeta nginx_certs
-- name: Copy of the certificates in nginx
-  copy: "src={{ kamailio_location }}/etc/certs/{{ item }} dest={{ install_prefix }}/nginx_certs/ remote_src=yes"
-  with_items:
-    - cert.pem
-    - key.pem
-
 # Se copia el certificado del servidor de llaves, para poder registrar la instancia de OML
 - name: Copy register server certificate in default location
   copy: src={{ repo_location }}/ansible/deploy/cert dest={{ install_prefix }}/ owner={{ usuario }} group={{ usuario }}
@@ -160,19 +143,6 @@
   systemd: name=omnileads-websockets state=restarted enabled=yes daemon_reload=yes
   tags: postinstall
   when: websocket_host == "websockets"
-
-# Se borra la supervision en php que viene desde 1.2.X para atras
-- name: Erase files related to php supervision
-  file: state=absent path={{ item }}
-  with_items:
-    - /etc/nginx/conf.d/supervision.conf
-    - "{{ install_prefix }}/Omnisup"
-  tags: ['never','postinstall']
-
-# Starteo y habilito nginx
-- name: Reload of nginx
-  service: name=nginx state=reloaded enabled=yes
-  tags: ['postinstall','kamailio']
 
 # Se cambia el ownership de este path para que no tire el error 500 cuando se quiere acceder a la parte de subir audios
 - name: Change ownership of /var/lib/nginx/tmp/
