@@ -41,10 +41,12 @@
 # Aca comienza la ejecucion de tasks. Las tasks se agrupan en roles, los roles se agrupan dependiendo del componente del sistema
 # https://docs.ansible.com/ansible/2.5/user_guide/playbooks_reuse_roles.html
   roles:
-          - prerequisitos
-          - { role: database, tags: database }
-          - {role: oml_server, tags: omniapp }
-          - { role: asterisk, tags: asterisk }
-          - {role: kamailio, tags: kamailio }
-          - {role: omniapp_second, tags: omiapp }
-          - { role: dialer, tags: dialer }
+    - prerequisitos
+    - { role: database, tags: database }
+    - {role: oml_server, tags: omniapp }
+    - { role: asterisk, tags: asterisk }
+    - {role: kamailio, tags: kamailio }
+    - {role: omniapp_second, tags: omiapp }
+    #- { role: dialer, tags: dialer }
+
+- import_playbook: modules/nginx/ansible/nginx.yml
