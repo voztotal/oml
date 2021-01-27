@@ -113,8 +113,6 @@
     bind-utils \
     hiredis \
     python-psycopg2 \
-    nginx \
-    nginx-all-modules \
     rsync \
     sox \
     lame \
