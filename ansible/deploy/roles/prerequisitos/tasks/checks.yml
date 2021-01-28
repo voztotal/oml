@@ -44,6 +44,12 @@
   tags: always
   changed_when: false
 
+- name: Setting kamailio_host as machine hostname
+  set_fact: kamailio_host="{{ omni_fqdn }}"
+  tags: always
+  changed_when: false
+  when: kamailio_host is not defined
+
 # Obtengo IP privada del nodo
 - name: Get IP adress of node (selfhosted)
   set_fact: omni_ip={{ hostvars[inventory_hostname]['ansible_' + iface]['ipv4']['address'] }}
@@ -278,6 +284,32 @@
 
 - set_fact: SCA="{{ assert_sca.stdout }}"
   when: assert_sca.rc == 0 and SCA == 3600
+  tags: always
+
+- name: Check if $SHM_SIZE was defined previously
+  shell: bash -lc 'if [ -z $SHM_SIZE ]; then exit 1; else echo $SHM_SIZE; exit 0; fi'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_shm_size
+  tags: always
+
+- set_fact: shm_size="{{ assert_shm_size.stdout }}"
+  when: assert_shm_size.rc == 0 and shm_size == 64
+  tags: always
+
+- name: Check if $PKG_SIZE was defined previously
+  shell: bash -lc 'if [ -z $PKG_SIZE ]; then exit 1; else echo $PKG_SIZE; exit 0; fi'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_pkg_size
+  tags: always
+
+- set_fact: pkg_size="{{ assert_pkg_size.stdout }}"
+  when: assert_pkg_size.rc == 0 and pkg_size == 8
   tags: always
 
 - name: Check if $EPHEMERAL_USER_TTL was defined previously

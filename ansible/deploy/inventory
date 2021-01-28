@@ -99,6 +99,12 @@ schedule=Agenda
 websocket_host=websockets
 websocket_port=8000
 
+#######################################################################################################
+# Variables for Kamailio memory. SHM is the maximum memory ammount. PKG is the minimum memory ammount #
+#######################################################################################################
+shm_size=64
+pkg_size=8
+
 ##############################################################################################
 # Variables below are used when you have postgresql, mysql , wombat dialer or rtpengine      #
 # in diferent servers. Uncomment the variables and place the hostnames of these servers      #
@@ -115,6 +121,7 @@ gluster_enabled=true
 #redis_host=
 #rtpengine_host=
 #dialer_host=
+#kamailio_host=
 
 #
 # WARNING!!! ATENCION!!! WAARSCHUWING!!! WARNUNG!!! AVIS!!!
