@@ -38,6 +38,7 @@ export ANSIBLE_CONFIG=$TMP_ANSIBLE
 arg1=$1
 
 AnsibleValidation(){
+  CertsValidation
   if [ -z $INTERFACE ]; then INTERFACE=none; fi
   os=`awk -F= '/^NAME/{print $2}' /etc/os-release`
   if [ "$os" == '"Amazon Linux"' ]; then
@@ -66,6 +67,7 @@ AnsibleValidation(){
     printf "$GREEN** [OMniLeads] Copying ansible code to temporal directory $NC\n"
     cp -a $current_directory/* $TMP_ANSIBLE
     cp -a $current_directory/../.env $TMP_ANSIBLE
+    cp -a $current_directory/../../modules $TMP_ANSIBLE
     sleep 2
     printf "$GREEN** [OMniLeads] Creating the installation process log file $NC\n"
     mkdir -p /var/tmp/log
@@ -141,7 +143,6 @@ CodeCopy() {
   printf "$GREEN** [OMniLeads] Copying the Omnileads code to temporal directory $NC\n"
   git archive --format=tar $(git rev-parse HEAD) | tar x -f - -C $TMP_OMINICONTACTO
   sleep 2
-  CertsValidation
   printf "$GREEN** [OMniLeads] Deleting unnecesary files... $NC\n"
   rm -rf $TMP_OMINICONTACTO/docs
   rm -rf $TMP_OMINICONTACTO/deploy/ansible
