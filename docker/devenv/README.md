@@ -102,6 +102,14 @@ The .env file inside `~/omnileads/devenv` contains variables used by containers.
 The docker-compose file links the OML repository into the container so any change you make in the *django code* will be reflected in the devenv inmediately.
 On the other hand after changing asterisk code or configuration file, is necessary to go into the asterisk container and execute *asterisk -rx "module reload"*
 
+# Adding more nodes for RethinkDB cluster
+
+For example:
+docker run -d --name oml-rethinkdb_2-devenv --network devenv_dev_net -p 8095:8095  rethinkdb bash -c "rethinkdb --join oml-rethinkdb_1-devenv:29015 --bind all --http-port 8095"
+
+Note:
+You should change name port(8095) and name(oml-rethinkdb_2-devenv) every time you add a new server
+
 # Updating environment
 
 Sometimes you will need to update the environment for any change we make, for that you will have to run the deploy using ansible again.
