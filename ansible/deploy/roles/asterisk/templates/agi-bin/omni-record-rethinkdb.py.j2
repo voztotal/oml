@@ -1,0 +1,69 @@
+# -*- coding: utf-8 -*-
+
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+
+# Este script se ejecuta como AGI insertar y obtener datos de agente en Redis
+
+import os
+import sys
+from socket import setdefaulttimeout
+from rethinkdb import r
+
+from utiles import write_time_stderr
+
+OML_RETHINKDB_HOST = 'oml-rethinkdb_1-devenv'
+OML_RETHINKDB_PORT = 28015
+ASTERISK_LOCATION = os.getenv('ASTERISK_LOCATION')
+RETHINKDB_AGI_LOG = '{0}/var/log/asterisk/agent-status-agi-errors.log'.format(ASTERISK_LOCATION)
+RUTA_GRABABACIONES = '/var/spool/asterisk/monitor/'
+
+connection = r.connect(OML_RETHINKDB_HOST, OML_RETHINKDB_PORT, db='omnileads')
+
+if os.path.exists(RETHINKDB_AGI_LOG):
+    append_write = 'a'  # append if already exists
+else:
+    append_write = 'w'  # make a new file if not
+
+sys.stderr = open(RETHINKDB_AGI_LOG, append_write)
+
+setdefaulttimeout(20)
+
+folder = sys.argv[1]
+filename = sys.argv[2]
+
+route_filename = os.path.join(RUTA_GRABABACIONES, os.path.join(folder, filename))
+
+
+def save_file(file_path, save_name):
+    """
+    Store the file at 'file_path' with the filename 'save_name'.
+    """
+    fh = open(file_path, 'rb')
+    contents = fh.read()
+    fh.close()
+    r.table('grabaciones').insert({
+        'filename': save_name,
+        'file': r.binary(contents)
+    }).run(connection)
+
+
+try:
+    save_file(route_filename, filename)
+except Exception as e:
+    write_time_stderr("Exporting to RethinkDB failed due to: {0}".format(e))
+    raise e
