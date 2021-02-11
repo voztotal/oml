@@ -266,6 +266,22 @@ services:
     stop_grace_period: 1m30s
 {% endif %}
 
+  rethinkdb_1:
+    command: >
+      bash -c "rethinkdb --bind all --http-port 8090 --server-tag cluster"
+    container_name: oml-rethinkdb_1-{{ customer}}
+    image: rethinkdb
+    networks:
+      - {{ subnet_name }}
+    ports:
+      - 8090:8090/tcp
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - rethinkdb_data:/data/rethinkdb_data
+
+
 networks:
   {{ subnet_name }}:
     ipam:
@@ -287,3 +303,4 @@ volumes:
   #ominicontacto:
 {% endif %}
   blacklist:
+  rethinkdb_data:
