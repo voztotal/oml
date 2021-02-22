@@ -10,7 +10,7 @@ CALIFICACION_REAGENDA={{ schedule }}
 DJANGO_SETTINGS_MODULE=ominicontacto.settings.production
 EPHEMERAL_USER_TTL={{ ECCTL }}
 {% if extern_ip == "auto" %}
-EXTERN_IP={{ public_ip.stdout }}
+EXTERN_IP={{ public_ip }}
 {% else %}
 EXTERN_IP={{ extern_ip }}
 {% endif %}

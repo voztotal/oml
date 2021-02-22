@@ -17,6 +17,9 @@
 #
 ---
 
-- include: rtpengine.yml
-  tags: kamailio
-  when: rtpengine_host is not defined
+#- include: rtpengine.yml
+#  tags: kamailio
+#  when: rtpengine_host is not defined
+
+#- include: kamailio.yml
+#  tags: kamailio

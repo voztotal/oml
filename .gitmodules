@@ -10,3 +10,7 @@
 	path = modules/kamailio
 	url = https://gitlab.com/omnileads/omlkamailio.git
 	branch = master
+[submodule "modules/rtpengine"]
+	path = modules/rtpengine
+	url = https://gitlab.com/omnileads/omlrtpengine.git
+	branch = master
