@@ -50,6 +50,12 @@
   changed_when: false
   when: kamailio_host is not defined
 
+- name: Setting rtpengine_host as machine hostname
+  set_fact: rtpengine_host="{{ omni_fqdn }}"
+  tags: always
+  changed_when: false
+  when: rtpengine_host is not defined
+
 # Obtengo IP privada del nodo
 - name: Get IP adress of node (selfhosted)
   set_fact: omni_ip={{ hostvars[inventory_hostname]['ansible_' + iface]['ipv4']['address'] }}
@@ -414,13 +420,13 @@
 # Obtengo IP publica del nodo
 - name: Get public IP address of node
   shell: curl http://ipinfo.io/ip
-  register: public_ip
+  register: publicip
   when: extern_ip == "none" or extern_ip == "auto"
   tags: always
 
 # Valido si lo que devolvió la tarea anterior es una IP
 - name: Validate IP public obtained
-  shell: if [[ {{ public_ip.stdout }} =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then echo 0; else echo 1; fi
+  shell: if [[ {{ publicip.stdout }} =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then echo 0; else echo 1; fi
   args:
     executable: /bin/bash
   register: ip_val
@@ -432,6 +438,9 @@
 - fail:
     msg: "The public IP obtained is wrong, check in shell if you obtain a public IP with this command 'curl http://ipinfo.io/ip', after that please run the script again"
   when: ip_val is not skipped and ip_val.stdout != '0'
+  tags: always
+
+- set_fact: public_ip="{{ publicip.stdout }}"
   tags: always
 
 # Comparo si la IP ingresada en el inventory es el mismo  de el nodo
