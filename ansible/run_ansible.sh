@@ -11,10 +11,8 @@ if [ -z $DOCKER ]; then
 fi
 printf "$GREEN** [OMniLeads] Pulling the latest image of ansible $NC\n"
 docker pull freetechsolutions/ansible:latest
-
 printf "$GREEN** [OMniLeads] Run and exec the container $NC\n"
 docker run -it --rm --name ansible \
   --mount type=bind,source="$(pwd)"/..,target=/root/ominicontacto \
-  --env-file .env \
   --network=host --workdir=/root/ominicontacto \
   freetechsolutions/ansible:latest bash

@@ -47,6 +47,9 @@
     - { role: asterisk, tags: asterisk }
     - {role: kamailio, tags: kamailio }
     - {role: omniapp_second, tags: omiapp }
-    #- { role: dialer, tags: dialer }
+    - { role: dialer, tags: dialer }
+
+- import_playbook: modules/kamailio/ansible/kamailio.yml
+  when: kamailio_host == omni_fqdn
 
 - import_playbook: modules/nginx/ansible/nginx.yml

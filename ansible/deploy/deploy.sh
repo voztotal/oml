@@ -53,11 +53,9 @@ AnsibleValidation(){
   else
     printf "$GREEN** [OMniLeads] Ansible installed, going forward $NC\n"
     printf "$GREEN** [OMniLeads] Loading Ansible environment variables $NC\n"
-    if [ -z $ANSIBLE_DOCKERIZED ]; then
-      set -o allexport
-      source "$current_directory/../.env"
-      set +o allexport
-    fi
+    set -o allexport
+    source "$current_directory/../.env"
+    set +o allexport
     printf "$GREEN** [OMniLeads] Creating ansible temporal directory $NC\n"
     if [ -e $TMP_ANSIBLE ]; then
       rm -rf $TMP_ANSIBLE
@@ -68,6 +66,9 @@ AnsibleValidation(){
     cp -a $current_directory/* $TMP_ANSIBLE
     cp -a $current_directory/../.env $TMP_ANSIBLE
     cp -a $current_directory/../../modules $TMP_ANSIBLE
+    if [ "$arg1" == "--exclude-kamailio" ] || [ "$arg1" == "-k" ]; then
+      rm -rf $TMP_ANSIBLE/modules/kamailio
+    fi
     sleep 2
     printf "$GREEN** [OMniLeads] Creating the installation process log file $NC\n"
     mkdir -p /var/tmp/log
@@ -248,7 +249,7 @@ AnsibleExec() {
 for i in "$@"
 do
   case $i in
-    --upgrade|-u|--install|-i|--kamailio|-k|--asterisk|-a|--omniapp|-o|--omnivoip|--dialer|-di|--database|-da|--change-network|-cnet|--change-passwords|-cp|--docker-no-build|--docker-build|--docker-deploy)
+    --upgrade|-u|--install|-i|--exclude-kamailio|-k|--asterisk|-a|--omniapp|-o|--omnivoip|--dialer|-di|--database|-da|--change-network|-cnet|--change-passwords|-cp|--docker-no-build|--docker-build|--docker-deploy)
       TagCheck
       shift
     ;;

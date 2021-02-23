@@ -6,3 +6,7 @@
 	path = modules/nginx
 	url = https://gitlab.com/omnileads/omlnginx.git
 	branch = master
+[submodule "modules/kamailio"]
+	path = modules/kamailio
+	url = https://gitlab.com/omnileads/omlkamailio.git
+	branch = master
