@@ -159,9 +159,6 @@ CodeCopy() {
 CertsValidation() {
   certs_location="$REPO_LOCATION/ansible/deploy/certs"
   if [ $(ls -l $certs_location/*.pem 2>/dev/null | wc -l) -gt 0 ]; then
-    if [ $(ls -l $certs_location/*.pem 2>/dev/null | wc -l) -eq 4 ]; then
-      rm -rf $certs_location/key.pem $certs_location/cert.pem
-    fi
     if [ $(ls -l $certs_location/*key* 2>/dev/null | wc -l) -eq 1 ] && [ $(ls -l $certs_location/*.pem 2>/dev/null | wc -l) -eq 2 ]; then
       if [ ! -f $certs_location/key.pem ]; then
         key=$( basename $certs_location/*key*)
