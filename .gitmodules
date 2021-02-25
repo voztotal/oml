@@ -14,3 +14,7 @@
 	path = modules/rtpengine
 	url = https://gitlab.com/omnileads/omlrtpengine.git
 	branch = master
+[submodule "modules/redis"]
+	path = modules/redis
+	url = https://gitlab.com/omnileads/omlredis.git
+	master

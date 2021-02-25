@@ -38,18 +38,28 @@
 # Esta variable te dice que familia de OS es el servidor a deployar
   gather_facts: True
 
-# Aca comienza la ejecucion de tasks. Las tasks se agrupan en roles, los roles se agrupan dependiendo del componente del sistema
-# https://docs.ansible.com/ansible/2.5/user_guide/playbooks_reuse_roles.html
   roles:
     - prerequisitos
-    - { role: database, tags: database }
-    - {role: oml_server, tags: omniapp }
-    - { role: asterisk, tags: asterisk }
-    - {role: omniapp_second, tags: omiapp }
-    - { role: dialer, tags: dialer }
 
+- import_playbook: modules/redis/ansible/redis.yml
+  when: redis_host == "localhost"
 - import_playbook: modules/kamailio/ansible/kamailio.yml
   when: kamailio_host == omni_fqdn
 - import_playbook: modules/rtpengine/ansible/rtpengine.yml
-  when: rtpengine_host == omni_fqdn
+  when: rtpengine_host == "localhost"
 - import_playbook: modules/nginx/ansible/nginx.yml
+
+
+# Aca comienza la ejecucion de tasks. Las tasks se agrupan en roles, los roles se agrupan dependiendo del componente del sistema
+# https://docs.ansible.com/ansible/2.5/user_guide/playbooks_reuse_roles.html
+
+# hosts: le decimos que seccion del hosts se va  usar: [prodenv-aio]
+- name: OMniLeads AIO installation
+  hosts: prodenv-aio
+
+  roles:
+    - { role: database, tags: database }
+    - { role: asterisk, tags: asterisk }
+    - { role: dialer, tags: dialer }
+    - {role: oml_server, tags: omniapp }
+    - {role: omniapp_second, tags: omiapp }

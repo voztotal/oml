@@ -51,10 +51,22 @@
   when: kamailio_host is not defined
 
 - name: Setting rtpengine_host as machine hostname
-  set_fact: rtpengine_host="{{ omni_fqdn }}"
+  set_fact: rtpengine_host=localhost
   tags: always
   changed_when: false
   when: rtpengine_host is not defined
+
+- name: Setting redis as machine hostname
+  set_fact: redis_host=localhost
+  tags: always
+  changed_when: false
+  when: redis_host is not defined
+
+- name: Setting redis_protected variable
+  set_fact: redis_protected=true
+  tags: always
+  changed_when: false
+  when: (asterisk_host is not defined or websockets_host is not defined or kamailio_host == omni_fqdn) and redis_host == omni_fqdn
 
 # Obtengo IP privada del nodo
 - name: Get IP adress of node (selfhosted)
