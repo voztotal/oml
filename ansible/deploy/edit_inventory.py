@@ -34,6 +34,8 @@ parser.add_argument("--remote_port", default=22,
 parser.add_argument("--ami_user", default="omnileadsami", help="Specifies ami user")
 parser.add_argument("--ami_password", default="5_MeO_DMT", help="Specifies ami password")
 parser.add_argument("--asterisk_host", help="Specifies asterisk host")
+parser.add_argument("--nginx_host", help="Specifies nginx host")
+parser.add_argument("--kamailio_host", help="Specifies kamailio host")
 parser.add_argument("--dialer_host", help="Specifies dialer host")
 parser.add_argument("--dialer_user", default="demoadmin", help="Specifies dialer user")
 parser.add_argument("--dialer_password", default="demo", help="Specifies dialer passowrd")
@@ -76,6 +78,12 @@ if args.ami_password:
 if args.asterisk_host:
     inventory_contents = inventory_contents.replace(
         "#asterisk_host=", "asterisk_host={0}".format(args.asterisk_host))
+if args.nginx_host:
+    inventory_contents = inventory_contents.replace(
+        "#nginx_host=", "nginx_host={0}".format(args.nginx_host))
+if args.kamailio_host:
+    inventory_contents = inventory_contents.replace(
+        "#kamailio_host=", "kamailio_host={0}".format(args.kamailio_host))
 if args.dialer_user:
     inventory_contents = inventory_contents.replace(
         "#dialer_user=demoadmin", "dialer_user={0}".format(args.dialer_user))
