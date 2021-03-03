@@ -50,8 +50,14 @@
   changed_when: false
   when: kamailio_host is not defined
 
+- name: Setting postgres_host as machine hostname
+  set_fact: postgres_host=localhost
+  tags: always
+  changed_when: false
+  when: postgres_host is not defined
+
 - name: Setting rtpengine_host as machine hostname
-  set_fact: rtpengine_host=localhost
+  set_fact: rtpengine_host=127.0.0.1
   tags: always
   changed_when: false
   when: rtpengine_host is not defined
@@ -453,6 +459,7 @@
   tags: always
 
 - set_fact: public_ip="{{ publicip.stdout }}"
+  when: extern_ip == "none" or extern_ip == "auto"
   tags: always
 
 # Comparo si la IP ingresada en el inventory es el mismo  de el nodo

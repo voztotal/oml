@@ -31,7 +31,7 @@
   with_items:
     - "{{ install_prefix }}"
     - /root/
-  tags: postinstall
+  when: postgres_host != "localhost"
 
 # Se setea el archivo de template de environment variables, según lo que se haya ingresado en el inventory
 - name: Set environment variables for this installation

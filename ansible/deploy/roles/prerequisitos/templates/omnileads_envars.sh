@@ -21,11 +21,7 @@ MYSQL_HOST={{ mysql_host }}
 {% endif %}
 LOGIN_FAILURE_LIMIT={{ LOGIN_FAILURE_LIMIT }}
 OMNILEADS_HOSTNAME=localhost
-{% if postgres_host is defined %}
 PGHOST={{ postgres_host }}
-{% else %}
-PGHOST=localhost
-{% endif %}
 PGDATABASE={{ postgres_database }}
 PGPORT={{ postgres_port }}
 PGUSER={{ postgres_user }}

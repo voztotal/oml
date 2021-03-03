@@ -17,4 +17,8 @@
 [submodule "modules/redis"]
 	path = modules/redis
 	url = https://gitlab.com/omnileads/omlredis.git
-	master
+	branch = master
+[submodule "modules/postgresql"]
+	path = modules/postgresql
+	url = https://gitlab.com/omnileads/omlpgsql.git
+  branch = master
