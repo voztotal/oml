@@ -107,13 +107,6 @@
   changed_when: false
   tags: postinstall
 
-# Chequeo si la version de websockets instalada es {{ websockets_version }}
-- name: Check if omnileads-websockets {{ websockets_version }} is installed
-  shell:  yum list installed |grep omnileads-websockets| awk -F " " '{print $2}' |awk -F "-" '{print $1}'
-  register: websockets_installed
-  changed_when: false
-  tags: postinstall
-
   # Chequeo si la version de asterisk instalada es {{ asterisk_version }}
 - name: Check if Asterisk {{ asterisk_version }} is installed
   shell:  yum list installed |grep asterisk| awk -F " " '{print $2}' |awk -F "-" '{print $1}'
