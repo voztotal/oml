@@ -17,6 +17,19 @@
 #
 ---
 
+# Se instalan los paquetes de postgresql
+- name: Install postgresql {{ postgresql_version }} packages (from s3 source)
+  yum: name={{ packages_url }}/postgresql/postgresql{{ postgresql_version}}{{ item }}.rpm state=latest update_cache=yes
+  with_items:
+    - -libs.x86_64
+    - -odbc.x86_64
+    - .x86_64
+  retries: 3
+  delay: 3
+  register: s3_download
+  until: s3_download is success
+  when: postgres_host != "127.0.0.1"
+
 # Se imprime que el virtualenv no esta instalado si la version actual es inferior a la requerida
 - debug: msg="Virtualenv {{ virtualenv_version }} is not installed, proceeding to install"
   when: virtualenv_installed.stdout != virtualenv_version

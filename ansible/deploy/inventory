@@ -36,11 +36,14 @@
 
 #####################################################################
 #                           Database                                #
-#                    SET POSTGRESQL PASSWORD                        #
+#   Set PostgreSQL password, if you will install PostgreSQL in a    #
+#      separate server, edit postgres_host and postgres_port        #
 #####################################################################
 postgres_database=omnileads
 #postgres_user=omnileads
 #postgres_password=my_very_strong_pass
+#postgres_host=
+#postgres_port=
 #######################################
 # AMI for wombat dialer and OMniLeads #
 #######################################
@@ -109,11 +112,6 @@ pkg_size=8
 # Variables below are used when you have postgresql, mysql , wombat dialer or rtpengine      #
 # in diferent servers. Uncomment the variables and place the hostnames of these servers      #
 ##############################################################################################
-#postgres_host=
-#postgres_port=
-#default_postgres_database=
-#default_postgres_user=
-#default_postgres_password=
 #asterisk_host=
 ### If you need to setup glusterfs between asterisk and OMniLeads ####
 gluster_enabled=true

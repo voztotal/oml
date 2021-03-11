@@ -43,10 +43,12 @@
 
 - import_playbook: modules/redis/ansible/redis.yml
   when: redis_host == "localhost"
+- import_playbook: modules/postgresql/ansible/postgresql.yml
+  when: postgres_host == "localhost"
 - import_playbook: modules/kamailio/ansible/kamailio.yml
   when: kamailio_host == omni_fqdn
 - import_playbook: modules/rtpengine/ansible/rtpengine.yml
-  when: rtpengine_host == "localhost"
+  when: rtpengine_host == "127.0.0.1"
 - import_playbook: modules/nginx/ansible/nginx.yml
 
 
@@ -58,7 +60,6 @@
   hosts: prodenv-aio
 
   roles:
-    - { role: database, tags: database }
     - { role: asterisk, tags: asterisk }
     - { role: dialer, tags: dialer }
     - {role: oml_server, tags: omniapp }
