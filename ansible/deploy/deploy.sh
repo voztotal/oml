@@ -23,6 +23,7 @@
 # 2. Copia toda la carpeta ansible del repo a /var/tmp/ansible y todo el codigo a /var/tmp/ominicontacto-build
 # 3. Pregunta si se quiere dockerizar asterisk o no, para pasarle la variable a ansible.
 # 4. Ejecuta ansible segun la opcion de Dockerizar o no
+set -e
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 YELLOW='\033[1;33m'
