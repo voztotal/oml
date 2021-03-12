@@ -61,27 +61,13 @@ test:
     - schedules
     - web
 
-build-docker-devenv:
+build-rpm:
   stage: build
-  script:
-    - bash ~/git_cleanup.sh
-    - python ansible/build/edit_inventory.py --docker_build=yes -dle=$DOCKER_LOGIN_EMAIL -dlp=$DOCKER_LOGIN_PASSWORD
-    - cd ansible/build
-    - echo "$FTSINFRA_PASS" | sudo -S ./build.sh --docker-de-build
-  tags:
-    - build-docker
-  only:
-    - /.*build-all.*$/
-    - /.*build-docker.*$/
-    - schedules
-    - web
-
-build-aio:
-  stage: build
+  variables:
   image: freetechsolutions/fpm-ansible:centos7
   script:
-    - python2 ansible/build/edit_inventory.py --aio_build=yes
-    - cd ansible/build && ./build.sh --aio-build
+    - cd build
+    - bash build_rpm.sh
   only:
     - /.*build-all.*$/
     - /.*build-aio.*$/

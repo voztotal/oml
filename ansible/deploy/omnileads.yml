@@ -24,12 +24,6 @@
 # https://docs.ansible.com/ansible/2.9/intro_configuration.html
 ---
 
-# hosts: le decimos que seccion del hosts se va  usar: [prodenv-container]
-- name: Omnileads-Docker integration
-  hosts: docker
-  roles:
-    - { role: docker, tags: docker_deploy }
-
 # hosts: le decimos que seccion del hosts se va  usar: [prodenv-aio]
 - name: OMniLeads AIO installation
   hosts: prodenv-aio
@@ -40,6 +34,7 @@
 
   roles:
     - prerequisitos
+    - dialer
 
 - import_playbook: modules/redis/ansible/redis.yml
   when: redis_host == "localhost"
@@ -53,17 +48,65 @@
 - import_playbook: modules/websockets/ansible/websockets.yml
   when: websocket_host == "websockets"
 - import_playbook: modules/asterisk/ansible/asterisk.yml
-  when: asterisk_host == omni_fqdn
+  when: asterisk_host == omni_ip
 
 # Aca comienza la ejecucion de tasks. Las tasks se agrupan en roles, los roles se agrupan dependiendo del componente del sistema
 # https://docs.ansible.com/ansible/2.5/user_guide/playbooks_reuse_roles.html
 
 # hosts: le decimos que seccion del hosts se va  usar: [prodenv-aio]
-- name: OMniLeads AIO installation
+- name: Omniapp installation
   hosts: prodenv-aio
+  tasks:
 
-  roles:
-    # - { role: asterisk, tags: asterisk }
-    - { role: dialer, tags: dialer }
-    - {role: oml_server, tags: omniapp }
-    - {role: omniapp_second, tags: omiapp }
+    # Se instalan los paquetes de postgresql
+    - name: Install postgresql {{ postgresql_version }} packages (from s3 source)
+      yum: name={{ packages_url }}/postgresql/postgresql{{ postgresql_version}}{{ item }}.rpm state=latest update_cache=yes
+      with_items:
+        - -libs.x86_64
+        - -odbc.x86_64
+        - .x86_64
+      retries: 3
+      delay: 3
+      register: s3_download
+      until: s3_download is success
+      when: postgres_host != "localhost"
+
+    # Chequeo si la version de virtualenv instalada es {{ virtualenv_version }}
+    - name: Check if virtualenv {{ virtualenv_version }} is installed
+      shell:  yum list installed |grep virtualenv| awk -F " " '{print $2}' |awk -F "-" '{print $1}'
+      register: virtualenv_installed
+      changed_when: false
+      tags: postinstall
+
+    # Se imprime que el virtualenv no esta instalado si la version actual es inferior a la requerida
+    - debug: msg="Virtualenv {{ virtualenv_version }} is not installed, proceeding to install"
+      when: virtualenv_installed.stdout != virtualenv_version
+      tags: ['virtualenv','postinstall']
+
+    # Por lo contrario se imprime que ya está instalada la version mas actual
+    - debug: msg="virtualenv is already installed in version {{ virtualenv_version }}, skipping installation steps"
+      when: virtualenv_installed.stdout == virtualenv_version
+      tags: ['virtualenv','postinstall']
+
+    # Esta tarea es para eliminar paquete viejo de virtualenv generar inconsistencia de binarios
+    - name: Delete old virtualenv package
+      command: yum remove -y virtualenv
+      tags: postinstall
+      when: "virtualenv_installed.stdout != virtualenv_version"
+
+    # Se instala el paquete de virtualenv
+    - name: Install virtualenv-{{ virtualenv_version }} package (from s3 source)
+      command: yum install -y {{ virtualenv_package }}
+      when: virtualenv_installed.stdout != virtualenv_version
+      tags: postinstall
+      register: s3_download
+      failed_when:
+        - "s3_download.rc != 0 or 'scriptlet failure' in s3_download.stderr"
+
+    # Se crea el archivo .pgpass para manejar las conexiones a postgresql desde consola
+    - name: Create of .pgpass file
+      template: src=roles/prerequisitos/templates/.pgpass dest={{ item }}.pgpass mode=0600 owner={{ usuario }} group={{ usuario }}
+      with_items:
+        - "{{ install_prefix }}"
+        - /root/
+      when: postgres_host != "localhost"
