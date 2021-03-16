@@ -50,7 +50,8 @@
 - import_playbook: modules/rtpengine/ansible/rtpengine.yml
   when: rtpengine_host == "127.0.0.1"
 - import_playbook: modules/nginx/ansible/nginx.yml
-
+- import_playbook: modules/websockets/ansible/websockets.yml
+  when: websocket_host == "websockets"
 
 # Aca comienza la ejecucion de tasks. Las tasks se agrupan en roles, los roles se agrupan dependiendo del componente del sistema
 # https://docs.ansible.com/ansible/2.5/user_guide/playbooks_reuse_roles.html
