@@ -45,13 +45,15 @@
   when: redis_host == "localhost"
 - import_playbook: modules/postgresql/ansible/postgresql.yml
   when: postgres_host == "localhost"
-- import_playbook: modules/kamailio/ansible/kamailio.yml
-  when: kamailio_host == omni_fqdn
 - import_playbook: modules/rtpengine/ansible/rtpengine.yml
   when: rtpengine_host == "127.0.0.1"
+- import_playbook: modules/kamailio/ansible/kamailio.yml
+  when: kamailio_host == omni_fqdn
 - import_playbook: modules/nginx/ansible/nginx.yml
 - import_playbook: modules/websockets/ansible/websockets.yml
   when: websocket_host == "websockets"
+- import_playbook: modules/asterisk/ansible/asterisk.yml
+  when: asterisk_host == omni_fqdn
 
 # Aca comienza la ejecucion de tasks. Las tasks se agrupan en roles, los roles se agrupan dependiendo del componente del sistema
 # https://docs.ansible.com/ansible/2.5/user_guide/playbooks_reuse_roles.html
@@ -61,7 +63,7 @@
   hosts: prodenv-aio
 
   roles:
-    - { role: asterisk, tags: asterisk }
+    # - { role: asterisk, tags: asterisk }
     - { role: dialer, tags: dialer }
     - {role: oml_server, tags: omniapp }
     - {role: omniapp_second, tags: omiapp }
