@@ -238,7 +238,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </thead>
         <tbody>
         {% for campana in inactivas %}
-            <tr>
+            <tr id="{{campana.nombre}}">
                 <td width="5%">{{ campana.id }}</td>
                 <td width="25%">
                     {{ campana.nombre }}

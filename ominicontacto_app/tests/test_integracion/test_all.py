@@ -57,6 +57,7 @@ try:
     from tests_formulario import FormularioTests
     from tests_sistema_externo import SistemaExternoTests
     from tests_sitio_externo import SitioExternoTests
+    from tests_campana_ide import TestSettingInicialSanitySystem
 except ImportError:
     pass
 
@@ -79,6 +80,7 @@ class TestIntegracionSuite(unittest.TestCase):
             unittest.defaultTestLoader.loadTestsFromTestCase(FormularioTests),
             unittest.defaultTestLoader.loadTestsFromTestCase(SistemaExternoTests),
             unittest.defaultTestLoader.loadTestsFromTestCase(SitioExternoTests),
+            unittest.defaultTestLoader.loadTestsFromTestCase(TestSettingInicialSanitySystem)
         ])
 
 
