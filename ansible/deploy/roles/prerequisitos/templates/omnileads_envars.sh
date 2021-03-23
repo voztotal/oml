@@ -1,10 +1,6 @@
 AMI_USER={{ ami_user }}
 AMI_PASSWORD={{ ami_password }}
-{% if asterisk_host is defined %}
-ASTERISK_HOSTNAME={{ asterisk_host}}
-{% else %}
-ASTERISK_HOSTNAME={{ omni_ip }}
-{% endif %}
+ASTERISK_HOSTNAME={{ asterisk_host }}
 ASTERISK_LOCATION={{ asterisk_location }}
 CALIFICACION_REAGENDA={{ schedule }}
 DJANGO_SETTINGS_MODULE=ominicontacto.settings.production

@@ -50,6 +50,12 @@
   changed_when: false
   when: kamailio_host is not defined
 
+- name: Setting asterisk_host as machine hostname
+  set_fact: asterisk_host="{{ omni_ip }}"
+  tags: always
+  changed_when: false
+  when: asterisk_host is not defined
+
 - name: Setting postgres_host as machine hostname
   set_fact: postgres_host=localhost
   tags: always
