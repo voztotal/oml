@@ -45,3 +45,4 @@ static_route: "{{ install_prefix }}/ominicontacto/ominicontacto_app/static/omini
 odbc_location: /etc/
 rtpengine_name: "rtpengine-mr{{ rtpengine_version }}"
 mysql_root_password: ""
+mariadb_host: localhost
