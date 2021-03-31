@@ -36,18 +36,18 @@
     - prerequisitos
     - dialer
 
-- import_playbook: modules/redis/ansible/redis.yml
+- import_playbook: modules/redis/deploy/redis.yml
   when: redis_host == "localhost"
-- import_playbook: modules/postgresql/ansible/postgresql.yml
+- import_playbook: modules/postgresql/deploy/postgresql.yml
   when: postgres_host == "localhost"
-- import_playbook: modules/rtpengine/ansible/rtpengine.yml
+- import_playbook: modules/rtpengine/deploy/rtpengine.yml
   when: rtpengine_host == "127.0.0.1"
-- import_playbook: modules/kamailio/ansible/kamailio.yml
+- import_playbook: modules/kamailio/deploy/kamailio.yml
   when: kamailio_host == omni_fqdn
-- import_playbook: modules/nginx/ansible/nginx.yml
-- import_playbook: modules/websockets/ansible/websockets.yml
+- import_playbook: modules/nginx/deploy/nginx.yml
+- import_playbook: modules/websockets/deploy/websockets.yml
   when: websocket_host == "websockets"
-- import_playbook: modules/asterisk/ansible/asterisk.yml
+- import_playbook: modules/asterisk/deploy/asterisk.yml
   when: asterisk_host == omni_ip
 
 # Aca comienza la ejecucion de tasks. Las tasks se agrupan en roles, los roles se agrupan dependiendo del componente del sistema
