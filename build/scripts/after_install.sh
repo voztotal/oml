@@ -27,7 +27,7 @@ if [ -f /etc/profile.d/omnileads_envars.sh ]; then
   sudo -u omnileads bash -c "$MANAGE_SCRIPT compress --force"
   sudo -u omnileads bash -c "$MANAGE_SCRIPT actualizar_permisos"
   echo "Running regenerar_asterisk command"
-  sudo -u omnileads bash -c "$MANAGE_SCRIPT regenerar_asterisk"
+  runuser -l omnileads -c "$MANAGE_SCRIPT regenerar_asterisk"
   echo "Dump information of constance database"
   $MANAGE_SCRIPT constance list > ${INSTALL_PREFIX}/bin/constances_values.txt
   echo "Add queuelog trigger to database"
