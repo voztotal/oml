@@ -26,6 +26,23 @@
   when: iface != "none"
   tags: always
 
+# Comparo si la IP ingresada en el inventory es el mismo  de el nodo
+- name: Check if IP in inventory file is configured in the server
+  assert:
+    that: "'{{ omni_ip }}' in ansible_all_ipv4_addresses"
+    msg: "The IP you inserted in inventory file is public, getting the private IP"
+  when: iface == "none"
+  ignore_errors: true
+  register: ip_check
+
+- name: Getting private IP
+  shell: ip a | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'
+  register: private_ip
+  when: iface == "none" and ip_check is failed
+
+- set_fact: "omni_ip={{ private_ip.stdout }}"
+  when: iface == "none" and ip_check is failed
+
 # Obtengo hostname del nodo
 - name: Get the hostname of node
   command: hostname
@@ -414,20 +431,3 @@
 - set_fact: public_ip="{{ publicip.stdout }}"
   when: extern_ip == "none" or extern_ip == "auto"
   tags: always
-
-# Comparo si la IP ingresada en el inventory es el mismo  de el nodo
-- name: Check if IP in inventory file is configured in the server
-  assert:
-    that: "'{{ omni_ip }}' in ansible_all_ipv4_addresses"
-    msg: "The IP you inserted in inventory file is public, getting the private IP"
-  when: iface == "none"
-  ignore_errors: true
-  register: ip_check
-
-- name: Getting private IP
-  shell: ip a | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'
-  register: private_ip
-  when: iface == "none" and ip_check is failed
-
-- set_fact: "omni_ip={{ private_ip.stdout }}"
-  when: iface == "none" and ip_check is failed
