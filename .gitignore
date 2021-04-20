@@ -1,4 +1,4 @@
-ominicontacto_voip/kamailio-files/kamailio-local.cfg
+install/docker/devenv/.env
 *.vagrant
 /docs/_build
 .idea/
