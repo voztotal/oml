@@ -744,9 +744,9 @@ class ConfigFile(object):
 
             tmp_file_obj.close()
 
-            logger.info(_("Copiando file config a {0}".format(self._filename)))
-            shutil.copy(tmp_filename, self._filename)
-            os.chmod(self._filename, 0o644)
+            # logger.info(_("Copiando file config a {0}".format(self._filename)))
+            # shutil.copy(tmp_filename, self._filename)
+            # os.chmod(self._filename, 0o644)
             redis_stream = RedisStreams()
             __, nombre_archivo = os.path.split(self._filename)
             content = {
@@ -763,7 +763,8 @@ class ConfigFile(object):
                     e, tmp_filename)))
 
     def copy_asterisk(self):
-        subprocess.call(['cp', self._filename, self._remote_path])
+        pass
+        # subprocess.call(['cp', self._filename, self._remote_path])
 
 
 class SipConfigFile(ConfigFile):

@@ -55,11 +55,7 @@ AnsibleValidation(){
     printf "$GREEN** [OMniLeads] Ansible installed, going forward $NC\n"
     printf "$GREEN** [OMniLeads] Loading Ansible environment variables $NC\n"
     set -o allexport
-<<<<<<< HEAD:ansible/deploy/deploy.sh
-    source "$current_directory/../.env"
-=======
     source "$current_directory/.env"
->>>>>>> oml-1729-dev-creacion-nuevo-devenv:install/onpremise/deploy/ansible/deploy.sh
     set +o allexport
     printf "$GREEN** [OMniLeads] Creating ansible temporal directory $NC\n"
     if [ -e $TMP_ANSIBLE ]; then
@@ -69,13 +65,8 @@ AnsibleValidation(){
     sleep 2
     printf "$GREEN** [OMniLeads] Copying ansible code to temporal directory $NC\n"
     cp -a $current_directory/* $TMP_ANSIBLE
-<<<<<<< HEAD:ansible/deploy/deploy.sh
-    cp -a $current_directory/../.env $TMP_ANSIBLE
-    cp -a $current_directory/../../modules $TMP_ANSIBLE
-=======
     cp -a $current_directory/.env $TMP_ANSIBLE
     cp -a $current_directory/../../../../modules $TMP_ANSIBLE
->>>>>>> oml-1729-dev-creacion-nuevo-devenv:install/onpremise/deploy/ansible/deploy.sh
     if [ "$arg1" == "--exclude-kamailio" ] || [ "$arg1" == "-k" ]; then
       rm -rf $TMP_ANSIBLE/modules/kamailio
     fi
