@@ -62,7 +62,7 @@ args = parser.parse_args()
 
 # omininicontacto directorio raíz
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-inventory_path = os.path.join(base_dir, 'deploy/inventory')
+inventory_path = os.path.join(base_dir, 'ansible/inventory')
 inventory_file = open(inventory_path, 'r+')
 inventory_contents = inventory_file.read()
 
