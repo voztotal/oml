@@ -1,4 +1,5 @@
 install/docker/devenv/.env
+install/docker/prodenv/.env
 *.vagrant
 /docs/_build
 .idea/
