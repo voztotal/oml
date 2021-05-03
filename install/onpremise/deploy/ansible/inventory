@@ -116,6 +116,7 @@ pkg_size=8
 ### If you need to setup glusterfs between asterisk and OMniLeads ####
 gluster_enabled=true
 #mysql_host=
+#nginx_host=
 #redis_host=
 #rtpengine_host=
 #dialer_host=

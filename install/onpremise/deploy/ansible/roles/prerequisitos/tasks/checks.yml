@@ -77,6 +77,12 @@
   changed_when: false
   when: postgres_host is not defined
 
+- name: Setting nginx_host as localhost
+  set_fact: nginx_host=localhost
+  tags: always
+  changed_when: false
+  when: nginx_host is not defined
+
 - name: Setting rtpengine_host as 127.0.0.1
   set_fact: rtpengine_host=127.0.0.1
   tags: always

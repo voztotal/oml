@@ -16,7 +16,7 @@ MONITORFORMAT={{ MONITORFORMAT }}
 MYSQL_HOST={{ mysql_host }}
 {% endif %}
 LOGIN_FAILURE_LIMIT={{ LOGIN_FAILURE_LIMIT }}
-OMNILEADS_HOSTNAME=localhost
+OMNILEADS_HOSTNAME={{ nginx_host }}
 PGHOST={{ postgres_host }}
 PGDATABASE={{ postgres_database }}
 PGPORT={{ postgres_port }}

@@ -45,6 +45,7 @@
 - import_playbook: modules/kamailio/deploy/kamailio.yml
   when: kamailio_host == omni_fqdn
 - import_playbook: modules/nginx/deploy/nginx.yml
+  when: nginx_host == "localhost"
 - import_playbook: modules/websockets/deploy/websockets.yml
   when: websocket_host == "websockets"
 - import_playbook: modules/asterisk/deploy/asterisk.yml

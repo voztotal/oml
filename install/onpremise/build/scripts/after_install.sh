@@ -19,7 +19,7 @@ if [ -f /etc/profile.d/omnileads_envars.sh ]; then
   echo "Set admin superuser default password"
   sudo -u omnileads bash -c "$MANAGE_SCRIPT cambiar_admin_password"
   sudo -u omnileads bash -c "$MANAGE_SCRIPT adicionar_perfil_supervisor_admin"
-  chown -R omnileads. /opt/omnileads/ /var/lib/nginx/tmp/
+  chown -R omnileads. ${INSTALL_PREFIX}
   sudo -u omnileads bash -c "$MANAGE_SCRIPT populate_history"
   sudo -u omnileads bash -c "$MANAGE_SCRIPT compilemessages"
   sudo -u omnileads bash -c "$MANAGE_SCRIPT collectstatic --noinput"
