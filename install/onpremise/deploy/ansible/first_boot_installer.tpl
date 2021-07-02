@@ -238,6 +238,7 @@ echo "******************** yum update and install packages *********************
 echo "******************** yum update and install packages ***************************"
 echo "******************** yum update and install packages ***************************"
 echo "******************** yum update and install packages ***************************"
+yum update -y 
 yum -y install git python3 python3-pip kernel-devel
 
 echo "***************************** install ansible **********************************"
