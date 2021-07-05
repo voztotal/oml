@@ -34,10 +34,10 @@
 #export oml_callrec_device=s3
 
 # S3 params when you select S3 like store for callrec
-#export s3_access_key=A6SLI4WGFIKN2XPF52QA
-#export s3_secret_key=SY2CXtszQztoymzM3rDuAdCCfTjWx4Ah2p1F4aGLvB0
-#export s3url=https://omnileads.sfo3.digitaloceanspaces.com
-#export s3_bucket_name=omnileads
+#export s3_access_key=
+#export s3_secret_key=
+#export s3url=
+#export s3_bucket_name=
 
 # NFS host netaddr
 #export nfs_host=
@@ -167,21 +167,21 @@ echo "****************************** IPV4 address config ***********************
 case ${oml_infras_stage} in
   digitalocean)
     echo -n "DigitalOcean"
-    export PUBLIC_IPV4=$(curl -s http://169.254.169.254/metadata/v1/interfaces/public/0/ipv4/address)
-    export PRIVATE_IPV4=$(curl -s http://169.254.169.254/metadata/v1/interfaces/private/0/ipv4/address)
+    PUBLIC_IPV4=$(curl -s http://169.254.169.254/metadata/v1/interfaces/public/0/ipv4/address)
+    PRIVATE_IPV4=$(curl -s http://169.254.169.254/metadata/v1/interfaces/private/0/ipv4/address)
     ;;
   linode)
     echo -n "Linode"
-    export PRIVATE_IPV4=$(ip addr show ${oml_nic} |grep "inet 192.168" |awk '{print $2}' | cut -d/ -f1)
-    export PUBLIC_IPV4=$(curl checkip.amazonaws.com)
+    PRIVATE_IPV4=$(ip addr show ${oml_nic} |grep "inet 192.168" |awk '{print $2}' | cut -d/ -f1)
+    PUBLIC_IPV4=$(curl checkip.amazonaws.com)
     ;;
   onpremise)
     echo -n "Onpremise CentOS7 Minimal"
-    export PRIVATE_IPV4=$(ip addr show $PRIVATE_NIC | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
-    if [ $PUBLIC_NIC ]; then
-      export PUBLIC_IPV4=$(ip addr show $PUBLIC_NIC | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
+    PRIVATE_IPV4=$(ip addr show ${oml_nic} | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
+    if [ $${oml_public_nic} ]; then
+      PUBLIC_IPV4=$(ip addr show ${oml_public_nic} | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
     else
-      export PUBLIC_IPV4=$(curl ifconfig.co)
+      PUBLIC_IPV4=$(curl ifconfig.co)
     fi
     ;;
   vagrant)
