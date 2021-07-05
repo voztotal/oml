@@ -179,7 +179,6 @@ case ${oml_infras_stage} in
     echo -n "Onpremise CentOS7 Minimal"
     PRIVATE_IPV4=$(ip addr show ${oml_nic} | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
     PUBLIC_IPV4=$(curl ifconfig.co)
-    fi
     ;;
   vagrant)
     echo -n "Vagrant CentOS7 Minimal CI/CD"
