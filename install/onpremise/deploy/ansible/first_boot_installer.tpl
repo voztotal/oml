@@ -178,16 +178,13 @@ case ${oml_infras_stage} in
   onpremise)
     echo -n "Onpremise CentOS7 Minimal"
     PRIVATE_IPV4=$(ip addr show ${oml_nic} | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
-    if [ $${oml_public_nic} ]; then
-      PUBLIC_IPV4=$(ip addr show ${oml_public_nic} | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
-    else
-      PUBLIC_IPV4=$(curl ifconfig.co)
+    PUBLIC_IPV4=$(curl ifconfig.co)
     fi
     ;;
   vagrant)
     echo -n "Vagrant CentOS7 Minimal CI/CD"
     PRIVATE_IPV4=$STAGING_IP_CENTOS
-    PUBLIC_IPV4=$(curl -s http://169.254.169.254/metadata/v1/interfaces/public/0/ipv4/address)
+    PUBLIC_IPV4=$(curl ifconfig.co)
     ;;
   *)
     echo -n "you must to declare STAGE variable\n"
