@@ -132,7 +132,7 @@ else
   OMLAPP_VERSION=$(cat ../../../.omnileads_version)
   sed -i "s/^OMLAPP_VERSION=.*/OMLAPP_VERSION=$OMLAPP_VERSION/g" .env
 fi
-if [ "${oml_acd_version}" != "" ]; then
+if [ "${oml_acd_img}" != "" ]; then
   sed -i "s/^OMLACD_VERSION=.*/OMLACD_VERSION=${oml_acd_img}/g" .env
 fi
 if [ "${oml_redis_img}" != "" ]; then
