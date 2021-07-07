@@ -101,9 +101,8 @@
 COMPONENT_REPO=https://gitlab.com/omnileads/ominicontacto.git
 SRC=/usr/src
 
-CALLREC_DIR_DST=/opt/omnileads/var/spool/asterisk/monitor
+CALLREC_DIR_TPM=/opt/omnileads/callrec_tmp
 CALLREC_DIR_DST=/opt/callrec
-CALLREC_DIR_DST_SED=\/opt\/callrec
 
 echo "****************************** IPV4 address config *******************************"
 echo "****************************** IPV4 address config *******************************"
@@ -281,6 +280,8 @@ EOF
 
 echo "****************************** enable and start omnileads *******************************"
 echo "****************************** enable and start omnileads *******************************"
+
+chown omnileads. -R /opt/omnileads/callrec/tmp
 
 systemctl enable omnileads
 systemctl start omnileads

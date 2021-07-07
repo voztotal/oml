@@ -28,7 +28,7 @@ services:
     stop_grace_period: 1m30s
     volumes:
       - ast_conf_files:/etc/asterisk
-      - recordings:/var/spool/asterisk/monitor/
+      - ${CALLREC_DIR_TMP}:/var/spool/asterisk/monitor
       - sounds:/var/lib/asterisk/sounds/
     working_dir: /etc/asterisk
 
