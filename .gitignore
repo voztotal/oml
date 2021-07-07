@@ -1,5 +1,6 @@
 install/docker/devenv/.env
 install/docker/prodenv/.env
+install/docker/prodenv/first_boot_installer.sh
 install/onpremise/deploy/vagrant/deploy/host_node/.env
 install/onpremise/deploy/ansible/first_boot_installer.sh
 install/onpremise/build/builder/.env

@@ -98,6 +98,7 @@ SRC=/usr/src
 
 CALLREC_DIR_DST=/var/spool/asterisk/monitor
 CALLREC_DIR_DST=/opt/callrec
+CALLREC_DIR_DST_SED=\/opt\/callrec
 
 echo "****************************** IPV4 address config *******************************"
 echo "****************************** IPV4 address config *******************************"
@@ -114,12 +115,12 @@ case ${oml_infras_stage} in
     PUBLIC_IPV4=$(curl checkip.amazonaws.com)
     ;;
   onpremise)
-    echo -n "Onpremise CentOS7 Minimal"
+    echo -n "Onpremise Ubuntu Server"
     PRIVATE_IPV4=$(ip addr show ${oml_nic} | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
     PUBLIC_IPV4=$(curl ifconfig.co)
     ;;
   vagrant)
-    echo -n "Vagrant CentOS7 Minimal CI/CD"
+    echo -n "Vagrant Ubuntu Server"
     PRIVATE_IPV4=$STAGING_IP_CENTOS
     PUBLIC_IPV4=$(curl ifconfig.co)
     ;;
@@ -127,7 +128,6 @@ case ${oml_infras_stage} in
     echo -n "you must to declare STAGE variable\n"
     ;;
 esac
-
 
 echo "****************************** omnileads user and workdir *******************************"
 echo "****************************** omnileads user and workdir *******************************"
@@ -163,15 +163,15 @@ sed -i "s/PGPASSWORD=my_very_strong_pass/PGPASSWORD=${oml_pgsql_password}/g" .en
 
 if [ "${oml_app_img}" != "NULL" ]; then
   sed -i "s/^OMLAPP_VERSION=.*/OMLAPP_VERSION=${oml_app_img}/g" .env
-else
-  OMLAPP_VERSION=$(cat ../../../.omnileads_version)
-  sed -i "s/^OMLAPP_VERSION=.*/OMLAPP_VERSION=$OMLAPP_VERSION/g" .env
+fi
+if [ "$CALLREC_DIR_DST" != "NULL" ]; then
+  sed -i "s/^OMLAPP_CALLREC_DIR=.*/OMLAPP_VERSION=$CALLREC_DIR_DST_SED/g" .env
 fi
 if [ "${oml_acd_img}" != "NULL" ]; then
   sed -i "s/^OMLACD_VERSION=.*/OMLACD_VERSION=${oml_acd_img}/g" .env
 fi
 if [ "${oml_redis_img}" != "NULL" ]; then
-  sed -i "s/^OMLREDIS_VERSION=.*/OMLREDIS_VERSION=${oml_redis_img}/g" .env
+  sed -i "s/^REDISGEARS_VERSION=.*/REDISGEARS_VERSION=${oml_redis_img}/g" .env
 fi
 if [ "${oml_kamailio_img}" != "NULL" ]; then
   sed -i "s/^OMLKAM_VERSION=.*/OMLKAM_VERSION=${oml_kamailio_img}/g" .env
@@ -187,13 +187,9 @@ if [[ "${oml_dialer_host}" != "NULL" ]]; then
   sed -i "s/WOMBAT_HOSTNAME=dialer/WOMBAT_HOSTNAME=${oml_dialer_host}/g" .env
 fi
 if [[ "${oml_pgsql_host}" == "NULL" ]]; then
-  sed -i "s/PGHOST=postgresql/PGHOST=$PRIVATE_IPV4/g" .env
-else
   sed -i "s/PGHOST=postgresql/PGHOST=${oml_pgsql_host}/g" .env
 fi  
 if [[ "${oml_rtpengine_host}" == "NULL" ]]; then
-  sed -i "s/RTPENGINE_HOSTNAME=rtpengine/RTPENGINE_HOSTNAME=$PRIVATE_IPV4/g" .env
-else
   sed -i "s/RTPENGINE_HOSTNAME=rtpengine/RTPENGINE_HOSTNAME=${oml_rtpengine_host}/g" .env
 fi
 
@@ -203,16 +199,6 @@ fi
 
 cp daemon.json /etc/docker
 cp omnileads.service /etc/systemd/system/
-
-echo "****************************** enable and start omnileads *******************************"
-echo "****************************** enable and start omnileads *******************************"
-
-systemctl restart docker
-systemctl daemon-reload
-systemctl enable omnileads
-systemctl start omnileads
-
-chown omnileads. -R /opt/omnileads
 
 echo "***************************** block_device mount ******************************"
 echo "***************************** block_device mount ******************************"
@@ -245,31 +231,42 @@ case ${oml_callrec_device} in
     ;;
  esac
 
+
+echo "****************************** enable and start omnileads *******************************"
+echo "****************************** enable and start omnileads *******************************"
+
+systemctl restart docker
+systemctl daemon-reload
+systemctl enable omnileads
+systemctl start omnileads
+
+chown omnileads. -R /opt/omnileads
+
+
 echo "**************************** write callrec files move script ******************************"
 echo "**************************** write callrec files move script ******************************"
-cat > /opt/omnileads/mover_audios.sh <<'EOF'
+cat > /opt/omnileads/mover_audios.sh <<EOF
 #!/bin/bash
 
 # RAMDISK Watcher
-#
 # Revisa el contenido del ram0 y lo pasa a disco duro
-## Variables
+# Inicialización de variables
 
-Ano=$(date +%Y -d today)
-Mes=$(date +%m -d today)
-Dia=$(date +%d -d today)
-LSOF="/sbin/lsof"
-ALMACEN="/opt/callrec/$Ano-$Mes-$Dia"
+Ano=\$(date +%Y -d today)
+Mes=\$(date +%m -d today)
+Dia=\$(date +%d -d today)
+Lsof="/sbin/lsof"
+DirectorioFinal="${CALLREC_DIR_DST}/\${Ano}-\${Mes}-\${Dia}"
 
-if [ ! -d $ALMACEN ]; then
-  mkdir -p $ALMACEN;
+if [ ! -d \${DirectorioFinal} ];then
+  mkdir -p \${DirectorioFinal}
 fi
 
-for i in $(ls /opt/omnileads/asterisk/var/spool/asterisk/monitor/$Ano-$Mes-$Dia/*.wav) ; do
-  $LSOF $i &> /dev/null
-  valor=$?
-  if [ $valor -ne 0 ] ; then
-    mv $i $ALMACEN
+for Grabacion in \$(ls ${CALLREC_DIR_TMP}/\${Ano}-\${Mes}-\${Dia}/*.wav);do
+  \${Lsof} \${Grabacion} &> /dev/null
+  Resultado=\$?
+  if [ \${Resultado} -ne 0 ];then
+    mv \${Grabacion} \${DirectorioFinal}
   fi
 done
 EOF
@@ -277,6 +274,7 @@ EOF
 chown -R omnileads.omnileads /opt/omnileads/mover_audios.sh
 chmod +x /opt/omnileads/mover_audios.sh
 
+echo "****************************** add cron-line to trigger the call-recording move script **************************"
 echo "****************************** add cron-line to trigger the call-recording move script **************************"
 cat > /etc/cron.d/MoverGrabaciones <<EOF
  */1 * * * * omnileads /opt/omnileads/mover_audios.sh
