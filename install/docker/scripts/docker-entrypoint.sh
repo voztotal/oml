@@ -48,7 +48,7 @@ EOF
   #$COMMAND actualizar_configuracion
 
   if [ "$PGCLOUD" == "yes" ]; then
-    psql -U $PGUSER -h $PGHOST -d $PGDATABASE -c "CREATE EXTENSION plperl;"
+    psql -U $PGUSER -h $PGHOST -d $PGDATABASE -c "CREATE EXTENSION plperl;" 2>&1
   fi  
   
   psql -U $PGUSER -h $PGHOST -d $PGDATABASE -c "\i ${INSTALL_PREFIX}/ominicontacto/reportes_app/sql/plperl/replace_insert_queue_log_ominicontacto_queue_log.sql"

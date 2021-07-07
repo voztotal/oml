@@ -26,6 +26,11 @@
 # Component gitlab branch
 #export oml_app_release=release-1.16.0
 #export oml_app_img=latest
+#export oml_acd_img=latest
+#export oml_kamailio_img=latest
+#export oml_ws_img=latest
+#export oml_redis_img=latest
+#export oml_nginx_img=latest
 
 # OMniLeads tenant NAME
 #export oml_tenant_name=onpremise
@@ -96,7 +101,7 @@
 COMPONENT_REPO=https://gitlab.com/omnileads/ominicontacto.git
 SRC=/usr/src
 
-CALLREC_DIR_DST=/var/spool/asterisk/monitor
+CALLREC_DIR_DST=/opt/omnileads/var/spool/asterisk/monitor
 CALLREC_DIR_DST=/opt/callrec
 CALLREC_DIR_DST_SED=\/opt\/callrec
 
@@ -164,9 +169,6 @@ sed -i "s/PGPASSWORD=my_very_strong_pass/PGPASSWORD=${oml_pgsql_password}/g" .en
 if [ "${oml_app_img}" != "NULL" ]; then
   sed -i "s/^OMLAPP_VERSION=.*/OMLAPP_VERSION=${oml_app_img}/g" .env
 fi
-if [ "$CALLREC_DIR_DST" != "NULL" ]; then
-  sed -i "s/^OMLAPP_CALLREC_DIR=.*/OMLAPP_VERSION=$CALLREC_DIR_DST_SED/g" .env
-fi
 if [ "${oml_acd_img}" != "NULL" ]; then
   sed -i "s/^OMLACD_VERSION=.*/OMLACD_VERSION=${oml_acd_img}/g" .env
 fi
@@ -186,11 +188,17 @@ fi
 if [[ "${oml_dialer_host}" != "NULL" ]]; then
   sed -i "s/WOMBAT_HOSTNAME=dialer/WOMBAT_HOSTNAME=${oml_dialer_host}/g" .env
 fi
-if [[ "${oml_pgsql_host}" == "NULL" ]]; then
+if [[ "${oml_pgsql_host}" != "NULL" ]]; then
   sed -i "s/PGHOST=postgresql/PGHOST=${oml_pgsql_host}/g" .env
+else
+  echo "[ERROR] you must to have a PGSQL isolate host instance \n"  
+  echo "[ERROR] you must to have a PGSQL isolate host instance \n"  
 fi  
-if [[ "${oml_rtpengine_host}" == "NULL" ]]; then
+if [[ "${oml_rtpengine_host}" != "NULL" ]]; then
   sed -i "s/RTPENGINE_HOSTNAME=rtpengine/RTPENGINE_HOSTNAME=${oml_rtpengine_host}/g" .env
+else
+  echo "[ERROR] you must to have a RTPENGINE isolate host instance \n"    
+  echo "[ERROR] you must to have a RTPENGINE isolate host instance \n"    
 fi
 
 if [[ "${oml_pgsql_cloud}" == "NULL" ]]; then
@@ -199,6 +207,8 @@ fi
 
 cp daemon.json /etc/docker
 cp omnileads.service /etc/systemd/system/
+systemctl daemon-reload
+systemctl restart docker
 
 echo "***************************** block_device mount ******************************"
 echo "***************************** block_device mount ******************************"
@@ -206,7 +216,8 @@ echo "***************************** block_device mount *************************
 case ${oml_callrec_device} in
   s3)
     echo "s3 callrec device \n"
-    apt update && apt install -y s3fs
+    apt update 
+    apt install -y s3fs
     echo "${s3_access_key}:${s3_secret_key} " > ~/.passwd-s3fs
     chmod 600 ~/.passwd-s3fs
        if [ ! -d $CALLREC_DIR_DST ]; then 
@@ -230,18 +241,6 @@ case ${oml_callrec_device} in
     echo "callrec on local filesystem \n"
     ;;
  esac
-
-
-echo "****************************** enable and start omnileads *******************************"
-echo "****************************** enable and start omnileads *******************************"
-
-systemctl restart docker
-systemctl daemon-reload
-systemctl enable omnileads
-systemctl start omnileads
-
-chown omnileads. -R /opt/omnileads
-
 
 echo "**************************** write callrec files move script ******************************"
 echo "**************************** write callrec files move script ******************************"
@@ -279,3 +278,13 @@ echo "****************************** add cron-line to trigger the call-recording
 cat > /etc/cron.d/MoverGrabaciones <<EOF
  */1 * * * * omnileads /opt/omnileads/mover_audios.sh
 EOF
+
+echo "****************************** enable and start omnileads *******************************"
+echo "****************************** enable and start omnileads *******************************"
+
+systemctl enable omnileads
+systemctl start omnileads
+
+chown omnileads. -R /opt/omnileads
+
+
