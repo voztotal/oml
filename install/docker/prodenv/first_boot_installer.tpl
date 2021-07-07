@@ -193,6 +193,9 @@ else
   echo "[ERROR] you must to have a PGSQL isolate host instance \n"  
   echo "[ERROR] you must to have a PGSQL isolate host instance \n"  
 fi  
+if [[ "${oml_pgsql_port}" != "NULL" ]]; then
+  sed -i "s/PGPORT=5432/PGPORT=${oml_pgsql_port}/g" .env
+fi  
 if [[ "${oml_rtpengine_host}" != "NULL" ]]; then
   sed -i "s/RTPENGINE_HOSTNAME=rtpengine/RTPENGINE_HOSTNAME=${oml_rtpengine_host}/g" .env
 else
@@ -243,28 +246,29 @@ case ${oml_callrec_device} in
 
 echo "**************************** write callrec files move script ******************************"
 echo "**************************** write callrec files move script ******************************"
-cat > /opt/omnileads/mover_audios.sh <<EOF
+cat > /opt/omnileads/mover_audios.sh <<'EOF'
 #!/bin/bash
 
 # RAMDISK Watcher
+#
 # Revisa el contenido del ram0 y lo pasa a disco duro
-# Inicialización de variables
+## Variables
 
-Ano=\$(date +%Y -d today)
-Mes=\$(date +%m -d today)
-Dia=\$(date +%d -d today)
-Lsof="/sbin/lsof"
-DirectorioFinal="${CALLREC_DIR_DST}/\${Ano}-\${Mes}-\${Dia}"
+Ano=$(date +%Y -d today)
+Mes=$(date +%m -d today)
+Dia=$(date +%d -d today)
+LSOF="/sbin/lsof"
+ALMACEN="/opt/callrec/$Ano-$Mes-$Dia"
 
-if [ ! -d \${DirectorioFinal} ];then
-  mkdir -p \${DirectorioFinal}
+if [ ! -d $ALMACEN ]; then
+  mkdir -p $ALMACEN;
 fi
 
-for Grabacion in \$(ls ${CALLREC_DIR_TMP}/\${Ano}-\${Mes}-\${Dia}/*.wav);do
-  \${Lsof} \${Grabacion} &> /dev/null
-  Resultado=\$?
-  if [ \${Resultado} -ne 0 ];then
-    mv \${Grabacion} \${DirectorioFinal}
+for i in $(ls /opt/omnileads/callrec_tmp/$Ano-$Mes-$Dia/*.wav) ; do
+  $LSOF $i &> /dev/null
+  valor=$?
+  if [ $valor -ne 0 ] ; then
+    mv $i $ALMACEN
   fi
 done
 EOF
@@ -281,7 +285,8 @@ EOF
 echo "****************************** enable and start omnileads *******************************"
 echo "****************************** enable and start omnileads *******************************"
 
-chown omnileads. -R /opt/omnileads/callrec/tmp
+mkdir -p /opt/omnileads/callrec_tmp
+chown omnileads. -R /opt/omnileads/callrec_tmp
 
 systemctl enable omnileads
 systemctl start omnileads
