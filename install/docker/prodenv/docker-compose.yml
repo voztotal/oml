@@ -49,7 +49,7 @@ services:
     tty: true
     volumes:
       - media_root:/opt/omnileads/media_root
-      - recordings:/var/spool/asterisk/monitor
+      - recordings:${OMLAPP_CALLREC_DIR}
       - sounds:/var/lib/asterisk/sounds/
     working_dir: /opt/omnileads/ominicontacto
 

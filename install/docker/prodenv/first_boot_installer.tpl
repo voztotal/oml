@@ -94,30 +94,11 @@
 # ************************************************************ SET ENV VARS **********************************************************************
 
 COMPONENT_REPO=https://gitlab.com/omnileads/ominicontacto.git
-
 SRC=/usr/src
 
-echo "Checking if omnileads user/group exists"
-existe=$(grep -c '^omnileads:' /etc/passwd)
-if [ $existe -eq 0 ]; then
-  echo "Creating omnileads group"
-  groupadd omnileads
-  echo "Creating omnileads user"
-  mkdir -p /opt/omnileads
-  useradd omnileads -d /opt/omnileads -s /bin/bash -g omnileads
-  chown -R omnileads.omnileads /opt/omnileads
-else
-  echo "The user/group omnileads already exists"
-fi
+CALLREC_DIR_DST=/var/spool/asterisk/monitor
+CALLREC_DIR_DST=/opt/callrec
 
-usermod -aG docker omnileads
-
-
-
-echo "****************************** IPV4 address config *******************************"
-echo "****************************** IPV4 address config *******************************"
-echo "****************************** IPV4 address config *******************************"
-echo "****************************** IPV4 address config *******************************"
 echo "****************************** IPV4 address config *******************************"
 echo "****************************** IPV4 address config *******************************"
 
@@ -148,12 +129,26 @@ case ${oml_infras_stage} in
 esac
 
 
-echo "****************************** .env variables *******************************"
-echo "****************************** .env variables *******************************"
-echo "****************************** .env variables *******************************"
-echo "****************************** .env variables *******************************"
-echo "****************************** .env variables *******************************"
-echo "****************************** .env variables *******************************"
+echo "****************************** omnileads user and workdir *******************************"
+echo "****************************** omnileads user and workdir *******************************"
+
+echo "Checking if omnileads user/group exists"
+existe=$(grep -c '^omnileads:' /etc/passwd)
+if [ $existe -eq 0 ]; then
+  echo "Creating omnileads group"
+  groupadd omnileads
+  echo "Creating omnileads user"
+  mkdir -p /opt/omnileads
+  useradd omnileads -d /opt/omnileads -s /bin/bash -g omnileads
+  chown -R omnileads.omnileads /opt/omnileads
+else
+  echo "The user/group omnileads already exists"
+fi
+
+usermod -aG docker omnileads
+
+echo "****************************** git clone & .env config *******************************"
+echo "****************************** git clone & .env config *******************************"
 
 cd /opt/omnileads
 git clone $COMPONENT_REPO
@@ -166,25 +161,25 @@ sed -i "s/DOCKER_IP=X.X.X.X/DOCKER_IP=$PRIVATE_IPV4/g" .env
 sed -i "s%\TZ=your_timezone_here%TZ=${oml_tz}%g" .env
 sed -i "s/PGPASSWORD=my_very_strong_pass/PGPASSWORD=${oml_pgsql_password}/g" .env
 
-if [ "${oml_app_img}" != "" ]; then
+if [ "${oml_app_img}" != "NULL" ]; then
   sed -i "s/^OMLAPP_VERSION=.*/OMLAPP_VERSION=${oml_app_img}/g" .env
 else
   OMLAPP_VERSION=$(cat ../../../.omnileads_version)
   sed -i "s/^OMLAPP_VERSION=.*/OMLAPP_VERSION=$OMLAPP_VERSION/g" .env
 fi
-if [ "${oml_acd_img}" != "" ]; then
+if [ "${oml_acd_img}" != "NULL" ]; then
   sed -i "s/^OMLACD_VERSION=.*/OMLACD_VERSION=${oml_acd_img}/g" .env
 fi
-if [ "${oml_redis_img}" != "" ]; then
+if [ "${oml_redis_img}" != "NULL" ]; then
   sed -i "s/^OMLREDIS_VERSION=.*/OMLREDIS_VERSION=${oml_redis_img}/g" .env
 fi
-if [ "${oml_kamailio_img}" != "" ]; then
+if [ "${oml_kamailio_img}" != "NULL" ]; then
   sed -i "s/^OMLKAM_VERSION=.*/OMLKAM_VERSION=${oml_kamailio_img}/g" .env
 fi
-if [ "${oml_nginx_img}" != "" ]; then
+if [ "${oml_nginx_img}" != "NULL" ]; then
   sed -i "s/^OMLNGINX_VERSION=.*/OMLNGINX_VERSION=${oml_nginx_img}/g" .env
 fi
-if [ "${oml_ws_img}" != "" ]; then
+if [ "${oml_ws_img}" != "NULL" ]; then
   sed -i "s/^OMLWS_VERSION=.*/OMLWS_VERSION=${oml_ws_img}/g" .env
 fi
 
@@ -195,9 +190,6 @@ if [[ "${oml_pgsql_host}" == "NULL" ]]; then
   sed -i "s/PGHOST=postgresql/PGHOST=$PRIVATE_IPV4/g" .env
 else
   sed -i "s/PGHOST=postgresql/PGHOST=${oml_pgsql_host}/g" .env
-fi
-if [[ "${oml_pgsql_port}" != "NULL" ]]; then
-  sed -i "s/PGPORT=5432/PGPORT=${oml_pgsql_port}/g" .env
 fi  
 if [[ "${oml_rtpengine_host}" == "NULL" ]]; then
   sed -i "s/RTPENGINE_HOSTNAME=rtpengine/RTPENGINE_HOSTNAME=$PRIVATE_IPV4/g" .env
@@ -205,19 +197,15 @@ else
   sed -i "s/RTPENGINE_HOSTNAME=rtpengine/RTPENGINE_HOSTNAME=${oml_rtpengine_host}/g" .env
 fi
 
-echo "****************************** start and enable service *******************************"
-echo "****************************** start and enable service *******************************"
-echo "****************************** start and enable service *******************************"
-echo "****************************** start and enable service *******************************"
-echo "****************************** start and enable service *******************************"
-echo "****************************** start and enable service *******************************"
+if [[ "${oml_pgsql_cloud}" == "NULL" ]]; then
+  sed -i "s/PGCLOUD=yes/PGCLOUD=no/g" .env
+fi
 
 cp daemon.json /etc/docker
 cp omnileads.service /etc/systemd/system/
 
-apt update
-apt install postgresql-client -y
-PGUSER=${oml_pgsql_user} PGDATABASE=${oml_pgsql_db} PGHOST=${oml_pgsql_host PGPORT=${oml_pgsql_port} PGPASSWORD=${oml_pgsql_password} psql -c "CREATE EXTENSION plperl;"
+echo "****************************** enable and start omnileads *******************************"
+echo "****************************** enable and start omnileads *******************************"
 
 systemctl restart docker
 systemctl daemon-reload
@@ -225,3 +213,71 @@ systemctl enable omnileads
 systemctl start omnileads
 
 chown omnileads. -R /opt/omnileads
+
+echo "***************************** block_device mount ******************************"
+echo "***************************** block_device mount ******************************"
+ 
+case ${oml_callrec_device} in
+  s3)
+    echo "s3 callrec device \n"
+    apt update && apt install -y s3fs
+    echo "${s3_access_key}:${s3_secret_key} " > ~/.passwd-s3fs
+    chmod 600 ~/.passwd-s3fs
+       if [ ! -d $CALLREC_DIR_DST ]; then 
+      mkdir -p $CALLREC_DIR_DST
+      chown -R omnileads. $CALLREC_DIR_DST
+    fi  
+    echo "${s3_bucket_name}:/${oml_tenant_name} $CALLREC_DIR_DST fuse.s3fs _netdev,allow_other,use_path_request_style,url=${s3url} 0 0" >> /etc/fstab
+    mount -a
+    ;;
+  nfs)
+    echo "NFS callrec device \n"
+    apt update && apt install -y nfs-common
+        if [ ! -d $CALLREC_DIR_DST ]; then 
+      mkdir -p $CALLREC_DIR_DST
+      chown -R omnileads. $CALLREC_DIR_DST
+    fi  
+    echo "${nfs_host}:$CALLREC_DIR_TMP $CALLREC_DIR_DST nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0" >> /etc/fstab
+    mount -a
+    ;;
+  *)
+    echo "callrec on local filesystem \n"
+    ;;
+ esac
+
+echo "**************************** write callrec files move script ******************************"
+echo "**************************** write callrec files move script ******************************"
+cat > /opt/omnileads/mover_audios.sh <<'EOF'
+#!/bin/bash
+
+# RAMDISK Watcher
+#
+# Revisa el contenido del ram0 y lo pasa a disco duro
+## Variables
+
+Ano=$(date +%Y -d today)
+Mes=$(date +%m -d today)
+Dia=$(date +%d -d today)
+LSOF="/sbin/lsof"
+ALMACEN="/opt/callrec/$Ano-$Mes-$Dia"
+
+if [ ! -d $ALMACEN ]; then
+  mkdir -p $ALMACEN;
+fi
+
+for i in $(ls /opt/omnileads/asterisk/var/spool/asterisk/monitor/$Ano-$Mes-$Dia/*.wav) ; do
+  $LSOF $i &> /dev/null
+  valor=$?
+  if [ $valor -ne 0 ] ; then
+    mv $i $ALMACEN
+  fi
+done
+EOF
+
+chown -R omnileads.omnileads /opt/omnileads/mover_audios.sh
+chmod +x /opt/omnileads/mover_audios.sh
+
+echo "****************************** add cron-line to trigger the call-recording move script **************************"
+cat > /etc/cron.d/MoverGrabaciones <<EOF
+ */1 * * * * omnileads /opt/omnileads/mover_audios.sh
+EOF
