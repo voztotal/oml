@@ -93,9 +93,6 @@
 # ************************************************************ SET ENV VARS **********************************************************************
 # ************************************************************ SET ENV VARS **********************************************************************
 
-PUBLIC_IPV4=$(curl -s http://169.254.169.254/metadata/v1/interfaces/public/0/ipv4/address)
-PRIVATE_IPV4=$(curl -s http://169.254.169.254/metadata/v1/interfaces/private/0/ipv4/address)
-
 COMPONENT_REPO=https://gitlab.com/omnileads/ominicontacto.git
 
 SRC=/usr/src
@@ -114,6 +111,49 @@ else
 fi
 
 usermod -aG docker omnileads
+
+
+
+echo "****************************** IPV4 address config *******************************"
+echo "****************************** IPV4 address config *******************************"
+echo "****************************** IPV4 address config *******************************"
+echo "****************************** IPV4 address config *******************************"
+echo "****************************** IPV4 address config *******************************"
+echo "****************************** IPV4 address config *******************************"
+
+case ${oml_infras_stage} in
+  digitalocean)
+    echo -n "DigitalOcean"
+    PUBLIC_IPV4=$(curl -s http://169.254.169.254/metadata/v1/interfaces/public/0/ipv4/address)
+    PRIVATE_IPV4=$(curl -s http://169.254.169.254/metadata/v1/interfaces/private/0/ipv4/address)
+    ;;
+  linode)
+    echo -n "Linode"
+    PRIVATE_IPV4=$(ip addr show ${oml_nic} |grep "inet 192.168" |awk '{print $2}' | cut -d/ -f1)
+    PUBLIC_IPV4=$(curl checkip.amazonaws.com)
+    ;;
+  onpremise)
+    echo -n "Onpremise CentOS7 Minimal"
+    PRIVATE_IPV4=$(ip addr show ${oml_nic} | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
+    PUBLIC_IPV4=$(curl ifconfig.co)
+    ;;
+  vagrant)
+    echo -n "Vagrant CentOS7 Minimal CI/CD"
+    PRIVATE_IPV4=$STAGING_IP_CENTOS
+    PUBLIC_IPV4=$(curl ifconfig.co)
+    ;;
+  *)
+    echo -n "you must to declare STAGE variable\n"
+    ;;
+esac
+
+
+echo "****************************** .env variables *******************************"
+echo "****************************** .env variables *******************************"
+echo "****************************** .env variables *******************************"
+echo "****************************** .env variables *******************************"
+echo "****************************** .env variables *******************************"
+echo "****************************** .env variables *******************************"
 
 cd /opt/omnileads
 git clone $COMPONENT_REPO
@@ -156,14 +196,28 @@ if [[ "${oml_pgsql_host}" == "NULL" ]]; then
 else
   sed -i "s/PGHOST=postgresql/PGHOST=${oml_pgsql_host}/g" .env
 fi
+if [[ "${oml_pgsql_port}" != "NULL" ]]; then
+  sed -i "s/PGPORT=5432/PGPORT=${oml_pgsql_port}/g" .env
+fi  
 if [[ "${oml_rtpengine_host}" == "NULL" ]]; then
   sed -i "s/RTPENGINE_HOSTNAME=rtpengine/RTPENGINE_HOSTNAME=$PRIVATE_IPV4/g" .env
 else
   sed -i "s/RTPENGINE_HOSTNAME=rtpengine/RTPENGINE_HOSTNAME=${oml_rtpengine_host}/g" .env
 fi
 
+echo "****************************** start and enable service *******************************"
+echo "****************************** start and enable service *******************************"
+echo "****************************** start and enable service *******************************"
+echo "****************************** start and enable service *******************************"
+echo "****************************** start and enable service *******************************"
+echo "****************************** start and enable service *******************************"
+
 cp daemon.json /etc/docker
 cp omnileads.service /etc/systemd/system/
+
+apt update
+apt install postgresql-client -y
+PGUSER=${oml_pgsql_user} PGDATABASE=${oml_pgsql_db} PGHOST=${oml_pgsql_host PGPORT=${oml_pgsql_port} PGPASSWORD=${oml_pgsql_password} psql -c "CREATE EXTENSION plperl;"
 
 systemctl restart docker
 systemctl daemon-reload
