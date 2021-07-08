@@ -166,22 +166,22 @@ sed -i "s%\TZ=your_timezone_here%TZ=${oml_tz}%g" .env
 sed -i "s/PGPASSWORD=my_very_strong_pass/PGPASSWORD=${oml_pgsql_password}/g" .env
 
 if [ "${oml_app_img}" != "NULL" ]; then
-  sed -i "s/^OMLAPP_VERSION=.*/OMLAPP_VERSION=${oml_app_img}/g" .env
+  sed -i "s/^OMLAPP_VERSION=latest/OMLAPP_VERSION=${oml_app_img}/g" .env
 fi
 if [ "${oml_acd_img}" != "NULL" ]; then
-  sed -i "s/^OMLACD_VERSION=.*/OMLACD_VERSION=${oml_acd_img}/g" .env
+  sed -i "s/^OMLACD_VERSION=latest/OMLACD_VERSION=${oml_acd_img}/g" .env
 fi
 if [ "${oml_redis_img}" != "NULL" ]; then
-  sed -i "s/^REDISGEARS_VERSION=.*/REDISGEARS_VERSION=${oml_redis_img}/g" .env
+  sed -i "s/^REDISGEARS_VERSION=1.0.3/REDISGEARS_VERSION=${oml_redis_img}/g" .env
 fi
 if [ "${oml_kamailio_img}" != "NULL" ]; then
-  sed -i "s/^OMLKAM_VERSION=.*/OMLKAM_VERSION=${oml_kamailio_img}/g" .env
+  sed -i "s/^OMLKAM_VERSION=latest/OMLKAM_VERSION=${oml_kamailio_img}/g" .env
 fi
 if [ "${oml_nginx_img}" != "NULL" ]; then
   sed -i "s/^OMLNGINX_VERSION=.*/OMLNGINX_VERSION=${oml_nginx_img}/g" .env
 fi
 if [ "${oml_ws_img}" != "NULL" ]; then
-  sed -i "s/^OMLWS_VERSION=.*/OMLWS_VERSION=${oml_ws_img}/g" .env
+  sed -i "s/^OMLWS_VERSION=latest/OMLWS_VERSION=${oml_ws_img}/g" .env
 fi
 
 if [[ "${oml_dialer_host}" != "NULL" ]]; then
@@ -206,6 +206,7 @@ fi
 if [[ "${oml_pgsql_cloud}" == "NULL" ]]; then
   sed -i "s/PGCLOUD=yes/PGCLOUD=no/g" .env
 fi
+
 
 cp daemon.json /etc/docker
 cp omnileads.service /etc/systemd/system/
