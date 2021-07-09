@@ -148,6 +148,7 @@ $(function() {
         if (campana['gestiones'] > 0) return false;
         if (campana['pendientes'] > 0) return false;
         if (campana['canales_discando'] > 0) return false;
+        if (campana['porcentaje_objetivo'] > 0) return false;
 
         return true;
     }
@@ -172,6 +173,7 @@ $(function() {
         campanas[campana_id]['conectadas_perdidas'] = row['conectadas_perdidas'];
         campanas[campana_id]['gestiones'] = row['gestiones'];
         campanas[campana_id]['pendientes'] = row['pendientes'];
+        campanas[campana_id]['porcentaje_objetivo'] = row['porcentaje_objetivo'];
         campanas[campana_id]['canales_discando'] = row['canales_discando'];
 
     }
@@ -187,6 +189,7 @@ $(function() {
         campanas[id]['conectadas_perdidas'] = 0;
         campanas[id]['gestiones'] = 0;
         campanas[id]['pendientes'] = 0;
+        campanas[id]['porcentaje_objetivo'] = 0;
         campanas[id]['canales_discando'] = 0;
         campanas[id]['agentes_online'] = 0;
         campanas[id]['agentes_llamada'] = 0;
@@ -210,6 +213,7 @@ function createDataTable() {
             { 'data': 'conectadas_perdidas' },
             { 'data': 'gestiones' },
             { 'data': 'pendientes' },
+            { 'data': 'porcentaje_objetivo' },
         ],
 
         language: {
