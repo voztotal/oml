@@ -344,7 +344,7 @@ case ${oml_callrec_device} in
       mkdir -p $CALLREC_DIR_DST
       chown omnileads.omnileads -R $CALLREC_DIR_DST
     fi
-    echo "${s3_bucket_name}:/${oml_tenant_name} $CALLREC_DIR_DST fuse.s3fs _netdev,allow_other,use_path_request_style,url=${s3url} 0 0" >> /etc/fstab
+    echo "${s3_bucket_name} $CALLREC_DIR_DST fuse.s3fs _netdev,allow_other,use_path_request_style,url=${s3url} 0 0" >> /etc/fstab
     mount -a
     ;;
   s3-aws)
