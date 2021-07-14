@@ -272,10 +272,10 @@ fi
 # Wombat Dialer parameters *******
 
 if [[ "${api_dialer_user}"  != "NULL" ]];then
-  sed -i "s/#dialer_user=/dialer_user=${api_dialer_user}/g" $PATH_DEPLOY/inventory
+  sed -i "s/#dialer_user=demoadmin/dialer_user=${api_dialer_user}/g" $PATH_DEPLOY/inventory
 fi
 if [[ "${api_dialer_password}"  != "NULL" ]];then
-  sed -i "s/#dialer_password=/dialer_password=${api_dialer_password}/g" $PATH_DEPLOY/inventory
+  sed -i "s/#dialer_password=demo/dialer_password=${api_dialer_password}/g" $PATH_DEPLOY/inventory
 fi
 if [[ "${oml_dialer_host}" != "NULL" ]];then
   sed -i "s/#dialer_host=/dialer_host=${oml_dialer_host}/g" $PATH_DEPLOY/inventory
