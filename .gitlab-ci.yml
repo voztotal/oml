@@ -118,7 +118,7 @@ deploy-aio-digitalocean:
     - bash ~/git_cleanup.sh
     - source ~/.env_do
     - export oml_app_release=$CI_COMMIT_REF_NAME
-    - sleep 60
+    - sleep 30
     - doctl compute droplet create --image $DIGITAL_OCEAN_AIO_IMG --size $DIGITAL_OCEAN_AIO_SIZE --region $DIGITAL_OCEAN_REGION --ssh-keys $TF_VAR_ssh_key_fingerprint --user-data-file ~/ominicontacto/install/onpremise/deploy/ansible/first_boot_installer.tpl omlgitlab-cicd-aio.$CI_JOB_ID
     - sleep 60
     - IP=$(doctl compute droplet list |grep omlgitlab-cicd-aio.$CI_JOB_ID |awk '{print $3}') && echo "$IP 2 run tests"
@@ -182,26 +182,26 @@ deploy-aio-digitalocean:
 #     - schedules
 #
 
-deploy-docker-devenv:
-  stage: deploy
-  script:
-    - bash ~/git_cleanup.sh
-    - sed -i "s/\${omnileads_release}/$CI_COMMIT_REF_NAME/g" ~/ominicontacto/install/docker/devenv/gitlab_cicd_deploy.sh
-    - doctl compute droplet create --image $DIGITAL_OCEAN_DEVENV_IMG --size $DIGITAL_OCEAN_DEVENV_SIZE --region $DIGITAL_OCEAN_REGION --ssh-keys $TF_VAR_ssh_key_fingerprint --user-data-file ~/ominicontacto/install/docker/devenv/gitlab_cicd_deploy.sh omlgitlab-cicd-devenv.$CI_JOB_ID
-    - sleep 90
-    - IP=$(doctl compute droplet list |grep omlgitlab-cicd-devenv.$CI_JOB_ID |awk '{print $3}') && echo "devenv-IP is $IP"
-    - until curl -sk --head  --request GET https://$IP |grep "302" > /dev/null; do echo "Environment still being installed, sleeping 80 seconds"; sleep 80; done; echo "Environment is up"
-    - sleep 180
-    #- TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=$IP ADMIN_USERNAME=admin ADMIN_PASSWORD=admin LOGIN_FAILURE_LIMIT=10 python3 ~/ominicontacto/ominicontacto_app/tests/test_integracion/test_all.py
-    - doctl compute droplet delete -f omlgitlab-cicd-devenv.$CI_JOB_ID
-  tags:
-    - deploy-docker
-  only:
-    - merge_requests
-    - /.*test-de-integracion.*$/
-    - /.*deploy.*$/
-    - schedules
-    - web
+# deploy-docker-devenv:
+#   stage: deploy
+#   script:
+#     - bash ~/git_cleanup.sh
+#     - sed -i "s/\${omnileads_release}/$CI_COMMIT_REF_NAME/g" ~/ominicontacto/install/docker/devenv/gitlab_cicd_deploy.sh
+#     - doctl compute droplet create --image $DIGITAL_OCEAN_DEVENV_IMG --size $DIGITAL_OCEAN_DEVENV_SIZE --region $DIGITAL_OCEAN_REGION --ssh-keys $TF_VAR_ssh_key_fingerprint --user-data-file ~/ominicontacto/install/docker/devenv/gitlab_cicd_deploy.sh omlgitlab-cicd-devenv.$CI_JOB_ID
+#     - sleep 90
+#     - IP=$(doctl compute droplet list |grep omlgitlab-cicd-devenv.$CI_JOB_ID |awk '{print $3}') && echo "devenv-IP is $IP"
+#     - until curl -sk --head  --request GET https://$IP |grep "302" > /dev/null; do echo "Environment still being installed, sleeping 80 seconds"; sleep 80; done; echo "Environment is up"
+#     - sleep 180
+#     #- TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=$IP ADMIN_USERNAME=admin ADMIN_PASSWORD=admin LOGIN_FAILURE_LIMIT=10 python3 ~/ominicontacto/ominicontacto_app/tests/test_integracion/test_all.py
+#     - doctl compute droplet delete -f omlgitlab-cicd-devenv.$CI_JOB_ID
+#   tags:
+#     - deploy-docker
+#   only:
+#     - merge_requests
+#     - /.*test-de-integracion.*$/
+#     - /.*deploy.*$/
+#     - schedules
+#     - web
 
 # deploy-docker-prodenv:
 #   stage: deploy
