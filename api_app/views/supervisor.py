@@ -570,6 +570,53 @@ class ExportarCSVNoAtendidos(ExportarCSVMixin, APIView):
         })
 
 
+class ExportarCSVReporteBase(ExportarCSVMixin, APIView):
+    permission_classes = (TienePermisoOML, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['post', ]
+
+    def generar_csv_no_atendidos(self, key_task, campana, desde, hasta):
+
+        reporte_no_atendidos_csv = ReporteNoAtendidosCSV(
+            campana, key_task, desde, hasta)
+        datos_no_atendidos = reporte_no_atendidos_csv.datos
+        service_csv = ExportacionCampanaCSV()
+        service_csv.exportar_reportes_csv(campana, datos_no_atendidos=datos_no_atendidos)
+
+    def post(self, request):
+        campana_id = request.data.get('campana_id')
+        task_id = request.data.get('task_id')
+        desde = request.data.get('desde')
+        hasta = request.data.get('hasta')
+        fecha_desde = convert_fecha_datetime(desde)
+        fecha_hasta = convert_fecha_datetime(hasta)
+        fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
+        fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
+        campana = Campana.objects.get(pk=campana_id)
+        # generar id para la operacion de acuerdo a (timestamp, campana, supervisor)
+        # obtener de request
+
+        key_task = 'OML:STATUS_CSV_REPORT:NOT_ATTENDED:{0}:{1}'.format(campana_id, task_id)
+
+        # chequear si el supervisor esta asignado a la campaña
+        # chequear si la campaña existe
+
+        thread_exportacion = threading.Thread(
+            target=self.generar_csv_no_atendidos,
+            args=[key_task, campana, fecha_desde, fecha_hasta])
+        thread_exportacion.setDaemon(True)
+        thread_exportacion.start()
+        self.loguear_inicio_exportacion(
+            'no atendidos', campana_id, request.user.username, fecha_hasta.strftime("%m/%d/%Y"),
+            fecha_desde.strftime("%m/%d/%Y"))
+
+        return Response(data={
+            'status': 'OK',
+            'msg': _('Exportación de no atendidos a .csv en proceso'),
+            'id': task_id,
+        })
+
+
 class ContactosAsignadosCampanaPreviewView(APIView):
     permission_classes = (TienePermisoOML, )
     renderer_classes = (JSONRenderer, )
