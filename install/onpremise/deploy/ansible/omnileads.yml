@@ -36,6 +36,36 @@
     - prerequisitos
     - dialer
 
+- name: Omniapp installation
+  hosts: prodenv-aio
+  tasks:
+
+    # Chequeo si la version de virtualenv instalada es {{ virtualenv_version }}
+    - name: Check if virtualenv {{ virtualenv_version }} is installed
+      shell:  yum list installed |grep virtualenv| awk -F " " '{print $2}' |awk -F "-" '{print $1}'
+      register: virtualenv_installed
+      changed_when: false
+      tags: postinstall
+
+    # Solution to issue OML-214: Backup of addons, for re-setting after installation
+    - name: Backup of addons, for re-setting after installation
+      when: virtualenv_installed.stdout == "210623.01" or virtualenv_installed.stdout == "210714.01" or virtualenv_installed.stdout == "210802.01"
+      changed_when: false
+      failed_when: false
+      shell: >
+        if [ -f {{ install_prefix }}/bin/addons_installed.sh ];then
+          source {{ install_prefix }}/bin/addons_installed.sh
+          for Addon in "${ADDONS_INSTALLED[@]}";do
+            cp -r {{ install_prefix }}/addons/${Addon} /tmp
+          done
+          cp {{ install_prefix }}/bin/addons_installed.sh /tmp
+          exit 1
+        else
+          exit 0
+        fi
+      register: addons_installed
+      tags: postinstall
+
 - import_playbook: modules/redis/deploy/redis.yml
   when: redis_host == "localhost"
 - import_playbook: modules/postgresql/deploy/postgresql.yml
@@ -103,25 +133,6 @@
     # Por lo contrario se imprime que ya está instalada la version mas actual
     - debug: msg="virtualenv is already installed in version {{ virtualenv_version }}, skipping installation steps"
       when: virtualenv_installed.stdout == virtualenv_version
-      tags: postinstall
-
-    # Solution to issue OML-214: Backup of addons, for re-setting after installation
-    - name: Backup of addons, for re-setting after installation
-      when: virtualenv_installed.stdout == "210623.01" or virtualenv_installed.stdout == "210714.01" or virtualenv_installed.stdout == "210802.01"
-      changed_when: false
-      failed_when: false
-      shell: >
-        if [ -f {{ install_prefix }}/bin/addons_installed.sh ];then
-          source {{ install_prefix }}/bin/addons_installed.sh
-          for Addon in "${ADDONS_INSTALLED[@]}";do
-            cp -r {{ install_prefix }}/addons/${Addon} /tmp
-          done
-          cp {{ install_prefix }}/bin/addons_installed.sh /tmp
-          exit 1
-        else
-          exit 0
-        fi
-      register: addons_installed
       tags: postinstall
 
     # Esta tarea es para eliminar paquete viejo de virtualenv generar inconsistencia de binarios
