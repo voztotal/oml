@@ -105,6 +105,25 @@
       when: virtualenv_installed.stdout == virtualenv_version
       tags: postinstall
 
+    # Solution to issue OML-214: Backup of addons, for re-setting after installation
+    - name: Backup of addons, for re-setting after installation
+      when: virtualenv_installed.stdout == "210623.01" or virtualenv_installed.stdout == "210714.01" or virtualenv_installed.stdout == "210802.01"
+      changed_when: false
+      failed_when: false
+      shell: >
+        if [ -f {{ install_prefix }}/bin/addons_installed.sh ];then
+          source {{ install_prefix }}/bin/addons_installed.sh
+          for Addon in "${ADDONS_INSTALLED[@]}";do
+            cp -r {{ install_prefix }}/addons/${Addon} /tmp
+          done
+          cp {{ install_prefix }}/bin/addons_installed.sh /tmp
+          exit 1
+        else
+          exit 0
+        fi
+      register: addons_installed
+      tags: postinstall
+
     # Esta tarea es para eliminar paquete viejo de virtualenv generar inconsistencia de binarios
     - name: Delete old virtualenv package
       command: yum remove -y virtualenv
@@ -120,6 +139,20 @@
       failed_when:
         - "s3_download.rc != 0 or 'scriptlet failure' in s3_download.stderr"
 
+    # Solution to issue OML-214: Re-setting backed up addons after installation
+    - name: Re-setting addons after installation
+      when: addons_installed.rc is defined and addons_installed.rc == 1
+      shell: >
+        if [ ! -f {{ install_prefix }}/bin/addons_installed.sh ];then
+          mv /tmp/addons_installed.sh {{ install_prefix }}/bin
+          source {{ install_prefix }}/bin/addons_installed.sh
+          for Addon in "${ADDONS_INSTALLED[@]}";do
+            mv /tmp/${Addon} {{ install_prefix }}/addons
+          done
+          {{ install_prefix }}/bin/reinstall_addons.sh
+        fi
+      tags: postinstall
+
     # Se genera la pass admin/admin cuando es un fresh-install
     - name: reset web-user admin password
       shell: sudo -u omnileads bash -c "/opt/omnileads/bin/manage.sh cambiar_admin_password"
@@ -127,7 +160,7 @@
         executable: /bin/bash
       when: reset_admin_password == "true"
 
-    # Permiso de usuario a la carpeta de omnileads 
+    # Permiso de usuario a la carpeta de omnileads
     - name: Set up permissions of omnileads dir
       file: state=directory path={{ install_prefix }} owner={{ usuario }} group={{ usuario }} recurse=yes
       tags: postinstall
@@ -135,4 +168,4 @@
     # Se inicia y habilita el servicio
     - name: Start the omnileads services
       systemd: name=omnileads state=restarted enabled=yes daemon_reload=yes
-      tags: postinstall  
+      tags: postinstall
