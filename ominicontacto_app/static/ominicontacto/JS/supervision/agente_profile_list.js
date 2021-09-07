@@ -20,7 +20,7 @@
 /* global gettext */
 
 function obtener_campanas_agente(pk_agent) {
-    var $campanasAgenteModal = $('#campanasAgenteModal');
+    var campanasAgenteModal = $('#campanasAgenteModal');
     var filter = '?status=[2,5,6]&agent=' + pk_agent;
     var table = $('#campanasAgenteTable').DataTable( {
         ajax: {
@@ -28,11 +28,18 @@ function obtener_campanas_agente(pk_agent) {
             dataSrc: '',
         },
         columns: [
-            { 'data': 'nombre',},
             { 'data': 'id'},
+            { 'data': 'nombre'},
             { 'data': 'objetivo'},
         ],
+        paging: false,
+        scrollY: 400,
+        scrollCollapse: true,
+        searching: false
     } );
-    $campanasAgenteModal.modal('show');
-    table.destroy();
+    campanasAgenteModal.modal('show');
+}
+
+function deleteDatatable() {
+    $('#campanasAgenteTable').DataTable().destroy();
 }

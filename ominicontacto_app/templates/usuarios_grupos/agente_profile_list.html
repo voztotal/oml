@@ -26,6 +26,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <script src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
 {% endblock %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.dataTables.min.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="form-row">
     <div class="col-md-9">
@@ -114,15 +118,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title">{% trans 'Campañas' %}</h1>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="deleteDatatable()"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
                 <div class="table-responsive">
                   <table class="table" id="campanasAgenteTable">
                       <thead>
                           <tr>
-                              <th>{% trans 'Nombre' %}</th>
                               <th>{% trans 'ID' %}</th>
+                              <th>{% trans 'Nombre' %}</th>
                               <th>{% trans 'Objetivo' %}</th>
                           </tr>
                       </thead>
@@ -130,7 +134,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar'  %}</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="deleteDatatable()">{% trans 'Cerrar'  %}</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
