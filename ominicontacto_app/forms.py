@@ -1926,9 +1926,10 @@ class GrupoForm(forms.ModelForm):
     class Meta:
         model = Grupo
         fields = ('nombre', 'auto_unpause', 'auto_attend_inbound',
-                  'auto_attend_dialer', 'obligar_calificacion', 'call_off_camp',
+                  'auto_attend_dialer', 'obligar_calificacion',
                   'acceso_grabaciones_agente', 'acceso_dashboard_agente',
-                  'on_hold', 'limitar_agendas_personales', 'cantidad_agendas_personales')
+                  'on_hold', 'limitar_agendas_personales', 'call_off_camp',
+                  'cantidad_agendas_personales')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
             'cantidad_agendas_personales': forms.NumberInput(attrs={

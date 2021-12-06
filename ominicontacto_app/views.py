@@ -41,6 +41,7 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
 from django.conf import settings
+from django.db.models import Q
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView
 )
@@ -62,7 +63,7 @@ from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     RestablecerConfiguracionTelefonicaError, SincronizadorDeConfiguracionPausaAsterisk)
 from reportes_app.models import LlamadaLog
 
-from utiles_globales import AddSettingsContextMixin
+from utiles_globales import AddSettingsContextMixin, obtener_paginas
 
 logger = logging.getLogger(__name__)
 
@@ -194,6 +195,23 @@ class GrupoListView(ListView):
     """Vista para listar los grupos"""
     model = Grupo
     template_name = 'usuarios_grupos/grupo_list.html'
+    paginate_by = 30
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            GrupoListView,
+            self
+        ).get_context_data(**kwargs)
+        obtener_paginas(context, 7)
+        return context
+
+    def get_queryset(self):
+        queryset = Grupo.objects.all()
+        if 'search' in self.request.GET:
+            search = self.request.GET.get('search')
+            return queryset.filter(Q(nombre__icontains=search))
+        else:
+            return queryset
 
 
 class GrupoDeleteView(DeleteView):

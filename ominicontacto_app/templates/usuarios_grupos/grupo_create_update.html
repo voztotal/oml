@@ -26,16 +26,34 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% endblock %}
 
 {% block content %}
-<h1>{% trans 'Nuevo grupo de agentes'%}</h1>
-<form action = "" method = "post">
+
+<!-- Button back -->
+<nav>
+    <ul class="pagination">
+        <li class="page-item">
+            <a class="page-link" href="{% url 'grupo_list' %}" >
+                <span aria-hidden="true">&laquo;</span>
+                {% trans 'Atras' %}
+            </a>
+        </li>
+    </ul>
+</nav>
+
+{% if object %}
+    <h1> Actualizar grupo: {{ object.nombre }}</h1>
+{% else %}
+    <h1>{% trans 'Nuevo grupo de agentes' %}</h1>
+{% endif %}
+
+<form method="post">
     {% csrf_token %}
     {{ form.non_field_errors }}
     <div class="form-row">
-        <div class="col-md-4">
+        <div class="col-sm-12 col-md-6 col-lg-6">
             {{ form.nombre.label_tag }} {{ form.nombre }}
             {{ form.nombre.errors }}
         </div>
-        <div class="col-md-3">
+        <div class="col-sm-12 col-md-6 col-lg-6">
             {{ form.auto_unpause.label_tag }} {{ form.auto_unpause }}
             {{ form.auto_unpause.errors }}
             <small class="form-text text-muted">
@@ -44,35 +62,35 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </div>
     </div>
     <div class="form-row">
-        <div class="col-md-3">
+        <div class="col-sm-12 col-md-6 col-lg-3">
             {{ form.auto_attend_inbound.label_tag }} {{ form.auto_attend_inbound }}
             {{ form.auto_attend_inbound.errors }}
         </div>
-        <div class="col-md-2">
+        <div class="col-sm-12 col-md-6 col-lg-3">
             {{ form.auto_attend_dialer.label_tag }} {{ form.auto_attend_dialer }}
             {{ form.auto_attend_dialer.errors }}
         </div>
-        <div class="col-md-3">
+        <div class="col-sm-12 col-md-6 col-lg-3">
             {{ form.obligar_calificacion.label_tag}} {{ form.obligar_calificacion}}
             {{ form.obligar_calificacion.errors }}
         </div>
-        <div class="col-md-3">
+        <div class="col-sm-12 col-md-6 col-lg-3">
             {{ form.call_off_camp.label_tag}} {{ form.call_off_camp}}
             {{ form.call_off_camp.errors }}
         </div>
-        <div class="col-md-3">
+        <div class="col-sm-12 col-md-6 col-lg-3">
             {{ form.acceso_grabaciones_agente.label_tag }} {{ form.acceso_grabaciones_agente }}
             {{ form.acceso_grabaciones_agente.errors }}
         </div>
-        <div class="col-md-3">
+        <div class="col-sm-12 col-md-6 col-lg-3">
             {{ form.acceso_dashboard_agente.label_tag }} {{ form.acceso_dashboard_agente }}
             {{ form.acceso_dashboard_agente.errors }}
         </div>
-        <div class="col-md-3">
+        <div class="col-sm-12 col-md-6 col-lg-3">
             {{ form.on_hold.label_tag }} {{ form.on_hold }}
             {{ form.on_hold.errors }}
         </div>
-        <div class="col-md-3">
+        <div class="col-sm-12 col-md-6 col-lg-3">
             {{ form.limitar_agendas_personales.label_tag }} {{ form.limitar_agendas_personales }} 
             {{form.cantidad_agendas_personales}}
             {{ form.limitar_agendas_personales.errors }}{{ form.cantidad_agendas_personales.errors }}

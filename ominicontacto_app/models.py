@@ -213,6 +213,10 @@ class Grupo(models.Model):
     auto_unpause = models.PositiveIntegerField(verbose_name=_('Despausar automaticamente'))
     obligar_calificacion = models.BooleanField(default=False, verbose_name=_(
         'Forzar calificación'))
+    # forzar_despausa = models.BooleanField(
+    #     default=False,
+    #     verbose_name=_('Forzar despausa')
+    # )
     call_off_camp = models.BooleanField(default=False, verbose_name=_('Llamada fuera de campaña'))
     acceso_grabaciones_agente = models.BooleanField(default=True, verbose_name=_(
         'Acceso grabaciones agentes'))
