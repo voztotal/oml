@@ -23,6 +23,9 @@ $(function () {
     
     $('#id_limitar_agendas_personales').on('change', actualizarEstadoCantidadAgendasPersonales);
     actualizarEstadoCantidadAgendasPersonales();
+
+    $('#id_obligar_calificacion').on('change', actualizarEstadoForzarDespausa);
+    actualizarEstadoForzarDespausa();
 });
 
 function actualizarEstadoAutoUnpause() {
@@ -37,4 +40,12 @@ function actualizarEstadoCantidadAgendasPersonales() {
         $('#id_cantidad_agendas_personales').prop('disabled', false);
     else
         $('#id_cantidad_agendas_personales').prop('disabled', true);
+}
+
+function actualizarEstadoForzarDespausa() {
+    var e = document.getElementById('forzar_despausa')
+    if ($('#id_obligar_calificacion').is(':checked'))
+        e.classList.remove('hidden');
+    else
+        e.classList.add('hidden');
 }

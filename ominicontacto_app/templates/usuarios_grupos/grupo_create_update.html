@@ -74,6 +74,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {{ form.obligar_calificacion.label_tag}} {{ form.obligar_calificacion}}
             {{ form.obligar_calificacion.errors }}
         </div>
+        <div class="col-sm-12 col-md-6 col-lg-3 hidden" id="forzar_despausa">
+            {{ form.forzar_despausa.label_tag }} {{ form.forzar_despausa }}
+            {{ form.forzar_despausa.errors }}
+        </div>
+    </div>
+    <div class="form-row">
         <div class="col-sm-12 col-md-6 col-lg-3">
             {{ form.call_off_camp.label_tag}} {{ form.call_off_camp}}
             {{ form.call_off_camp.errors }}
@@ -90,9 +96,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {{ form.on_hold.label_tag }} {{ form.on_hold }}
             {{ form.on_hold.errors }}
         </div>
+    </div>
+    <div class="form-row">
         <div class="col-sm-12 col-md-6 col-lg-3">
             {{ form.limitar_agendas_personales.label_tag }} {{ form.limitar_agendas_personales }} 
-            {{form.cantidad_agendas_personales}}
+            {{ form.cantidad_agendas_personales }}
             {{ form.limitar_agendas_personales.errors }}{{ form.cantidad_agendas_personales.errors }}
         </div>
     </div>

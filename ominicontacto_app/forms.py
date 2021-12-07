@@ -1929,7 +1929,7 @@ class GrupoForm(forms.ModelForm):
                   'auto_attend_dialer', 'obligar_calificacion',
                   'acceso_grabaciones_agente', 'acceso_dashboard_agente',
                   'on_hold', 'limitar_agendas_personales', 'call_off_camp',
-                  'cantidad_agendas_personales')
+                  'cantidad_agendas_personales', 'forzar_despausa')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
             'cantidad_agendas_personales': forms.NumberInput(attrs={
