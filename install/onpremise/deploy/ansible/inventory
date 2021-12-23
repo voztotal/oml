@@ -118,6 +118,16 @@ LOGIN_FAILURE_LIMIT=10
 ####################################
 schedule=Agenda
 
+###########################################################
+# Restore File in case of Infrastructura as a code deploy #
+###########################################################
+#backup_file_name=
+#backup_file_path=
+#s3_access_key=
+#s3_secret_key=
+#backup_bucket_name=
+#s3url=
+auto_restore=false
 
 # Do not change the variables below or you will experience
 # bad things
