@@ -1263,7 +1263,8 @@ class Campana(models.Model):
         # insertamos las instancias en la BD
         AgenteEnContacto.objects.bulk_create(agente_en_contacto_list)
 
-    def gestionar_finalizacion_relacion_agente_contacto(self, calificacion_cliente):
+    def gestionar_finalizacion_relacion_agente_contacto(
+            self, calificacion_cliente, formulario_gestion=None):
         """
         Marca como finalizada la relación entre un agente y un contacto de una campaña
         preview
@@ -1288,9 +1289,17 @@ class Campana(models.Model):
             # nuevo contacto desde la consola de agentes
             if agente_en_contacto.estado == AgenteEnContacto.ESTADO_FINALIZADO:
                 return
-            agente_en_contacto.estado = AgenteEnContacto.ESTADO_FINALIZADO
-            agente_en_contacto.save()
-            self.gestionar_finalizacion_por_contactos_calificados()
+            gestion_finalizada = False
+            if calificacion_cliente.opcion_calificacion.es_gestion:
+                if formulario_gestion:
+                    gestion_finalizada = True
+            else:
+                gestion_finalizada = True
+
+            if gestion_finalizada:
+                agente_en_contacto.estado = AgenteEnContacto.ESTADO_FINALIZADO
+                agente_en_contacto.save()
+                self.gestionar_finalizacion_por_contactos_calificados()
 
     def gestionar_finalizacion_por_contactos_calificados(self):
         # si todos los contactos de la campaña han sido calificados
@@ -2772,6 +2781,9 @@ class RespuestaFormularioGestion(models.Model):
     def save(self, *args, **kwargs):
         id_history_calificacion = CalificacionCliente.history.filter(id=self.calificacion.id)\
             .latest().history_id
+        campana = self.calificacion.opcion_calificacion.campana
+        if campana.type == Campana.TYPE_PREVIEW and self.pk is None:
+            campana.gestionar_finalizacion_relacion_agente_contacto(self.calificacion, self)
         super(RespuestaFormularioGestion, self).save(*args, **kwargs)
         update_change_reason(self, id_history_calificacion)
 
