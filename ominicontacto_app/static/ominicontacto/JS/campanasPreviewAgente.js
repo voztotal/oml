@@ -145,7 +145,6 @@ Por favor intente solicitar uno nuevo');
 
                         // Limpiamos la información de algún contacto anterior
                         $contactoOtrosDatos.html('');
-
                         if (data['code'] == 'contacto-asignado'){
                             $('#liberar_contacto').show();
                             $('#calificar_contacto').show();
@@ -162,9 +161,9 @@ Por favor intente solicitar uno nuevo');
                                 $('#gestion_contacto').show();
                                 $('#gestion_contacto').attr(
                                     'href', Urls.formulario_venta(data['calificacion-gestion']));
-                                    $errorAsignacionContacto.html(gettext('Contacto calificado como gestión en llamado previo. \
+                                $errorAsignacionContacto.html(gettext('Contacto calificado como gestión en llamado previo. \
 Complete el formulario de Gestión para poder recibir un nuevo contacto.'));
-                                                                }
+                            }
                             else {
                                 $errorAsignacionContacto.html(gettext('Contacto asignado por llamado previo. \
 Califique el contacto o liberelo para poder recibir un nuevo contacto.'));
