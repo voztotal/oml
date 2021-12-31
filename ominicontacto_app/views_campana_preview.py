@@ -493,6 +493,10 @@ class ObtenerContactoView(View):
            calificacion_pendiente_agente.get('TELEFONO', '') == data_entrega.get(
                'telefono_contacto', False):
             data_entrega['calldata'] = calificacion_pendiente_agente['CALLDATA']
+            if calificacion_pendiente_agente['GESTION'] == 'TRUE':
+                id_calificacion = calificacion_pendiente_agente['IDCALIFICACION']
+                data_entrega['calificacion-gestion'] = id_calificacion
+
         return JsonResponse(data_entrega)
 
 

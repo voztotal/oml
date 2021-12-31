@@ -147,8 +147,6 @@ Por favor intente solicitar uno nuevo');
                         $contactoOtrosDatos.html('');
 
                         if (data['code'] == 'contacto-asignado'){
-                            $errorAsignacionContacto.html(gettext('Contacto asignado por llamado previo.\
- Califique el contacto o liberelo para poder recibir un nuevo contacto.'));
                             $('#liberar_contacto').show();
                             $('#calificar_contacto').show();
                             var url_parameters = [idCampana, data['contacto_id'], data['agente_id']];
@@ -160,10 +158,22 @@ Por favor intente solicitar uno nuevo');
                             }
                             var calificar_url = set_url_parameters(calificar_contacto_url, url_parameters);
                             $('#calificar_contacto').attr('href', calificar_url);
+                            if (data['calificacion-gestion']) {
+                                $('#gestion_contacto').show();
+                                $('#gestion_contacto').attr(
+                                    'href', Urls.formulario_venta(data['calificacion-gestion']));
+                                    $errorAsignacionContacto.html(gettext('Contacto calificado como gestión en llamado previo. \
+Complete el formulario de Gestión para poder recibir un nuevo contacto.'));
+                                                                }
+                            else {
+                                $errorAsignacionContacto.html(gettext('Contacto asignado por llamado previo. \
+Califique el contacto o liberelo para poder recibir un nuevo contacto.'));
+                            }
                         }
                         else{
                             $('#liberar_contacto').hide();
                             $('#calificar_contacto').hide();
+                            $('#gestion_contacto').hide();
                             $errorAsignacionContacto.html('');
                         }
 
@@ -210,6 +220,7 @@ Por favor intente solicitar uno nuevo');
                     $('#validar_contacto').hide();
                     $('#liberar_contacto').hide();
                     $('#calificar_contacto').hide();
+                    $('#gestion_contacto').hide();
                 }
                 else {
                     // se muestra modal con mensaje de error
