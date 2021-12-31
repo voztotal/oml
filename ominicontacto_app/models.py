@@ -1290,7 +1290,7 @@ class Campana(models.Model):
             if agente_en_contacto.estado == AgenteEnContacto.ESTADO_FINALIZADO:
                 return
             gestion_finalizada = False
-            if calificacion_cliente.opcion_calificacion.es_gestion:
+            if calificacion_cliente.opcion_calificacion.es_gestion():
                 if formulario_gestion:
                     gestion_finalizada = True
             else:
