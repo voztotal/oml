@@ -125,7 +125,7 @@ schedule=Agenda
 #backup_file_path=
 #s3_access_key=
 #s3_secret_key=
-#backup_bucket_name=
+#s3_bucket_name=
 #s3url=
 auto_restore=false
 
