@@ -134,7 +134,7 @@ services:
       - MARIADB_DATABASE=${WOMBAT_DB}
       - MARIADB_USER=${WOMBAT_DB_USER}
       - MARIADB_PASSWORD=${WOMBAT_DB_PASS}
-    image: bitnami/mariadb:latest
+    image: bitnami/mariadb:10.6-debian-10
     networks:
       - devenv
     privileged: true
