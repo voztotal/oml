@@ -59,7 +59,7 @@ services:
     dns: 8.8.8.8
     env_file:
       - .env
-    image: freetechsolutions/omlapp:${OMLAPP_VERSION}
+    image: k8soml/omlapp:k8s
     networks:
       - devenv
     privileged: true
