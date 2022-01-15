@@ -136,7 +136,7 @@ services:
     dns: 8.8.8.8
     environment:
       - TZ=${TZ}
-    image: drachtio/rtpengine:latest
+    image: drachtio/rtpengine:jambonz-test
     networks:
       - devenv
     privileged: true
