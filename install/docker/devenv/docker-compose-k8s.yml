@@ -69,15 +69,14 @@ services:
   websockets:
     tty: true
     container_name: omlwebsockets
-    # image: freetechsolutions/omlwebsockets:develop
-    image: python:3.7-alpine
-    command: /bin/sh -c 'while /bin/true; do echo waiting ; sleep 3 ; done'
+    image: k8soml/omlwebsockets:k8s
+    # command: /bin/sh -c 'while /bin/true; do echo waiting ; sleep 3 ; done'
     ports:
       - "${WEBSOCKET_EXT_PORT}:8000"
     networks:
       - devenv
-    volumes:
-      - ../../../../omlwebsockets/source/:/opt/services/webapp/src/
+    #volumes:
+    #  - ../../../../omlwebsockets/source/:/opt/services/webapp/src/
 
   # ----------------------------------------------------------------------
   # dependencies
