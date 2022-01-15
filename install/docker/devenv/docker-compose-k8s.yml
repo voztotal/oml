@@ -171,7 +171,7 @@ services:
       - POSTGRES_USER=${PGUSER}
       - POSTGRES_PASSWORD=${PGPASSWORD}
       - POSTGRES_DB=${PGDATABASE}
-    image: freetechsolutions/omlpgsql:develop
+    image: k8soml/omlpgsql:k8s
     networks:
       - devenv
     ports:
