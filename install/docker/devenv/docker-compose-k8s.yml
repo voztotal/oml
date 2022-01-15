@@ -240,23 +240,23 @@ services:
   #    - ../../../requirements:/root/requirements
   #  working_dir: /root/requirements
 
-  pbxemulator:
-    container_name: omlpbxemulator
-    hostname: pbxemulator
-    dns: 8.8.8.8
-    environment:
-      - TZ=${TZ}
-    image: freetechsolutions/omlpbxemulator:develop
-    networks:
-      - devenv
-    ports:
-      - 5060:5060/udp
-      - 10000-10020:10000-10020/udp
-    privileged: true
-    restart: on-failure
-    stdin_open: true
-    stop_grace_period: 1m30s
-    tty: true
+  #pbxemulator:
+  #  container_name: omlpbxemulator
+  #  hostname: pbxemulator
+  #  dns: 8.8.8.8
+  #  environment:
+  #    - TZ=${TZ}
+  #  image: freetechsolutions/omlpbxemulator:develop
+  #  networks:
+  #    - devenv
+  #  ports:
+  #    - 5060:5060/udp
+  #    - 10000-10020:10000-10020/udp
+  #  privileged: true
+  #  restart: on-failure
+  #  stdin_open: true
+  #  stop_grace_period: 1m30s
+  #  tty: true
 
   selenium:
     image: selenium/standalone-chrome
