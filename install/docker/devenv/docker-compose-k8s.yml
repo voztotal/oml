@@ -98,9 +98,8 @@ services:
     stop_grace_period: 1m30s
 
   kamailio:
-    command:
-      - /bin/bash
-    container_name: omlkamailio
+    command: /bin/sh -c 'while /bin/true; do echo waiting ; sleep 3 ; done'
+    container_name: kamailio
     depends_on:
       - redis
       - acd
@@ -115,7 +114,8 @@ services:
       - SHM_SIZE=${SHM_SIZE}
       - PKG_SIZE=${PKG_SIZE}
       - KAMAILIO_CERTS_LOCATION=${KAMAILIO_CERTS_LOCATION}
-    image: freetechsolutions/omlkam:develop
+    # image: freetechsolutions/omlkam:develop
+    image: python:3.7-alpine
     networks:
       - devenv
     privileged: true
