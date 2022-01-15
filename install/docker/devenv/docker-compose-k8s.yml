@@ -1,5 +1,10 @@
 version: '3.7'
 services:
+
+  # ----------------------------------------------------------------------
+  # oml services
+  # ----------------------------------------------------------------------
+
   acd:
     container_name: omlacd
     depends_on:
@@ -34,23 +39,6 @@ services:
       - ../../../../omlacd/source/scripts:/opt/omnileads/asterisk/virtualenv/scripts
     working_dir: /etc/asterisk
 
-  #app-builder:
-    #container_name: omlappbuilder
-    #dns: 8.8.8.8
-    #image: freetechsolutions/omlapp-builder:latest
-    #networks:
-    #  - devenv
-    #privileged: true
-    #restart: on-failure
-    #stdin_open: true
-    #stop_grace_period: 1m30s
-    #tty: true
-    #volumes:
-    #  - requirements:/usr/local/lib/python3.7/
-    #  - pyst2:/root/requirements/src
-    #  - ../../../requirements:/root/requirements
-    #working_dir: /root/requirements
-
   app:
     container_name: omlapp
     depends_on:
@@ -78,24 +66,22 @@ services:
       - ../../../modules/asterisk/source/astconf/:/etc/asterisk/
     working_dir: /opt/omnileads/ominicontacto
 
-  wombat:
-    command: >
-      bash -c "sed -i '/JDBC_URL/c\JDBC_URL=jdbc:mariadb:\/\/${MYSQL_HOST}\/${WOMBAT_DB}?user=${WOMBAT_DB_USER}&password=${WOMBAT_DB_PASS}&autoReconnect=true' /usr/local/tomcat/webapps/wombat/WEB-INF/tpf.properties && catalina.sh run"
-    container_name: omldialer
-    depends_on:
-      - mariadb
-    dns: 8.8.8.8
-    environment:
-      - TZ=${TZ}
-      - MYSQL_PWD=${MYSQL_ROOT_PASS}
-    image: freetechsolutions/omldialer:latest
+  websockets:
+    tty: true
+    container_name: omlwebsockets
+    # image: freetechsolutions/omlwebsockets:develop
+    image: python:3.7-alpine
+    command: /bin/sh -c 'while /bin/true; do echo waiting ; sleep 3 ; done'
+    ports:
+      - "${WEBSOCKET_EXT_PORT}:8000"
     networks:
       - devenv
-    ports:
-      - ${WD_EXT_PORT}:8080/tcp
-    privileged: true
-    restart: on-failure
-    stop_grace_period: 1m30s
+    volumes:
+      - ../../../../omlwebsockets/source/:/opt/services/webapp/src/
+
+  # ----------------------------------------------------------------------
+  # dependencies
+  # ----------------------------------------------------------------------
 
   kamailio:
     command: /bin/sh -c 'while /bin/true; do echo waiting ; sleep 3 ; done'
@@ -124,25 +110,6 @@ services:
     volumes:
       - ../../../../omlkamailio/source/conf:/etc/kamailio/
 
-  mariadb:
-    container_name: omlmariadb
-    dns: 8.8.8.8
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-      - TZ=${TZ}
-      - MARIADB_ROOT_PASSWORD=${MYSQL_ROOT_PASS}
-      - MARIADB_DATABASE=${WOMBAT_DB}
-      - MARIADB_USER=${WOMBAT_DB_USER}
-      - MARIADB_PASSWORD=${WOMBAT_DB_PASS}
-    image: bitnami/mariadb:10.6-debian-10
-    networks:
-      - devenv
-    privileged: true
-    restart: on-failure
-    stop_grace_period: 1m30s
-    volumes:
-      - mariadb_data:/bitnami
-
   nginx:
     container_name: omlnginx
     depends_on:
@@ -165,6 +132,60 @@ services:
       - ../../../../omlnginx/source/conf:/etc/nginx/
       - ../../../../omlacd/grabaciones:/var/spool/asterisk/monitor
 
+  rtpengine:
+    container_name: omlrtpengine
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+    image: drachtio/rtpengine:latest
+    networks:
+      - devenv
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+
+  wombat:
+    command: >
+      bash -c "sed -i '/JDBC_URL/c\JDBC_URL=jdbc:mariadb:\/\/${MYSQL_HOST}\/${WOMBAT_DB}?user=${WOMBAT_DB_USER}&password=${WOMBAT_DB_PASS}&autoReconnect=true' /usr/local/tomcat/webapps/wombat/WEB-INF/tpf.properties && catalina.sh run"
+    container_name: omldialer
+    depends_on:
+      - mariadb
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+      - MYSQL_PWD=${MYSQL_ROOT_PASS}
+    image: freetechsolutions/omldialer:latest
+    networks:
+      - devenv
+    ports:
+      - ${WD_EXT_PORT}:8080/tcp
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+
+  # ----------------------------------------------------------------------
+  # Databases, cache
+  # ----------------------------------------------------------------------
+
+  mariadb:
+    container_name: omlmariadb
+    dns: 8.8.8.8
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - TZ=${TZ}
+      - MARIADB_ROOT_PASSWORD=${MYSQL_ROOT_PASS}
+      - MARIADB_DATABASE=${WOMBAT_DB}
+      - MARIADB_USER=${WOMBAT_DB_USER}
+      - MARIADB_PASSWORD=${WOMBAT_DB_PASS}
+    image: bitnami/mariadb:10.6-debian-10
+    networks:
+      - devenv
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - mariadb_data:/bitnami
+
   postgresql:
     container_name: omlpostgresql
     dns: 8.8.8.8
@@ -184,6 +205,41 @@ services:
     volumes:
       - postgresql_data:/var/lib/postgresql/data
 
+  redis:
+    container_name: omlredis
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+    networks:
+      - devenv
+    image: redislabs/redisgears:${REDISGEARS_VERSION}
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - redis_data:/data
+
+  #
+  # Other services required on development environments
+  #
+
+  #app-builder:
+  #  container_name: omlappbuilder
+  #  dns: 8.8.8.8
+  #  image: freetechsolutions/omlapp-builder:latest
+  #  networks:
+  #    - devenv
+  #  privileged: true
+  #  restart: on-failure
+  #  stdin_open: true
+  #  stop_grace_period: 1m30s
+  #  tty: true
+  #  volumes:
+  #    - requirements:/usr/local/lib/python3.7/
+  #    - pyst2:/root/requirements/src
+  #    - ../../../requirements:/root/requirements
+  #  working_dir: /root/requirements
+
   pbxemulator:
     container_name: omlpbxemulator
     hostname: pbxemulator
@@ -202,49 +258,10 @@ services:
     stop_grace_period: 1m30s
     tty: true
 
-  redis:
-    container_name: omlredis
-    dns: 8.8.8.8
-    environment:
-      - TZ=${TZ}
-    networks:
-      - devenv
-    image: redislabs/redisgears:${REDISGEARS_VERSION}
-    privileged: true
-    restart: on-failure
-    stop_grace_period: 1m30s
-    volumes:
-      - redis_data:/data
-
-  rtpengine:
-    container_name: omlrtpengine
-    dns: 8.8.8.8
-    environment:
-      - TZ=${TZ}
-    image: drachtio/rtpengine:latest
-    networks:
-      - devenv
-    privileged: true
-    restart: on-failure
-    stop_grace_period: 1m30s
-
   selenium:
     image: selenium/standalone-chrome
     ports:
       - "4445:4444"
-
-  websockets:
-    tty: true
-    container_name: omlwebsockets
-    # image: freetechsolutions/omlwebsockets:develop
-    image: python:3.7-alpine
-    command: /bin/sh -c 'while /bin/true; do echo waiting ; sleep 3 ; done'
-    ports:
-      - "${WEBSOCKET_EXT_PORT}:8000"
-    networks:
-      - devenv
-    volumes:
-      - ../../../../omlwebsockets/source/:/opt/services/webapp/src/
 
   vue-cli:
     tty: true
