@@ -43,7 +43,6 @@ services:
     container_name: omlapp
     depends_on:
       - postgresql
-      - selenium
       - redis
       - acd
     dns: 8.8.8.8
@@ -254,21 +253,21 @@ services:
   #  stop_grace_period: 1m30s
   #  tty: true
 
-  selenium:
-    image: selenium/standalone-chrome
-    ports:
-      - "4445:4444"
+  #selenium:
+  #  image: selenium/standalone-chrome
+  #  ports:
+  #    - "4445:4444"
 
-  vue-cli:
-    tty: true
-    container_name: omlvuejscli
-    image: freetechsolutions/vue-cli:develop
-    ports:
-      - ${NODEJS_EXT_PORT}:8081
-    networks:
-      - devenv
-    volumes:
-      - ../../../omnileads_ui/:/home/app
+  #vue-cli:
+  #  tty: true
+  #  container_name: omlvuejscli
+  #  image: freetechsolutions/vue-cli:develop
+  #  ports:
+  #    - ${NODEJS_EXT_PORT}:8081
+  #  networks:
+  #    - devenv
+  #  volumes:
+  #    - ../../../omnileads_ui/:/home/app
 
 networks:
   devenv:
