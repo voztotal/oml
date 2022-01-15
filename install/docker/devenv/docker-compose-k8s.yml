@@ -34,22 +34,22 @@ services:
       - ../../../../omlacd/source/scripts:/opt/omnileads/asterisk/virtualenv/scripts
     working_dir: /etc/asterisk
 
-  app-builder:
-    container_name: omlappbuilder
-    dns: 8.8.8.8
-    image: freetechsolutions/omlapp-builder:latest
-    networks:
-      - devenv
-    privileged: true
-    restart: on-failure
-    stdin_open: true
-    stop_grace_period: 1m30s
-    tty: true
-    volumes:
-      - requirements:/usr/local/lib/python3.7/
-      - pyst2:/root/requirements/src
-      - ../../../requirements:/root/requirements
-    working_dir: /root/requirements
+  #app-builder:
+    #container_name: omlappbuilder
+    #dns: 8.8.8.8
+    #image: freetechsolutions/omlapp-builder:latest
+    #networks:
+    #  - devenv
+    #privileged: true
+    #restart: on-failure
+    #stdin_open: true
+    #stop_grace_period: 1m30s
+    #tty: true
+    #volumes:
+    #  - requirements:/usr/local/lib/python3.7/
+    #  - pyst2:/root/requirements/src
+    #  - ../../../requirements:/root/requirements
+    #working_dir: /root/requirements
 
   app:
     container_name: omlapp
