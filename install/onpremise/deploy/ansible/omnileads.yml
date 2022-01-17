@@ -148,8 +148,6 @@
     vars:
       ansible_python_interpreter: /usr/bin/python3
     aws_s3:
-        aws_secret_key: "{{ s3_secret_key }}"
-        aws_access_key: "{{ s3_access_key }}"
         bucket: "{{ s3_bucket_name }}"
         object: "omlapp-backup/{{ backup_file_name }}.tar.gz"
         dest: "/var/tmp/{{ backup_file_name }}.tar.gz"
