@@ -39,6 +39,7 @@ COPY reportes_app $INSTALL_PREFIX/ominicontacto/reportes_app
 COPY supervision_app $INSTALL_PREFIX/ominicontacto/supervision_app
 COPY utiles_globales.py manage.py $INSTALL_PREFIX/ominicontacto/
 
+COPY install/docker/scripts/callrec-conversor.sh $INSTALL_PREFIX/bin
 COPY install/docker/scripts/oml_uwsgi.ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini
 COPY install/docker/scripts/docker-entrypoint.sh /docker-entrypoint.sh
 
