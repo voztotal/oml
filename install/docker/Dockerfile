@@ -1,6 +1,7 @@
-FROM freetechsolutions/omlapp-builder:latest as builder
+ARG BUILDER_IMG
+FROM $BUILDER_IMG as builder
 
-FROM python:3.7-alpine
+FROM python:3.7-alpine3.15
 
 ENV INSTALL_PREFIX /opt/omnileads
 
