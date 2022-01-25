@@ -5,19 +5,8 @@ services:
     depends_on:
       - postgresql
     dns: 8.8.8.8
-    environment:
-      - AMI_USER=${AMI_USER}
-      - AMI_PASSWORD=${AMI_PASSWORD}
-      - DOCKER_IP=${DOCKER_IP}
-      - OMNILEADS_HOSTNAME=${OMNILEADS_HOSTNAME}
-      - PGHOST=${PGHOST}
-      - PGPORT=${PGPORT}
-      - PGDATABASE=${PGDATABASE}
-      - PGPASSWORD=${PGPASSWORD}
-      - PGUSER=${PGUSER}
-      - REDIS_HOSTNAME=${REDIS_HOSTNAME}
-      - TZ=${TZ}
-      - ASTERISK_LOCATION=
+    env_file:
+      - .env
     image: freetechsolutions/omlacd:${OMLACD_VERSION}
     networks:
       - devenv
@@ -72,8 +61,6 @@ services:
       - pyst2:/src/pyst2/
       - ./media_root:/opt/omnileads/media_root
       - ../../../:/opt/omnileads/ominicontacto/
-      - ../../../../omlacd/grabaciones:/var/spool/asterisk/monitor
-      - ../../../modules/asterisk/source/astconf/:/etc/asterisk/
     working_dir: /opt/omnileads/ominicontacto
 
   wombat:
@@ -151,7 +138,7 @@ services:
       - TZ=${TZ}
       - ENV=devenv
       - INFRA=docker
-    image: freetechsolutions/omlnginx:210802.01
+    image: freetechsolutions/omlnginx:develop
     networks:
       - devenv
     privileged: true
@@ -253,6 +240,30 @@ services:
     volumes:
       - ../../../omnileads_ui/:/home/app
 
+  minio:
+    tty: true
+    container_name: omls3
+    image: quay.io/minio/minio
+    command: server --console-address ":9001" /data
+    expose:
+      - "9000"
+      - "9001"
+    ports:
+      - 9001:9001/tcp
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    networks:
+      - devenv
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+
 networks:
   devenv:
     ipam:
@@ -266,3 +277,4 @@ volumes:
   redis_data:
   requirements:
   pyst2:
+  minio_data:
