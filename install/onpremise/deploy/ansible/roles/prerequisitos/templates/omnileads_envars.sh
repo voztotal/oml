@@ -1,3 +1,4 @@
+CALLREC_DEVICE={{ callrec_device }}
 AMI_USER={{ ami_user }}
 AMI_PASSWORD={{ ami_password }}
 ASTERISK_HOSTNAME={{ asterisk_host }}
@@ -44,13 +45,13 @@ WOMBAT_USER={{ dialer_user }}
 WOMBAT_PASSWORD={{ dialer_password }}
 #S3 Bucket CALLREC envars
 {% if s3_bucket_name is defined %}
-    S3_STORAGE_ENABLED=true
-    S3_BUCKET_NAME={{ s3_bucket_name }}
-    {% if callrec_device != "s3-aws" %}
-        AWS_ACCESS_KEY={{ s3_access_key }}
-        AWS_SECRET_KEY={{ s3_secret_key }}
-        S3_ENDPOINT={{ s3url }}
-    {% endif %}
+S3_STORAGE_ENABLED=true
+S3_BUCKET_NAME={{ s3_bucket_name }}
+{% if callrec_device != "s3-aws" %}
+AWS_ACCESS_KEY={{ s3_access_key }}
+AWS_SECRET_KEY={{ s3_secret_key }}
+S3_ENDPOINT={{ s3url }}
+{% endif %}
 {% endif %}
 # OML version envars
 OML_BRANCH={{ oml_release }}

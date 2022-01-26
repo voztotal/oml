@@ -236,6 +236,15 @@
       executable: /bin/bash
     when: reset_admin_password == "true"
 
+  # Download backup-restore script
+  - name: omlutilities repo
+    ansible.builtin.git:
+      repo: '{{ oml_utilities_repo }}'
+      dest: /opt/omnileads/utils
+      version: main
+    when:
+      - asterisk_host != "localhost"
+
   # Set up permissions for {{ install_prefix }} directory
   - name: Set up permissions for {{ install_prefix }} directory
     file: state=directory path={{ install_prefix }} owner={{ usuario }} group={{ usuario }} recurse=yes
