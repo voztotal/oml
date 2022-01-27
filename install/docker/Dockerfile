@@ -41,7 +41,7 @@ COPY reportes_app $INSTALL_PREFIX/ominicontacto/reportes_app
 COPY supervision_app $INSTALL_PREFIX/ominicontacto/supervision_app
 COPY utiles_globales.py manage.py $INSTALL_PREFIX/ominicontacto/
 
-RUN git clone https://gitlab.com/omnileads/omlutilities.git $INSTALL_PREFIX/utils
+RUN git clone --branch develop https://gitlab.com/omnileads/omlutilities.git $INSTALL_PREFIX/utils
 
 COPY install/docker/scripts/oml_uwsgi.ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini
 COPY install/docker/scripts/docker-entrypoint.sh /docker-entrypoint.sh
