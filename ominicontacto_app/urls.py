@@ -225,6 +225,15 @@ urlpatterns = [
         name='auditar_calificacion_cliente'),
 
 
+
+    # ==========================================================================
+    # Auditorías a Supervisor
+    # ==========================================================================
+    url(r'^seguridad/auditoria/$',
+        login_required(views_auditorias.SeguridadAuditoriaView.as_view()),
+        name='seguridad_auditoria'),
+
+
     # ==========================================================================
     # Servicios para phoneJS
     # ==========================================================================
@@ -724,6 +733,19 @@ urlpatterns = [
         login_required(
             views_campana_dialer.ReglasDeIncidenciaDeCalificacionesUpdateView.as_view()),
         name="disposition_incidence_edit"),
+    url(r'^campana_dialer/reglas_incidencia/(?P<pk>\d+)/borrar/$',
+        login_required(
+            views_campana_dialer.ReglasDeIncidenciaDeleteView.as_view()),
+        name="incidence_delete"),
+    url(r'^campana_dialer/reglas_incidencia/(?P<pk_campana>\d+)/crear/$',
+        login_required(
+            views_campana_dialer.ReglasDeIncidenciaCreateView.as_view()),
+        name="incidence_create"),
+    url(r'^campana_dialer/reglas_incidencia/(?P<pk>\d+)/editar/$',
+        login_required(
+            views_campana_dialer.ReglasDeIncidenciaUpdateView.as_view()),
+        name="incidence_edit"),
+
 
     # ==========================================================================
     # Campana Manual

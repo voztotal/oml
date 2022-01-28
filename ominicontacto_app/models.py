@@ -50,6 +50,9 @@ from django_extensions.db.models import TimeStampedModel
 from simple_history.models import HistoricalRecords
 from simple_history.utils import update_change_reason
 
+from auditlog.registry import auditlog
+from auditlog.models import AuditlogHistoryField
+
 from ominicontacto_app.utiles import (
     ValidadorDeNombreDeCampoExtra, fecha_local, datetime_hora_maxima_dia,
     datetime_hora_minima_dia, remplace_espacio_por_guion, dividir_lista)
@@ -311,6 +314,7 @@ class AgenteProfile(models.Model):
         (ESTADO_PAUSA, 'PAUSA'),
     )
 
+    history = AuditlogHistoryField()
     objects = AgenteProfileManager()
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sip_extension = models.IntegerField(unique=True)
@@ -383,6 +387,9 @@ class AgenteProfile(models.Model):
         if self.grupo.limitar_agendas_personales_en_dias:
             return True, self.grupo.tiempo_maximo_para_agendar
         return False, 0
+
+
+auditlog.register(AgenteProfile)
 
 
 class SupervisorProfile(models.Model):
@@ -1083,6 +1090,8 @@ class Campana(models.Model):
 
     TIEMPO_ACTUALIZACION_CONTACTOS = 1
 
+    history = AuditlogHistoryField()
+
     estado = models.PositiveIntegerField(
         choices=ESTADOS,
         default=ESTADO_INACTIVA,
@@ -1425,6 +1434,9 @@ class Campana(models.Model):
         return self.type == self.TYPE_DIALER
 
 
+auditlog.register(Campana)
+
+
 class OpcionCalificacion(models.Model):
     """
     Especifica el tipo de formulario al cual será redireccionada
@@ -1625,6 +1637,9 @@ class Queue(models.Model):
 
     class Meta:
         db_table = 'queue_table'
+
+
+auditlog.register(Queue)
 
 
 class QueueMemberManager(models.Manager):
@@ -3220,6 +3235,14 @@ class ReglasIncidencia(models.Model):
         return "Regla de incidencia para la campana: {0} - estado: {1}".format(
             self.campana.nombre, self.estado)
 
+    @property
+    def wombat_id(self):
+        return str(self.estado_personalizado or "")
+
+    @property
+    def campaign_id_wombat(self):
+        return self.campana.campaign_id_wombat
+
     def get_estado_wombat(self):
         if self.estado is ReglasIncidencia.RS_BUSY:
             return "RS_BUSY"
@@ -3274,6 +3297,10 @@ class ReglaIncidenciaPorCalificacion(models.Model):
     @property
     def wombat_id(self):
         return "DISP{0}".format(self.opcion_calificacion.id)
+
+    @property
+    def campaign_id_wombat(self):
+        return self.opcion_calificacion.campana.campaign_id_wombat
 
     def get_en_modo_wombat(self):
         if self.en_modo is ReglasIncidencia.FIXED:
