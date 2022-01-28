@@ -11,7 +11,7 @@ services:
     networks:
       - devenv
     ports:
-      - 5130-5133:5160-5163/udp
+      - 5160-5163:5160-5163/udp
     privileged: true
     restart: on-failure
     stop_grace_period: 1m30s
@@ -19,7 +19,7 @@ services:
       - ../../../../omlacd/grabaciones:/var/spool/asterisk/monitor/
       - ../../../../omlacd/source/astconf:/etc/asterisk/
       - ../../../../omlacd/source/agis:/var/lib/asterisk/agi-bin/
-      - ../../../../omlacd/source/sounds:/var/lib/asterisk/sounds/
+      - ../../../../omlacd/source/sounds/oml:/var/lib/asterisk/sounds/
       - ../../../../omlacd/source/scripts:/opt/omnileads/asterisk/virtualenv/scripts
     working_dir: /etc/asterisk
 
