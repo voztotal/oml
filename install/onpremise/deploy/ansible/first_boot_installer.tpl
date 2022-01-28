@@ -21,7 +21,7 @@
 #export oml_infras_stage=onpremise
 
 # The GitLab branch
-#export oml_app_release=master
+#export oml_app_release=release-1.21.0
 
 # OMniLeads tenant NAME
 #export oml_tenant_name=onpremise
@@ -33,9 +33,9 @@
 # Parameters for S3 when s3 is selected as store for oml_callrec_device
 #export s3_access_key=
 #export s3_secret_key=
-# s3url Only when use DIGITALOCEAN
-#export s3url=
 #export s3_bucket_name=
+# s3url Only when use non AWS S3 object
+#export s3url=
 
 # Parameters for NFS when nfs is selected as store for oml_callrec_device
 #export nfs_host=
@@ -48,7 +48,7 @@
 #export pgsql_device=NULL
 
 # Set your network interface
-#export oml_nic=enp0s3
+#export oml_nic=eth0
 
 # ******* Variables for ACD Asterisk *******
 # AMI connection from OMLApp
@@ -233,7 +233,6 @@ case ${oml_infras_stage} in
     systemctl start amazon-ssm-agent
     ;;
   *)
-    #yum update -y
     yum -y install git python3 python3-pip kernel-devel epel-release libselinux-python3
     ;;
 esac
@@ -373,7 +372,7 @@ if [ -f $PATH_CERTS/key.pem ] && [ -f $PATH_CERTS/cert.pem ];then
         cp $PATH_CERTS/cert.pem $SRC/ominicontacto/install/onpremise/deploy/ansible/certs
 fi
 
-sleep 4
+sleep 2
 echo "******************** deploy.sh execution ********************"
 
 cd $PATH_DEPLOY
@@ -382,20 +381,6 @@ cd $PATH_DEPLOY
 echo "******************** NET File Systen callrec ********************"
 
 case ${oml_callrec_device} in
-  s3-do)
-    echo "Callrec device: S3-DigitalOcean \n"
-    yum install -y s3fs-fuse
-    echo "${s3_access_key}:${s3_secret_key} " > ~/.passwd-s3fs
-    chmod 600 ~/.passwd-s3fs
-    if [ ! -d $CALLREC_DIR_DST ];then
-      mkdir -p $CALLREC_DIR_DST
-      chown omnileads.omnileads -R $CALLREC_DIR_DST
-    fi
-    echo "${s3_bucket_name} $CALLREC_DIR_DST fuse.s3fs _netdev,allow_other,use_path_request_style,url=${s3url} 0 0" >> /etc/fstab
-    mount -a
-    ;;
-  s3-aws)
-    echo "Callrec device: S3-DigitalOcean \n"
   nfs)
     echo "Callrec device: NFS \n"
     yum install -y nfs-utils nfs-utils-lib
@@ -413,11 +398,11 @@ case ${oml_callrec_device} in
     mount -a
     ;;
   *)
-    echo "callrec on local filesystem \n"
+    echo "other method ... \n"
     ;;
  esac
 
-sleep 10
+sleep 5
 
 echo "******************** Exec task if RTP run AIO ********************"
 
