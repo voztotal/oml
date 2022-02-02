@@ -66,7 +66,6 @@ class APITest(OMLBaseTest):
             'AgentsCampaign': 'api_agents_campaign',
             'UpdateAgentsCampaign': 'api_update_agents_campaign',
             'ActiveAgents': 'api_active_agents',
-            'ActiveAgentsByGroup': 'api_active_agents_by_group',
         }
         
         self.post_update_agents_campaign = {
@@ -95,14 +94,6 @@ class AddAgentsToCampaignTest(APITest):
         response_json = json.loads(response.content)
         self.assertEqual(response_json['status'], 'SUCCESS')
         self.assertEqual(response_json['message'],_('Se obtuvieron los agentes de forma exitosa'))
-
-    def test_obtener_agentes_activos_por_grupo(self):
-        URL = reverse(self.urls_api['ActiveAgentsByGroup'])
-        response = self.client.get(URL, follow=True)
-        self.assertEqual(response.status_code, 200)
-        response_json = json.loads(response.content)
-        self.assertEqual(response_json['status'], 'SUCCESS')
-        self.assertEqual(response_json['message'],_('Se obtuvieron los grupos con agentes de forma exitosa'))
     
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.creacion_queue.ActivacionQueueService.activar')

@@ -125,8 +125,6 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_active_agents',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
-            {'nombre': 'api_active_agents_by_group',
-             'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
     informacion_de_permisos = {
@@ -256,7 +254,4 @@ class ApiAppConfig(AppConfig):
         'api_active_agents':
             {'descripcion': _('Obtiene todos los agentes activos'),
              'version': '1.19.0'},
-        'api_active_agents_by_group':
-            {'descripcion': _('Obtiene todos los agentes activos por grupo'),
-             'version': '1.19.0'}
     }

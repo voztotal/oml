@@ -35,7 +35,7 @@ from api_app.views.supervisor import (
     ExportarCSVContactados, ExportarCSVCalificados, ExportarCSVNoAtendidos, StatusCampanasEntrantesView,
     ContactosAsignadosCampanaPreviewView, ExportarCSVCalificacionesCampana,
     ExportarCSVFormularioGestionCampana, ExportarCSVResultadosBaseContactados, DashboardSupervision,
-    AgentesCampana, ActualizaAgentesCampana, AgentesActivos, AgentesActivosPorGrupo)
+    AgentesCampana, ActualizaAgentesCampana, AgentesActivos)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
@@ -161,9 +161,6 @@ urlpatterns = [
     url(r'api/v1/active_agents/$',
         AgentesActivos.as_view(),
         name='api_active_agents'),
-    url(r'api/v1/active_agents_by_group/$',
-        AgentesActivosPorGrupo.as_view(),
-        name='api_active_agents_by_group'),
 
 
     # ###########     AGENTE      ############ #
