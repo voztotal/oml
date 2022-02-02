@@ -1035,27 +1035,27 @@ class AgentesActivos(APIView):
     renderer_classes = (JSONRenderer, )
     http_method_names = ['get']
 
-def get(self, request):
-    data = {
-        'status': 'SUCCESS',
-        'message': _(u'Se obtuvieron los agentes de forma exitosa'),
-        'active_agents': [],
-        'groups': []}
-    try:
-        agentes = AgenteProfile.objects.obtener_activos().prefetch_related('user')
-        data['active_agents'] = [AgenteActivoSerializer(a).data for a in agentes]
+    def get(self, request):
+        data = {
+            'status': 'SUCCESS',
+            'message': _(u'Se obtuvieron los agentes de forma exitosa'),
+            'active_agents': [],
+            'groups': []}
+        try:
+            agentes = AgenteProfile.objects.obtener_activos().prefetch_related('user')
+            data['active_agents'] = [AgenteActivoSerializer(a).data for a in agentes]
 
-        grupos = Grupo.objects.all()
-        for grupo in grupos:
-            agents_by_group = AgenteProfile.objects.obtener_activos()\
-                                            .prefetch_related('user').filter(grupo=grupo)
-            data['groups'].append({
-                "group": GrupoSerializer(grupo).data,
-                "agents": [AgenteActivoSerializer(a).data for a in agents_by_group]
-            })
+            grupos = Grupo.objects.all()
+            for grupo in grupos:
+                agents_by_group = AgenteProfile.objects.obtener_activos()\
+                                                .prefetch_related('user').filter(grupo=grupo)
+                data['groups'].append({
+                    "group": GrupoSerializer(grupo).data,
+                    "agents": [AgenteActivoSerializer(a).data for a in agents_by_group]
+                })
 
-        return Response(data=data, status=status.HTTP_200_OK)
-    except Campana.DoesNotExist:
-        data['status']= 'ERROR'
-        data['message']= _(u'Error al obtener los agentes activos')
-        return Response(data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(data=data, status=status.HTTP_200_OK)
+        except Campana.DoesNotExist:
+            data['status']= 'ERROR'
+            data['message']= _(u'Error al obtener los agentes activos')
+            return Response(data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
