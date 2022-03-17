@@ -56,8 +56,11 @@ AWS_DEFAULT_REGION=us-east-1
 {% endif %}
 {% endif %}
 # Key for Google maps API
-{% if google_key is defined %}
-GOOGLE_KEY={{ google_key }}
+{% if google_maps_api_key is defined %}
+GOOGLE_MAPS_API_KEY={{ google_maps_api_key }}
+{% endif %}
+{% if google_maps_center is defined %}
+GOOGLE_MAPS_CENTER={{ google_maps_center }}
 {% endif %}
 # OML version envars
 OML_BRANCH={{ oml_release }}
