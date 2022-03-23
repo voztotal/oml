@@ -37,7 +37,7 @@ from api_app.views.supervisor import (
     ContactosAsignadosCampanaPreviewView, ExportarCSVCalificacionesCampana,
     ExportarCSVFormularioGestionCampana, ExportarCSVResultadosBaseContactados,
     DashboardSupervision, AuditSupervisor,
-    AgentesCampana, ActualizaAgentesCampana, AgentesActivos, AgentesActivosPorGrupo)
+    AgentesCampana, ActualizaAgentesCampana, AgentesActivos)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,

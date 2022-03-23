@@ -1,4 +1,4 @@
-export function getToasConfig(title = '', text = '', icon = 'success') {
+export function getToasConfig (title = '', text = '', icon = 'success') {
     return {
         title,
         text,
@@ -8,6 +8,6 @@ export function getToasConfig(title = '', text = '', icon = 'success') {
         showCloseButton: true,
         backdrop: false,
         position: 'top-end',
-        toast: true,
-    }
+        toast: true
+    };
 }

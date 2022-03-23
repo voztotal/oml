@@ -11,14 +11,14 @@ module.exports = {
     publicPath: '/static/omnileads-ui-supervision/',
     pages: {
         page_dashboard: {
-            entry: 'src/page_dashboard/main.js',
+            entry: 'src/pages/dashboard/main.js',
             template: 'public/index.html',
             filename: 'index.html',
             title: 'dashboard',
             chunks: ['chunk-vendors', 'chunk-common', 'page_dashboard']
         },
         page_audit: {
-            entry: 'src/page_audit/main.js',
+            entry: 'src/pages/audit/main.js',
             template: 'public/audit.html',
             filename: 'audit.html',
             title: 'audit',
@@ -30,7 +30,7 @@ module.exports = {
             filename: 'add_agents_to_campaign.html',
             title: 'add_agents_to_campaign',
             chunks: ['chunk-vendors', 'chunk-common', 'add_agents_to_campaign']
-        },
+        }
     },
     devServer: {
         proxy: {

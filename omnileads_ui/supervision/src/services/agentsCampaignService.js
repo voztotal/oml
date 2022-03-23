@@ -1,57 +1,53 @@
-import apiUrls from './../const/api-urls'
-import { HTTP, BaseService } from './apiBaseService'
+import apiUrls from './../const/api-urls';
+import { HTTP, BaseService } from './apiBaseService';
 
 export default class AgentsCampaignService extends BaseService {
-    constructor() {
-        super()
-    }
-
-    async getAgentsByCampaign(id_campaign) {
+    async getAgentsByCampaign (idCampaign) {
         try {
-            let resp = await fetch(apiUrls.CampaignAgents(id_campaign), this.payload)
-            let agents_by_campaign = await resp.json()
-            return agents_by_campaign
+            const resp = await fetch(apiUrls.CampaignAgents(idCampaign), this.payload);
+            const agentsByCampaign = await resp.json();
+            return agentsByCampaign;
         } catch (error) {
-            console.error("No se pudieron obtener los agentes por campaña")
-            return []
+            console.error('No se pudieron obtener los agentes por campaña');
+            return [];
         }
     }
 
-    async getActiveAgents() {
+    async getActiveAgents () {
         try {
-            let resp = await fetch(apiUrls.ActiveAgents, this.payload)
-            let agents = await resp.json()
-            return agents
+            const resp = await fetch(apiUrls.ActiveAgents, this.payload);
+            const agents = await resp.json();
+            return agents;
         } catch (error) {
-            console.error("No se pudieron obtener los agentes activos")
-            return []
+            console.error('No se pudieron obtener los agentes activos');
+            return [];
         }
     }
 
-    async getActiveAgentsByGroup() {
+    async getActiveAgentsByGroup () {
         try {
-            let resp = await fetch(apiUrls.ActiveAgentsByGroup, this.payload)
-            let agents_by_group = await resp.json()
-            return agents_by_group
+            const resp = await fetch(apiUrls.ActiveAgentsByGroup, this.payload);
+            const agentsByGroup = await resp.json();
+            return agentsByGroup;
         } catch (error) {
-            console.error("No se pudieron obtener los agentes activos por grupo")
-            return []
+            console.error('No se pudieron obtener los agentes activos por grupo');
+            return [];
         }
     }
 
-    async updateAgentsByCampaign(data) {
+    async updateAgentsByCampaign (data) {
         try {
-            this.setPayload(HTTP.POST, JSON.stringify(data))
+            this.setPayload(HTTP.POST, JSON.stringify(data));
             const resp = await fetch(
                 apiUrls.UpdateAgentsCampaign,
                 this.payload
-            )
-            this.initPayload()
-            return resp
+            );
+            this.initPayload();
+            return resp;
         } catch (error) {
-            console.error("No se pudieron actualizar los agentes de la campaña")
-            console.error(error)
-            return {}
+            console.error('No se pudieron actualizar los agentes de la campaña');
+            console.error(error);
+            return {};
         }
     }
 }

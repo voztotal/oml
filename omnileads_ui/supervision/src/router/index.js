@@ -7,12 +7,12 @@ const routes = [
     {
         path: '/',
         name: 'dashboard',
-        component: DashboardSupervision,
+        component: DashboardSupervision
     },
     {
         path: '/index.html',
         name: 'dashboard',
-        component: DashboardSupervision,
+        component: DashboardSupervision
     },
     {
         path: '/index.html',
@@ -22,13 +22,13 @@ const routes = [
     {
         path: '/audit.html',
         name: 'audit_supervisor',
-        component: AuditSupervisor,
+        component: AuditSupervisor
     },
     {
         path: '/add_agents_to_campaign.html',
         name: 'add_agents_to_campaign',
         component: AddAgentsToCampaign
-    },
+    }
 ];
 
 const router = createRouter({

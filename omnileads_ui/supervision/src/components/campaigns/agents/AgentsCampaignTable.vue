@@ -99,76 +99,76 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
-import { FilterMatchMode } from "primevue/api";
-import { getToasConfig } from "@/helpers/sweet_alerts_helper.js";
+import { mapGetters, mapActions } from 'vuex';
+import { FilterMatchMode } from 'primevue/api';
+import { getToasConfig } from '@/helpers/sweet_alerts_helper.js';
 
 export default {
-  data() {
-    return {
-      filters: null,
-      penalties: [
-        { label: `${this.$t('penalty')} 0`, value: 0 },
-        { label: `${this.$t('penalty')} 1`, value: 1 },
-        { label: `${this.$t('penalty')} 2`, value: 2 },
-        { label: `${this.$t('penalty')} 3`, value: 3 },
-        { label: `${this.$t('penalty')} 4`, value: 4 },
-        { label: `${this.$t('penalty')} 5`, value: 5 },
-        { label: `${this.$t('penalty')} 6`, value: 6 },
-        { label: `${this.$t('penalty')} 7`, value: 7 },
-        { label: `${this.$t('penalty')} 8`, value: 8 },
-        { label: `${this.$t('penalty')} 9`, value: 9 },
-      ],
-    };
-  },
-  created() {
-    this.initFilters();
-  },
-  methods: {
-    clearFilter() {
-      this.initFilters();
+    data () {
+        return {
+            filters: null,
+            penalties: [
+                { label: `${this.$t('penalty')} 0`, value: 0 },
+                { label: `${this.$t('penalty')} 1`, value: 1 },
+                { label: `${this.$t('penalty')} 2`, value: 2 },
+                { label: `${this.$t('penalty')} 3`, value: 3 },
+                { label: `${this.$t('penalty')} 4`, value: 4 },
+                { label: `${this.$t('penalty')} 5`, value: 5 },
+                { label: `${this.$t('penalty')} 6`, value: 6 },
+                { label: `${this.$t('penalty')} 7`, value: 7 },
+                { label: `${this.$t('penalty')} 8`, value: 8 },
+                { label: `${this.$t('penalty')} 9`, value: 9 }
+            ]
+        };
     },
-    initFilters() {
-      this.filters = {
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-      };
+    created () {
+        this.initFilters();
     },
-    removeAgent(agent_id) {
-      this.removeAgentOfCampaign(agent_id);
-      this.$swal(
-        getToasConfig(
-          this.$t("sweet_alert.title.success"),
-          this.$t("pages.add_agents_to_campaign.agent_deleted_success"),
-          this.$t("sweet_alert.icons.success")
-        )
-      );
+    methods: {
+        clearFilter () {
+            this.initFilters();
+        },
+        initFilters () {
+            this.filters = {
+                global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+            };
+        },
+        removeAgent (agentId) {
+            this.removeAgentOfCampaign(agentId);
+            this.$swal(
+                getToasConfig(
+                    this.$t('sweet_alert.title.success'),
+                    this.$t('pages.add_agents_to_campaign.agent_deleted_success'),
+                    this.$t('sweet_alert.icons.success')
+                )
+            );
+        },
+        onCellEditComplete (event) {
+            const { data, newValue } = event;
+            this.updateAgentPenalty({
+                agent_id: data.agent_id,
+                penalty: newValue
+            });
+            this.$swal(
+                getToasConfig(
+                    this.$t('sweet_alert.title.success'),
+                    this.$t('pages.add_agents_to_campaign.penalty_updated_success'),
+                    this.$t('sweet_alert.icons.success')
+                )
+            );
+        },
+        ...mapActions(['removeAgentOfCampaign', 'updateAgentPenalty'])
     },
-    onCellEditComplete(event) {
-      let { data, newValue } = event;
-      this.updateAgentPenalty({
-        agent_id: data["agent_id"],
-        penalty: newValue,
-      });
-      this.$swal(
-        getToasConfig(
-          this.$t("sweet_alert.title.success"),
-          this.$t("pages.add_agents_to_campaign.penalty_updated_success"),
-          this.$t("sweet_alert.icons.success")
-        )
-      );
+    watch: {
+        agents_by_campaign: {
+            deep: true,
+            handler () {}
+        }
     },
-    ...mapActions(["removeAgentOfCampaign", "updateAgentPenalty"]),
-  },
-  watch: {
-    agents_by_campaign: {
-      deep: true,
-      handler() {},
-    },
-  },
-  computed: {
-    ...mapGetters({
-      agents_by_campaign: "getAgentsByCampaign",
-    }),
-  },
+    computed: {
+        ...mapGetters({
+            agents_by_campaign: 'getAgentsByCampaign'
+        })
+    }
 };
 </script>
