@@ -2,9 +2,9 @@
 
 # Basado en https://gist.github.com/linhmtran168/2286aeafe747e78f53bf
 
-TARGET_BRANCH_SHA=`git rev-parse origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}`
+TARGET_BRANCH_SHA=$(git rev-parse origin/"${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-develop}")
 
-STAGED_FILES=`git diff $TARGET_BRANCH_SHA...HEAD --name-only --diff-filter=ACM | grep ".*\.js$"`
+STAGED_FILES=$(git diff "${TARGET_BRANCH_SHA}"...HEAD --name-only --diff-filter=ACM | grep ".*\.js$")
 
 
 if [[ "$STAGED_FILES" = "" ]]; then
@@ -13,20 +13,15 @@ fi
 
 PASS=true
 
-echo "\nValidating Javascript code:\n"
-
-# Check for eslint
-which eslint &> /dev/null
-if [[ "$?" == 1 ]]; then
-  echo "Please install ESlintm"
+if ! command -v eslint 1>/dev/null; then
+  echo "Please install ESlint"
   exit 1
 fi
 
-for FILE in $STAGED_FILES
-do
-  eslint "$FILE"
+echo "Validating Javascript code:"
 
-  if [[ "$?" == 0 ]]; then
+for FILE in $STAGED_FILES; do
+  if eslint "$FILE"; then
     echo "ESLint Passed: $FILE"
   else
     echo "ESLint Failed: $FILE"
@@ -34,10 +29,10 @@ do
   fi
 done
 
-echo "\nJavascript validation completed!\n"
+echo "Javascript validation completed!"
 
 if ! $PASS; then
-  echo "COMMIT FAILED:\033[0m Your commit contains files that should pass ESLint but do not. Please fix the ESLint errors and try again.\n"
+  echo "COMMIT FAILED:\033[0m Your commit contains files that should pass ESLint but do not. Please fix the ESLint errors and try again."
   exit 1
 else
   echo "COMMIT SUCCEEDED"
