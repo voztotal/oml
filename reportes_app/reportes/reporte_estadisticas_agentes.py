@@ -96,7 +96,7 @@ class ReporteEstadisticasDiariaAgente(object):
         self.desde = datetime_hora_minima_dia(hoy)
         self.hasta = datetime_hora_maxima_dia(hoy)
         self.inicializar_estadisticas()
-        self.logs_llamadas = list(self._obtener_logs_de_llamadas())
+        self.logs_llamadas = self._obtener_logs_de_llamadas()
         self.calificaciones = list(self._obtener_estadisticas_calificacion())
         self.calcular_estadisticas()
 
@@ -179,15 +179,9 @@ class ReporteEstadisticasDiariaAgente(object):
         if agente_id not in self.estadisticas:
             return
         if evento == 'ANSWER' and tipo_campana != Campana.TYPE_DIALER:
-            if len(self.estadisticas[agente_id]['logs']) < self.CANTIDAD_LOGS:
-                self.adicionar_log(numero_marcado, callid, agente_id, campana_id, tipo_campana,
-                                   contacto_id)
             self.estadisticas[agente_id]['conectadas']['total'] += 1
             self.estadisticas[agente_id]['conectadas']['salientes'] += 1
         if evento == 'CONNECT':
-            if len(self.estadisticas[agente_id]['logs']) < self.CANTIDAD_LOGS:
-                self.adicionar_log(numero_marcado, callid, agente_id, campana_id, tipo_campana,
-                                   contacto_id)
             self.estadisticas[agente_id]['conectadas']['total'] += 1
             if tipo_llamada == LlamadaLog.LLAMADA_ENTRANTE:
                 self.estadisticas[agente_id]['conectadas']['entrantes'] += 1
@@ -210,6 +204,16 @@ class ReporteEstadisticasDiariaAgente(object):
         self.contabilizar_estadisticas_actividad()
         for calificacion in self.calificaciones:
             self.contabilizar_estadisticas_calificaciones(calificacion)
+            log_llamada = self.logs_llamadas.\
+                filter(callid=calificacion.callid, agente_id=calificacion.agente.pk).first()
+            callid = log_llamada.callid
+            agente_id = log_llamada.agente_id
+            tipo_campana = log_llamada.tipo_campana
+            numero_marcado = log_llamada.numero_marcado
+            contacto_id = log_llamada.contacto_id
+            campana_id = log_llamada.campana_id
+            self.adicionar_log(
+                numero_marcado, callid, agente_id, campana_id, tipo_campana, contacto_id)
 
         for log_llamada in self.logs_llamadas:
             callid = log_llamada.callid
