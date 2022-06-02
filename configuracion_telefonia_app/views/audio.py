@@ -26,6 +26,7 @@ import tempfile
 import base64
 import json
 
+from django.db.models import Max
 from django.urls import reverse
 from django.contrib import messages
 from django.shortcuts import redirect
@@ -224,6 +225,7 @@ class MusicaDeEsperaCreateView(ArchivoDeAudioMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(MusicaDeEsperaCreateView, self).get_context_data()
+        context['playlist_id'] = self.playlist.id
         playlist_tmp = []
 
         for pl in self.playlist.musicas.all():
@@ -248,6 +250,8 @@ class MusicaDeEsperaCreateView(ArchivoDeAudioMixin, CreateView):
         return context
 
     def form_valid(self, form):
+        max = self.playlist.musicas.aggregate(Max('orden'))['orden__max']
+        form.instance.orden = max + 1
         form.save()
         self._procesar_archivo_de_audio(form)
         # Si esta musica es la primera que se agrega a la playlist:

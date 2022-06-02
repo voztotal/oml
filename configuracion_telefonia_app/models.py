@@ -542,6 +542,7 @@ class MusicaDeEspera(models.Model):
         null=True, blank=True,
     )
     playlist = models.ForeignKey(Playlist, related_name='musicas', on_delete=models.CASCADE)
+    orden = models.PositiveIntegerField(default=0)
 
     @property
     def descripcion(self):

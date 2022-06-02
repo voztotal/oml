@@ -19,8 +19,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load i18n %}
+{% load static %}
+
+{% block extra_js %}
+<script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
+<script type="text/javascript" src="{% static 'configuracion_telefonia_app/JS/jquery-ui.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'configuracion_telefonia_app/JS/orden_playlist.js' %}"></script>
+{% endblock %}
 
 {% block content %}
+<input type="hidden" id="playlist_id" value="{{ playlist_id }}" />
 <h1>{% trans 'Editar Playlists de Música en Espera: ' %}{{ playlist.nombre }}</h1>
 
 <table class="table">
@@ -31,9 +39,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <th>{% trans 'Acciones' %}</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="music_list">
     {% for musica in playlist %}
-        <tr>
+        <tr music-id="{{ musica.pk }}">
             <td>{{ musica.nombre }}</td>
             <td>
                 <audio id="audio" preload="metadata" src="{{musica.url}}" controls></audio>
@@ -51,6 +59,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     {% endfor %}
     </tbody>
 </table>
+<button type="submit" id="save_button" class="btn btn-primary" disabled="disabled">
+    {% trans 'Guardar Orden' %}
+</button>
 
 <h3>{% trans 'Agregar Musica en Espera' %}</h1>
 <form action="" enctype="multipart/form-data" method="post">

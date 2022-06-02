@@ -20,7 +20,7 @@
 from __future__ import unicode_literals
 from api_app.views.usuarios import ListadoAgentes, ListadoGrupos
 
-from django.urls import include, re_path
+from django.urls import include, re_path, path
 from rest_framework import routers
 from django.contrib.auth.decorators import login_required
 
@@ -51,7 +51,7 @@ from api_app.views.agente import (
     AgentRejectCallAsterisk
 )
 from api_app.views.grabaciones import ObtenerArchivoGrabacionView, ObtenerArchivosGrabacionView
-from api_app.views.audios import ListadoAudiosView
+from api_app.views.audios import ListadoAudiosView, SavePlaylistOrder
 from api_app.views.wombat_dialer import ReiniciarWombat, WombatState
 from api_app.views.system import AsteriskQueuesData
 
@@ -238,6 +238,8 @@ urlpatterns = [
     # ###########  AUDIOS ASTERISK    ############ #
     re_path(r'^api/v1/audio/list',
             ListadoAudiosView.as_view({'get': 'list'}), name='api_audios_listado'),
+    path('api/v1/playlist/order/',
+         SavePlaylistOrder.as_view(), name='api_playlist_save_order'),
     # ###########  USUARIOS    ############ #
     re_path(r'^api/v1/group/list',
             ListadoGrupos.as_view({'get': 'list'}), name='api_grupos'),

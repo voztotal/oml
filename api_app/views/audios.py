@@ -18,12 +18,20 @@
 #
 
 from __future__ import unicode_literals
-from api_app.views.permissions import TienePermisoOML
-from api_app.authentication import ExpiringTokenAuthentication
+from django.utils.translation import ugettext as _
+
 from rest_framework.authentication import SessionAuthentication
 from rest_framework import viewsets
+from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from api_app.views.permissions import TienePermisoOML
+from api_app.authentication import ExpiringTokenAuthentication
 from api_app.serializers import AudioSerializer
+
 from ominicontacto_app.models import ArchivoDeAudio
+from configuracion_telefonia_app.models import Playlist
 
 
 class ListadoAudiosView(viewsets.ReadOnlyModelViewSet):
@@ -36,3 +44,38 @@ class ListadoAudiosView(viewsets.ReadOnlyModelViewSet):
             .objects \
             .all() \
             .exclude(borrado=True)
+
+
+class SavePlaylistOrder(APIView):
+    """ Guarda un nuevo orden para las musicas de una playlist """
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['post']
+
+    def post(self, request):
+        playlist_id = request.POST.get('id', 0)
+        try:
+            playlist = Playlist.objects.get(id=playlist_id)
+        except Playlist.DoesNotExist:
+            return Response(data={
+                'status': 'ERROR',
+                'message': _('Playlist inexistente')
+            })
+
+        orden = request.POST.getlist('order[]', [])
+        ids_musicas = set([str(x) for x in playlist.musicas.values_list('id', flat=True)])
+        if not ids_musicas == set(orden):
+            return Response(data={
+                'status': 'ERROR',
+                'message': _('IDs de musicas incorrectos: {0}' + str(orden))
+            })
+
+        for musica in playlist.musicas.all():
+            musica.orden = orden.index(str(musica.id))
+            musica.save()
+
+        return Response(data={
+            'status': 'OK',
+        })
+        # TODO: IMPACTAR EN REDIS? / ASTERISK?

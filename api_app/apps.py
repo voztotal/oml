@@ -115,6 +115,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'api_audios_listado',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_playlist_save_order',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_grupos',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_agentes',
@@ -266,6 +268,9 @@ class ApiAppConfig(AppConfig):
         'api_audios_listado':
             {'descripcion': _('Lista audios de asterisk'),
              'version': '1.16.0'},
+        'api_playlist_save_order':
+            {'descripcion': _('Orden de musicas de playlist'),
+             'version': '1.24.0'},
         'api_grupos':
             {'descripcion': _('Lista de grupos de agentes'),
              'version': '1.17.0'},
