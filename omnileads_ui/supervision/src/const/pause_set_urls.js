@@ -1,5 +1,5 @@
 export default {
-    ActivePauses: '/api/v1/pauses',
+    ActivePauses: '/api/v1/pause_sets/pause_options',
     PauseSetsList: '/api/v1/pause_sets',
     PauseSetCreate: '/api/v1/pause_sets/create/',
     PauseSetDetail: (id) => `/api/v1/pause_sets/${id}`,
