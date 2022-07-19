@@ -183,51 +183,6 @@ class OrdenTroncalBaseFormset(BaseInlineFormSet):
         super(OrdenTroncalBaseFormset, self).save()
 
 
-class RutaEntranteForm(forms.ModelForm):
-
-    tipo_destino = forms.ChoiceField(
-        widget=forms.Select(attrs={'class': 'form-control', 'id': 'tipo_destino'}),
-        label=_('Tipo de destino')
-    )
-
-    field_order = ('nombre', 'telefono', 'prefijo_caller_id', 'idioma', 'tipo_destino',
-                   'destino')
-
-    class Meta:
-        model = RutaEntrante
-        exclude = ()
-        widgets = {
-            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
-            'telefono': forms.TextInput(attrs={'class': 'form-control'}),
-            'prefijo_caller_id': forms.TextInput(attrs={'class': 'form-control'}),
-            'idioma': forms.Select(attrs={'class': 'form-control'}),
-            'destino': forms.Select(attrs={'class': 'form-control', 'id': 'destino'}),
-        }
-        labels = {
-            'telefono': _('Número DID'),
-            'nombre': _('Nombre'),
-            'prefijo_caller_id': _('Prefijo caller id'),
-            'idioma': _('Idioma'),
-            'destino': _('Destino')
-        }
-
-    def __init__(self, *args, **kwargs):
-        super(RutaEntranteForm, self).__init__(*args, **kwargs)
-        tipo_destino_choices = [EMPTY_CHOICE]
-        tipo_destino_choices.extend(DestinoEntrante.TIPOS_DESTINOS)
-        self.fields['tipo_destino'].choices = tipo_destino_choices
-        instance = getattr(self, 'instance', None)
-        if instance.pk is not None:
-            tipo = instance.destino.tipo
-            self.initial['tipo_destino'] = tipo
-            destinos_qs = DestinoEntrante.get_destinos_por_tipo(tipo)
-            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, str(dest_entr))
-                                                         for dest_entr in destinos_qs]
-            self.fields['destino'].choices = destino_entrante_choices
-        else:
-            self.fields['destino'].choices = ()
-
-
 class IVRForm(forms.ModelForm):
 
     AUDIO_OML = '1'
