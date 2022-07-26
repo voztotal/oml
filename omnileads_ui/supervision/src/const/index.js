@@ -4,6 +4,7 @@ import CallDispositionUrls from './call_disposition_urls';
 import ExternalSystemUrls from './external_system_urls';
 import FormUrls from './form_urls';
 import InboundRouteUrls from './inbound_route_urls';
+import OutboundRouteUrls from './outbound_route_urls';
 
 export default {
     DashboardSupervision: '/api/v1/dashboard_supervision',
@@ -16,5 +17,6 @@ export default {
     ...CallDispositionUrls,
     ...ExternalSystemUrls,
     ...FormUrls,
-    ...InboundRouteUrls
+    ...InboundRouteUrls,
+    ...OutboundRouteUrls
 };

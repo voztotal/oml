@@ -47,6 +47,7 @@ export default {
     external_system: 'Sistema externo | Sistemas externos',
     form: 'Formulario | Formularios',
     inbound_route: 'Ruta entrante | Rutas entrantes',
+    outbound_route: 'Ruta saliente | Rutas salientes',
     // -------------
     // -- Actions --
     // -------------

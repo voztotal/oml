@@ -77,5 +77,9 @@ export default {
         idiom: 'Idioma',
         destiny: 'Destino',
         destiny_type: 'Tipo de destino'
+    },
+    outbound_route: {
+        id: 'ID',
+        name: 'Nombre'
     }
 };

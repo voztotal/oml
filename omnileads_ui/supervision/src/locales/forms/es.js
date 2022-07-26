@@ -61,5 +61,10 @@ export default {
             id_client: 'Identificador cliente',
             custom_dst: 'Destino personalizado'
         }
+    },
+    outbound_route: {
+        enter_name: 'Ingresa el nombre',
+        edit_outbound_route: 'Edita la ruta saliente',
+        new_outbound_route: 'Nueva ruta saliente'
     }
 };
