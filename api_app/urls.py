@@ -66,6 +66,8 @@ from api_app.views.inbound_route import (
     InboundRouteDetail,
     InboundRouteList,
     InboundRouteUpdate)
+from api_app.views.outbound_route import (
+    OutboundRouteList, OutboundRouteDetail, OutboundRouteSIPTrunksList)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
@@ -356,6 +358,27 @@ urlpatterns = [
     re_path(r'api/v1/inbound_routes/destinations_by_type/$',
             InboundRouteDestinations.as_view(),
             name='api_inbound_routes_destinations_by_type'),
+    # =========================
+    # Rutas Salientes
+    # =========================
+    re_path(r'api/v1/outbound_routes/$',
+            OutboundRouteList.as_view(),
+            name='api_outbound_routes_list'),
+#     re_path(r'api/v1/outbound_routes/create/$',
+#             InboundRouteCreate.as_view(),
+#             name='api_outbound_routes_create'),
+#     re_path(r'api/v1/outbound_routes/(?P<pk>\d+)/update/$',
+#             InboundRouteUpdate.as_view(),
+#             name='api_outbound_routes_update'),
+    re_path(r'api/v1/outbound_routes/(?P<pk>\d+)/$',
+            OutboundRouteDetail.as_view(),
+            name='api_outbound_routes_detail'),
+#     re_path(r'api/v1/outbound_routes/(?P<pk>\d+)/delete/$',
+#             InboundRouteDelete.as_view(),
+#             name='api_outbound_routes_delete'),
+    re_path(r'api/v1/outbound_routes/sip_trunks$',
+            OutboundRouteSIPTrunksList.as_view(),
+            name='api_outbound_routes_sip_trunks'),
     # ###########     AGENTE      ############ #
     re_path(r'^api/v1/campaign/(?P<pk_campana>\d+)/contacts/$',
             API_ObtenerContactosCampanaView.as_view(), name='api_contactos_campana'),

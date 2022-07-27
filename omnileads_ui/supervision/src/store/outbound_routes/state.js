@@ -4,5 +4,6 @@ export default {
     outboundRouteForm: {
         id: null,
         nombre: ''
-    }
+    },
+    sipTrunks: []
 };

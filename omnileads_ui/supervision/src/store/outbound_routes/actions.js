@@ -22,5 +22,9 @@ export default {
     },
     async deleteOutboundRoute ({ commit }, id) {
         return await service.delete(id);
+    },
+    async initOutboundRouteSipTrunks ({ commit }) {
+        const { status, sipTrunks } = await service.sip_trunks();
+        commit('initOutboundRouteSipTrunks', status === 'SUCCESS' ? sipTrunks : []);
     }
 };

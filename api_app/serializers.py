@@ -22,7 +22,9 @@ from __future__ import unicode_literals
 import json
 
 from django.forms import ValidationError
-from configuracion_telefonia_app.models import DestinoEntrante, RutaEntrante
+from configuracion_telefonia_app.models import (
+    DestinoEntrante, OrdenTroncal, PatronDeDiscado, RutaEntrante,
+    RutaSaliente, TroncalSIP)
 from configuracion_telefonia_app.views.base import (
     escribir_ruta_entrante_config, eliminar_ruta_entrante_config)
 from rest_framework import serializers
@@ -702,4 +704,61 @@ class RutaEntranteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RutaEntrante
+        fields = '__all__'
+
+
+class RutaSalienteTroncalSIPSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = TroncalSIP
+        fields = ('id', 'nombre')
+
+
+class PatronDeDiscadoSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False, allow_null=True)
+
+    class Meta:
+        model = PatronDeDiscado
+        fields = ('id', 'prepend', 'prefix',
+                  'match_pattern', 'orden')
+
+
+class OrdenTroncalSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False, allow_null=True)
+
+    class Meta:
+        model = OrdenTroncal
+        fields = ('id', 'orden', 'troncal')
+
+
+class RutaSalienteSerializer(serializers.ModelSerializer):
+    patrones_de_discado = PatronDeDiscadoSerializer(many=True)
+    troncales = OrdenTroncalSerializer(source='secuencia_troncales', many=True)
+
+    # def get_destino(self, validated_data):
+    #     destino = validated_data.pop('destino')
+    #     validated_data['destino'] = DestinoEntrante.objects.get(
+    #         pk=destino['id'])
+
+    # def update(self, instance, validated_data):
+    #     eliminar_ruta_entrante_config(self, instance)
+    #     self.get_destino(validated_data)
+    #     instance.nombre = validated_data.get('nombre', instance.nombre)
+    #     instance.telefono = validated_data.get('telefono', instance.telefono)
+    #     instance.prefijo_caller_id = validated_data.get(
+    #         'prefijo_caller_id', instance.prefijo_caller_id)
+    #     instance.idioma = validated_data.get('idioma', instance.idioma)
+    #     instance.destino = validated_data.get('destino', instance.destino)
+    #     instance.save()
+    #     escribir_ruta_entrante_config(self, instance)
+    #     return instance
+
+    # def create(self, validated_data):
+    #     self.get_destino(validated_data)
+    #     ruta = RutaEntrante.objects.create(**validated_data)
+    #     escribir_ruta_entrante_config(self, ruta)
+    #     return ruta
+
+    class Meta:
+        model = RutaSaliente
         fields = '__all__'

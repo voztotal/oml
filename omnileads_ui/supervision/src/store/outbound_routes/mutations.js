@@ -18,5 +18,8 @@ export default {
                 id: outboundRoute.id
             };
         }
+    },
+    initOutboundRouteSipTrunks (state, sipTrunks) {
+        state.sipTrunks = sipTrunks;
     }
 };
