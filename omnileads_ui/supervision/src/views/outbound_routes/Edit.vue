@@ -2,7 +2,7 @@
   <div class="card">
     <Toolbar class="mb-4">
       <template #start>
-        <h1>{{ $t("forms.outbound_route.edit_outbound_route") }}</h1>
+        <h1>{{ $t("views.outbound_route.edit_title") }}</h1>
       </template>
       <template #end>
         <Button
@@ -13,7 +13,7 @@
         />
       </template>
     </Toolbar>
-    <Form :outboundRoute="outboundRouteDetail" :formToCreate="false" />
+    <Form :outboundRoute="outboundRoute" :formToCreate="false" />
   </div>
 </template>
 
@@ -27,17 +27,16 @@ export default {
     },
     async created () {
         const id = this.$route.params.id;
-        await this.initOutboundRouteDetail(id);
-        await this.initOutboundRouteForm(this.outboundRouteDetail);
+        await this.initOutboundRoute(id);
     },
     methods: {
-        ...mapActions(['initOutboundRouteDetail', 'initOutboundRouteForm']),
+        ...mapActions(['initOutboundRoute']),
         backToOutboundRoutesList () {
             this.$router.push({ name: 'outbound_routes' });
         }
     },
     computed: {
-        ...mapState(['outboundRouteDetail'])
+        ...mapState(['outboundRoute'])
     }
 };
 </script>

@@ -1,191 +1,151 @@
 <template>
   <div class="card">
     <div class="grid formgrid mt-4">
-      <div class="field col-6">
+      <div class="field col-4">
         <label
-          id="inbound_route_name"
+          id="outbound_route_name"
           :class="{
-            'p-error': v$.inboundRouteForm.nombre.$invalid && submitted,
+            'p-error': v$.outboundRoute.nombre.$invalid && submitted || repeatedRouteName || invalidRouteName,
           }"
-          >{{ $t("models.inbound_route.name") }}*</label
+          >{{ $t("models.outbound_route.name") }}*</label
         >
         <div class="p-inputgroup mt-2">
           <span class="p-inputgroup-addon">
             <i class="pi pi-list"></i>
           </span>
           <InputText
-            id="inbound_route_name"
+            id="outbound_route_name"
             :class="{
-              'p-invalid': v$.inboundRouteForm.nombre.$invalid && submitted,
+              'p-invalid': v$.outboundRoute.nombre.$invalid && submitted || repeatedRouteName || invalidRouteName,
             }"
-            :placeholder="$t('forms.inbound_route.enter_name')"
-            v-model="v$.inboundRouteForm.nombre.$model"
+            @input="inputRouteNameEvent"
+            :placeholder="$t('forms.outbound_route.enter_name')"
+            v-model="v$.outboundRoute.nombre.$model"
           />
         </div>
         <small
           v-if="
-            (v$.inboundRouteForm.nombre.$invalid && submitted) ||
-            v$.inboundRouteForm.nombre.$pending.$response
+            (v$.outboundRoute.nombre.$invalid && submitted) ||
+            v$.outboundRoute.nombre.$pending.$response
           "
           class="p-error"
           >{{
-            v$.inboundRouteForm.nombre.required.$message.replace(
+            v$.outboundRoute.nombre.required.$message.replace(
               "Value",
-              $t("models.inbound_route.name")
+              $t("models.outbound_route.name")
             )
           }}</small
         >
+        <small
+          v-if="repeatedRouteName"
+          class="p-error"
+          >{{
+            $t('forms.outbound_route.validations.repeated_route_name')
+          }}</small
+        >
+        <small
+          v-if="invalidRouteName"
+          class="p-error"
+          >{{
+            $t('forms.outbound_route.validations.invalid_route_name')
+          }}</small
+        >
       </div>
-      <div class="field col-6">
+      <div class="field col-4">
         <label
-          id="inbound_route_phone"
+          id="outbound_route_ring_time"
           :class="{
-            'p-error': v$.inboundRouteForm.telefono.$invalid && submitted,
+            'p-error': v$.outboundRoute.ring_time.$invalid && submitted,
           }"
-          >{{ $t("models.inbound_route.phone") }}*</label
+          >{{ $t("models.outbound_route.ring_time") }}*</label
         >
         <div class="p-inputgroup mt-2">
           <span class="p-inputgroup-addon">
-            <i class="pi pi-phone"></i>
+            <i class="pi pi-bell"></i>
           </span>
           <InputText
-            id="inbound_route_phone"
+            id="outbound_route_ring_time"
             :class="{
-              'p-invalid': v$.inboundRouteForm.telefono.$invalid && submitted,
+              'p-invalid': v$.outboundRoute.ring_time.$invalid && submitted,
             }"
-            :placeholder="$t('forms.inbound_route.enter_phone')"
-            v-model="v$.inboundRouteForm.telefono.$model"
+            :placeholder="$t('forms.outbound_route.enter_ring_time')"
+            v-model="v$.outboundRoute.ring_time.$model"
           />
         </div>
+        <small>
+          {{ $t('globals.in_seconds')}}
+        </small>
         <small
           v-if="
-            (v$.inboundRouteForm.telefono.$invalid && submitted) ||
-            v$.inboundRouteForm.telefono.$pending.$response
+            (v$.outboundRoute.ring_time.$invalid && submitted) ||
+            v$.outboundRoute.ring_time.$pending.$response
           "
           class="p-error"
           >{{
-            v$.inboundRouteForm.telefono.required.$message.replace(
+            v$.outboundRoute.ring_time.required.$message.replace(
               "Value",
-              $t("models.inbound_route.phone")
+              $t("models.outbound_route.ring_time")
             )
           }}</small
         >
       </div>
-      <div class="field col-6">
+      <div class="field col-4">
         <label
-          id="inbound_route_caller_id"
-          >{{ $t("models.inbound_route.caller_id") }}</label
+          id="outbound_route_dial_options"
+          :class="{
+            'p-error': v$.outboundRoute.dial_options.$invalid && submitted,
+          }"
+          >{{ $t("models.outbound_route.dial_options") }}*</label
         >
         <div class="p-inputgroup mt-2">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-list"></i>
+          </span>
           <InputText
-            id="inbound_route_caller_id"
-            :placeholder="$t('forms.inbound_route.enter_caller_id')"
-            v-model="inboundRouteForm.prefijo_caller_id"
+            id="outbound_route_dial_options"
+            :class="{
+              'p-invalid': v$.outboundRoute.dial_options.$invalid && submitted,
+            }"
+            :placeholder="$t('forms.outbound_route.enter_dial_option')"
+            v-model="v$.outboundRoute.dial_options.$model"
           />
         </div>
+        <small
+          v-if="
+            (v$.outboundRoute.dial_options.$invalid && submitted) ||
+            v$.outboundRoute.dial_options.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.outboundRoute.dial_options.required.$message.replace(
+              "Value",
+              $t("models.outbound_route.dial_options")
+            )
+          }}</small
+        >
       </div>
-      <div class="field col-6">
-          <label
-            id="pause_type"
-            :class="{
-              'p-error': v$.inboundRouteForm.idioma.$invalid && submitted,
-            }"
-            >{{ $t("models.inbound_route.idiom") }}*</label
-          >
-          <Dropdown
-            v-model="inboundRouteForm.idioma"
-            class="w-full mt-2"
-            :class="{
-              'p-invalid': v$.inboundRouteForm.idioma.$invalid && submitted,
-            }"
-            :options="languages"
-            placeholder="-----"
-            optionLabel="option"
-            optionValue="value"
-            :emptyFilterMessage="$t('globals.without_data')"
-          />
-          <small
-            v-if="
-              (v$.inboundRouteForm.idioma.$invalid && submitted) ||
-              v$.inboundRouteForm.idioma.$pending.$response
-            "
-            class="p-error"
-            >{{
-              v$.inboundRouteForm.idioma.required.$message.replace(
-                "Value",
-                $t("models.inbound_route.idiom")
-              )
-            }}</small
-          >
+    </div>
+    <div class="grid formgrid mt-4">
+      <div class="field col-8">
+        <h2>{{ $tc('globals.dial_pattern', 2) }}</h2>
+        <InlineMessage v-if="emptyDialPatterns" severity="warn" class="mb-3">{{
+          $t("forms.outbound_route.validations.not_empty_dial_patterns")
+        }}</InlineMessage>
+        <DialPatternsTable
+          :dialPatterns="outboundRoute.patrones_de_discado"
+          @handleDialPatternModalEvent="handleDialPatternModal"
+        />
       </div>
-      <div class="field col-6">
-          <label
-            id="pause_type"
-            :class="{
-              'p-error': v$.inboundRouteForm.tipo_destino.$invalid && submitted,
-            }"
-            >{{ $t("models.inbound_route.destiny_type") }}*</label
-          >
-          <Dropdown
-            v-model="inboundRouteForm.tipo_destino"
-            class="w-full mt-2"
-            :class="{
-              'p-invalid': v$.inboundRouteForm.tipo_destino.$invalid && submitted,
-            }"
-            :options="destination_types"
-            placeholder="-----"
-            optionLabel="option"
-            optionValue="value"
-            @change="getDestinations"
-            :emptyFilterMessage="$t('globals.without_data')"
-          />
-          <small
-            v-if="
-              (v$.inboundRouteForm.tipo_destino.$invalid && submitted) ||
-              v$.inboundRouteForm.tipo_destino.$pending.$response
-            "
-            class="p-error"
-            >{{
-              v$.inboundRouteForm.tipo_destino.required.$message.replace(
-                "Value",
-                $t("models.inbound_route.destiny_type")
-              )
-            }}</small
-          >
-      </div>
-      <div class="field col-6">
-          <label
-            id="pause_type"
-            :class="{
-              'p-error': v$.inboundRouteForm.destino.$invalid && submitted,
-            }"
-            >{{ $t("models.inbound_route.destiny") }}*</label
-          >
-          <Dropdown
-            v-model="inboundRouteForm.destino"
-            class="w-full mt-2"
-            :class="{
-              'p-invalid': v$.inboundRouteForm.destino.$invalid && submitted,
-            }"
-            :options="destinations_filter"
-            placeholder="-----"
-            optionLabel="nombre"
-            optionValue="id"
-            :emptyFilterMessage="$t('globals.without_data')"
-          />
-          <small
-            v-if="
-              (v$.inboundRouteForm.destino.$invalid && submitted) ||
-              v$.inboundRouteForm.destino.$pending.$response
-            "
-            class="p-error"
-            >{{
-              v$.inboundRouteForm.destino.required.$message.replace(
-                "Value",
-                $t("models.inbound_route.destiny")
-              )
-            }}</small
-          >
+      <div class="field col-4">
+        <h2>{{ $tc('globals.trunk', 2) }}</h2>
+        <InlineMessage v-if="emptyTrunks" severity="warn" class="mb-3">{{
+          $t("forms.outbound_route.validations.not_empty_trunks")
+        }}</InlineMessage>
+        <SipTrunksTable
+          :trunks="filteredTrunksToList"
+          @handleTrunkModalEvent="handleTrunkModal"
+          @initTrunksEvent="filterTrunksToList"
+        />
       </div>
     </div>
     <div class="flex justify-content-end flex-wrap">
@@ -198,6 +158,16 @@
         />
       </div>
     </div>
+    <ModalToAddDialPattern
+      :dialPatterns="outboundRoute.patrones_de_discado"
+      :showModal="showDialPatternModal"
+      @handleDialPatternModalEvent="handleDialPatternModal"
+    />
+    <ModalToAddTrunk
+      :trunks="filteredTrunks"
+      :showModal="showTrunkModal"
+      @handleTrunkModalEvent="handleTrunkModal"
+    />
   </div>
 </template>
 
@@ -205,19 +175,27 @@
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 import { mapActions, mapState } from 'vuex';
+import DialPatternsTable from '@/components/outbound_routes/DialPatternsTable';
+import SipTrunksTable from '@/components/outbound_routes/SipTrunksTable';
+import ModalToAddDialPattern from '@/components/outbound_routes/ModalToAddDialPattern';
+import ModalToAddTrunk from '@/components/outbound_routes/ModalToAddTrunk';
 
 export default {
-    setup: () => ({ v$: useVuelidate() }),
+    setup: () => ({ v$: useVuelidate({ $scope: false }) }),
     validations () {
         return {
-            inboundRouteForm: {
+            outboundRoute: {
                 nombre: { required },
-                telefono: { required },
-                tipo_destino: { required },
-                destino: { required },
-                idioma: { required }
+                ring_time: { required },
+                dial_options: { required }
             }
         };
+    },
+    components: {
+        DialPatternsTable,
+        SipTrunksTable,
+        ModalToAddDialPattern,
+        ModalToAddTrunk
     },
     inject: ['$helpers'],
     props: {
@@ -229,62 +207,107 @@ export default {
     data () {
         return {
             submitted: false,
-            languages: [
-                { option: this.$t('forms.inbound_route.languages.en'), value: 1 },
-                { option: this.$t('forms.inbound_route.languages.es'), value: 2 }
-            ],
-            destination_types: [
-                { option: this.$t('forms.inbound_route.destination_types.campaign'), value: 1 },
-                { option: this.$t('forms.inbound_route.destination_types.validation_date'), value: 2 },
-                { option: this.$t('forms.inbound_route.destination_types.ivr'), value: 3 },
-                { option: this.$t('forms.inbound_route.destination_types.hangup'), value: 5 },
-                { option: this.$t('forms.inbound_route.destination_types.id_client'), value: 9 },
-                { option: this.$t('forms.inbound_route.destination_types.custom_dst'), value: 7 }
-            ],
-            destinations_filter: []
+            showDialPatternModal: false,
+            emptyDialPatterns: false,
+            emptyTrunks: false,
+            showTrunkModal: false,
+            invalidRouteName: false,
+            repeatedRouteName: false,
+            filteredTrunks: [],
+            filteredTrunksToList: []
         };
     },
     computed: {
-        ...mapState(['inboundRouteForm', 'destinations'])
+        ...mapState(['outboundRoute', 'sipTrunks', 'outboundRoutes'])
     },
     async created () {
         await this.initializeData();
-        await this.initInboundRoutesDestinations();
-        await this.getDestinations();
+        await this.initOutboundRoutes();
+        await this.initOutboundRouteSipTrunks();
+        await this.filterTrunksToList();
     },
     methods: {
         ...mapActions([
-            'createInboundRoute',
-            'updateInboundRoute',
-            'initInboundRoutes',
-            'initInboundRoutesDestinations'
+            'createOutboundRoute',
+            'updateOutboundRoute',
+            'initOutboundRoutes',
+            'initOutboundRouteSipTrunks',
+            'initDialPatternForm'
         ]),
         initializeData () {
             this.submitted = false;
+            this.showDialPatternModal = false;
+            this.emptyDialPatterns = false;
+            this.emptyTrunks = false;
+            this.showTrunkModal = false;
+            this.repeatedRouteName = false;
+            this.invalidRouteName = false;
+            this.filteredTrunks = [];
+            this.filteredTrunksToList = [];
         },
-        getDestinations () {
-            this.destinations_filter = this.inboundRouteForm.tipo_destino !== null ? this.destinations[`${this.inboundRouteForm.tipo_destino}`] : [];
+        filterTrunks () {
+            const ids = this.outboundRoute.troncales.map((t) => t.troncal);
+            this.filteredTrunks = this.sipTrunks.filter((t) => !ids.includes(t.id));
+        },
+        filterTrunksToList () {
+            const ids = this.outboundRoute.troncales.map((t) => t.troncal);
+            this.filteredTrunksToList = this.sipTrunks.filter((t) => ids.includes(t.id));
+        },
+        checkEmptyTrunks () {
+            this.emptyTrunks = this.outboundRoute.troncales.length === 0;
+        },
+        checkEmptyDialPatterns () {
+            this.emptyDialPatterns =
+        this.outboundRoute.patrones_de_discado.length === 0;
+        },
+        inputRouteNameEvent () {
+            this.repeatedRouteName = this.outboundRoutes.find(
+                (or) => or.nombre === this.outboundRoute.nombre
+            );
+            var re = new RegExp('^[a-zA-Z0-9_]+$');
+            this.invalidRouteName = !re.test(this.outboundRoute.nombre);
+        },
+        newDialPattern () {
+            this.showDialPatternModal = true;
+            this.initDialPatternForm();
+            this.emptyDialPatterns = false;
+        },
+        handleDialPatternModal (showModal) {
+            this.showDialPatternModal = showModal;
+            this.initDialPatternForm();
+            this.checkEmptyDialPatterns();
+        },
+        newTrunk () {
+            this.showTrunkModal = true;
+            this.filterTrunks();
+            this.emptyTrunks = false;
+        },
+        handleTrunkModal (showModal) {
+            this.showTrunkModal = showModal;
+            this.filterTrunks();
+            this.filterTrunksToList();
+            this.checkEmptyTrunks();
         },
         async save (isFormValid) {
             this.submitted = true;
-            if (!isFormValid) {
+            this.checkEmptyTrunks();
+            this.checkEmptyDialPatterns();
+            if (!isFormValid || this.emptyDialPatterns || this.emptyTrunks || this.repeatedRouteName || this.invalidRouteName) {
                 return null;
             }
-            const idDestino = this.inboundRouteForm.destino;
-            this.inboundRouteForm.destino = this.destinations_filter.find(d => d.id === idDestino);
             var response = null;
             if (this.formToCreate) {
-                response = await this.createInboundRoute(this.inboundRouteForm);
+                response = await this.createOutboundRoute(this.outboundRoute);
             } else {
-                response = await this.updateInboundRoute({
-                    id: this.inboundRouteForm.id,
-                    data: this.inboundRouteForm
+                response = await this.updateOutboundRoute({
+                    id: this.outboundRoute.id,
+                    data: this.outboundRoute
                 });
             }
             const { status, message } = response;
             if (status === 'SUCCESS') {
-                await this.initInboundRoutes();
-                this.$router.push({ name: 'inbound_routes' });
+                await this.initOutboundRoutes();
+                this.$router.push({ name: 'outbound_routes' });
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.success_notification'),

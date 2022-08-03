@@ -26,7 +26,7 @@ from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
 from api_app.authentication import ExpiringTokenAuthentication
 from api_app.views.permissions import TienePermisoOML
-from api_app.serializers import (
+from api_app.serializers.inbound_route import (
     RutaEntranteSerializer, DestinoEntranteSerializer)
 from configuracion_telefonia_app.models import DestinoEntrante, RutaEntrante
 from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (

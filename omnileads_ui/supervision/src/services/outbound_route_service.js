@@ -73,12 +73,25 @@ export default class OutboundRouteService extends BaseService {
         }
     }
 
-    async sip_trunks () {
+    async sipTrunks () {
         try {
             const resp = await fetch(urls.OutboundRouteSipTrunks, this.payload);
             return await resp.json();
         } catch (error) {
             console.error('No se pudieron obtener las troncales sip');
+            return [];
+        }
+    }
+
+    async orphanTrunks (id) {
+        try {
+            const resp = await fetch(
+                urls.OutboundRouteOrphanTrunks(id),
+                this.payload
+            );
+            return await resp.json();
+        } catch (error) {
+            console.error('No se pudieron obtener las troncales huerfanas de la ruta saliente');
             return [];
         }
     }

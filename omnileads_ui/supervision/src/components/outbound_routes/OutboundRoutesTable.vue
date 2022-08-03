@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <DataTable
-      :value="inboundRoutes"
+      :value="outboundRoutes"
       class="p-datatable-sm"
       showGridlines
       :scrollable="true"
@@ -22,6 +22,7 @@
       :filters="filters"
       filterDisplay="menu"
       :globalFilterFields="['nombre']"
+      :reorderableColumns="true" @rowReorder="onRowReorder"
     >
       <template #header>
         <div class="flex justify-content-between flex-wrap">
@@ -50,34 +51,33 @@
       </template>
       <template #empty> {{ $t("globals.without_data") }} </template>
       <template #loading> {{ $t("globals.load_info") }} </template>
+      <Column :rowReorder="true" headerStyle="width: 1rem" :reorderableColumn="false" />
       <Column
         field="nombre"
         :sortable="true"
-        :header="$t('models.inbound_route.name')"
+        :header="$t('models.outbound_route.name')"
       ></Column>
       <Column
-        field="telefono"
-        :header="$t('models.inbound_route.phone')"
-      ></Column>
-      <Column
-        field="prefijo_caller_id"
-        :header="$t('models.inbound_route.caller_id')"
-      ></Column>
-      <Column
-        field="idioma"
+        field="ring_time"
         :sortable="true"
-        :header="$t('models.inbound_route.idiom')"
-      >
-        <template #body="{ data }">
-          {{ getIdioma(data.idioma) }}
-        </template>
-      </Column>
+        :header="$t('models.outbound_route.ring_time')"
+      ></Column>
+      <Column
+        field="dial_options"
+        :header="$t('models.outbound_route.dial_options')"
+      ></Column>
       <Column
         :header="$tc('globals.option', 2)"
         style="max-width: 25rem"
         :exportable="false"
       >
         <template #body="slotProps">
+          <Button
+            icon="pi pi-eye"
+            class="p-button-info ml-2"
+            @click="detail(slotProps.data)"
+            v-tooltip.top="$t('globals.show')"
+          />
           <Button
             icon="pi pi-pencil"
             class="p-button-warning ml-2"
@@ -93,35 +93,49 @@
         </template>
       </Column>
     </DataTable>
+    <ModalOutboundRouteDetail :outboundRoute='outboundRouteDetail' :showModal='showModalDetail' @handleModalDetailEvent='handleModalDetail' />
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import { FilterMatchMode } from 'primevue/api';
+import ModalOutboundRouteDetail from '@/components/outbound_routes/ModalOutboundRouteDetail';
 
 export default {
     inject: ['$helpers'],
     props: {
-        inboundRoutes: {
+        outboundRoutes: {
             type: Array,
             default: () => []
         }
     },
+    components: {
+        ModalOutboundRouteDetail
+    },
     data () {
         return {
-            filters: null
+            filters: null,
+            showModalDetail: false,
+            outboundRouteDetail: {}
         };
     },
     created () {
         this.initFilters();
     },
+    computed: {
+        ...mapState(['orphanTrunks'])
+    },
     methods: {
+        ...mapActions(['initOutboundRoutes', 'deleteOutboundRoute', 'initOutboundRouteOrphanTrunks']),
+        onRowReorder (event) {
+            console.log('onRowReorder');
+            console.log(event);
+            // this.outboundRoutes = event.value;
+            // this.$toast.add({severity:'success', summary: 'Rows Reordered', life: 3000});
+        },
         clearFilter () {
             this.initFilters();
-        },
-        getIdioma (type) {
-            return type === 1 ? 'Ingles' : 'Espanol';
         },
         initFilters () {
             this.filters = {
@@ -130,15 +144,37 @@ export default {
         },
         edit (id) {
             this.$router.push({
-                name: 'inbound_routes_edit',
-                params: { id: id }
+                name: 'outbound_routes_edit',
+                params: { id }
             });
         },
+        detail (outboundRoute) {
+            this.showModalDetail = true;
+            this.outboundRouteDetail = outboundRoute;
+        },
+        handleModalDetail (showModal) {
+            this.showModalDetail = showModal;
+        },
+        getOrphanTrunksMessage () {
+            if (this.orphanTrunks.length > 0) {
+                var message = '<p>Al eliminar la ruta saliente los siguientes Troncales Sip quedarán sin ser usados por rutas Salientes</p>';
+                message += '<ul>';
+                this.orphanTrunsks.forEach(trunk => {
+                    message += `<li>${trunk.nombre}</li>`;
+                });
+                message += '</ul>';
+                return message;
+            } else {
+                return null;
+            }
+        },
         async remove (id) {
+            await this.initOutboundRouteOrphanTrunks(id);
             this.$swal({
                 title: this.$t('globals.sure_notification'),
                 icon: this.$t('globals.icon_warning'),
                 showCancelButton: true,
+                html: this.getOrphanTrunksMessage(),
                 confirmButtonText: this.$t('globals.yes'),
                 cancelButtonText: this.$t('globals.no'),
                 confirmButtonColor: '#4CAF50',
@@ -155,16 +191,15 @@ export default {
                             this.$swal.showLoading();
                         }
                     });
-                    const resp = await this.deleteInboundRoute(id);
+                    const response = await this.deleteOutboundRoute(id);
                     this.$swal.close();
-                    if (resp) {
-                        this.initInboundRoutes();
+                    const { status, message } = response;
+                    if (status === 'SUCCESS') {
+                        this.initOutboundRoutes();
                         this.$swal(
                             this.$helpers.getToasConfig(
                                 this.$t('globals.success_notification'),
-                                this.$tc('globals.success_deleted_type', {
-                                    type: this.$tc('globals.inbound_route')
-                                }),
+                                message,
                                 this.$t('globals.icon_success')
                             )
                         );
@@ -172,9 +207,7 @@ export default {
                         this.$swal(
                             this.$helpers.getToasConfig(
                                 this.$t('globals.error_notification'),
-                                this.$tc('globals.error_to_deleted_type', {
-                                    type: this.$tc('globals.inbound_route')
-                                }),
+                                message,
                                 this.$t('globals.icon_error')
                             )
                         );
@@ -184,18 +217,17 @@ export default {
                         this.$helpers.getToasConfig(
                             this.$t('globals.cancelled'),
                             this.$tc('globals.error_to_deleted_type', {
-                                type: this.$tc('globals.inbound_route')
+                                type: this.$tc('globals.outbound_route')
                             }),
                             this.$t('globals.icon_error')
                         )
                     );
                 }
             });
-        },
-        ...mapActions(['initInboundRoutes', 'deleteInboundRoute'])
+        }
     },
     watch: {
-        inboundRoutes: {
+        outboundRoutes: {
             handler () {},
             deep: true,
             immediate: true

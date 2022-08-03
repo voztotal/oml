@@ -80,6 +80,19 @@ export default {
     },
     outbound_route: {
         id: 'ID',
-        name: 'Nombre'
+        name: 'Nombre',
+        ring_time: 'Tiempo de ring',
+        dial_options: 'Opciones de discado',
+        order: 'Orden'
+    },
+    dial_pattern: {
+        prepend: 'Prepend',
+        prefix: 'Prefijo',
+        pattern: 'Patron de discado',
+        order: 'Orden'
+    },
+    trunk: {
+        name: 'Nombre',
+        order: 'Orden'
     }
 };

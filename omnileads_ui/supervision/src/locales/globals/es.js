@@ -48,6 +48,8 @@ export default {
     form: 'Formulario | Formularios',
     inbound_route: 'Ruta entrante | Rutas entrantes',
     outbound_route: 'Ruta saliente | Rutas salientes',
+    trunk: 'Troncal | Troncales',
+    dial_pattern: 'Patron de discado | Patrones de discado',
     // -------------
     // -- Actions --
     // -------------

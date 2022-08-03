@@ -7,12 +7,13 @@ export default {
         const { status, outboundRoutes } = await service.list();
         commit('initOutboundRoutes', status === 'SUCCESS' ? outboundRoutes : []);
     },
-    async initOutboundRouteDetail ({ commit }, id) {
-        const { status, outboundRoute } = await service.detail(id);
-        commit('initOutboundRouteDetail', status === 'SUCCESS' ? outboundRoute : {});
-    },
-    initOutboundRouteForm ({ commit }, data = null) {
-        commit('initOutboundRouteForm', data);
+    async initOutboundRoute ({ commit }, id = null) {
+        if (id) {
+            const { status, outboundRoute } = await service.detail(id);
+            commit('initOutboundRoute', status === 'SUCCESS' ? outboundRoute : null);
+        } else {
+            commit('initOutboundRoute', null);
+        }
     },
     async createOutboundRoute ({ commit }, data) {
         return await service.create(data);
@@ -24,7 +25,26 @@ export default {
         return await service.delete(id);
     },
     async initOutboundRouteSipTrunks ({ commit }) {
-        const { status, sipTrunks } = await service.sip_trunks();
+        const { status, sipTrunks } = await service.sipTrunks();
         commit('initOutboundRouteSipTrunks', status === 'SUCCESS' ? sipTrunks : []);
+    },
+    async initOutboundRouteOrphanTrunks ({ commit }, id) {
+        const { status, orphanTrunks } = await service.orphanTrunks(id);
+        commit('initOutboundRouteOrphanTrunks', status === 'SUCCESS' ? orphanTrunks : []);
+    },
+    initDialPatternForm ({ commit }, data = null) {
+        commit('initDialPatternForm', data);
+    },
+    addTrunk ({ commit }, trunk) {
+        commit('addTrunk', { id: null, troncal: trunk });
+    },
+    removeTrunk ({ commit }, trunkId) {
+        commit('removeTrunk', trunkId);
+    },
+    addDialPattern ({ commit }, dialPattern) {
+        commit('addDialPattern', dialPattern);
+    },
+    removeDialPattern ({ commit }, dialPattern) {
+        commit('removeDialPattern', dialPattern);
     }
 };

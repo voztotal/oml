@@ -37,6 +37,7 @@ import Calendar from 'primevue/calendar';
 import Steps from 'primevue/steps';
 import Toast from 'primevue/toast';
 import Textarea from 'primevue/textarea';
+import InlineMessage from 'primevue/inlinemessage';
 
 // Idiomas
 import { createI18n } from 'vue-i18n';
@@ -73,6 +74,7 @@ app.component('Calendar', Calendar);
 app.component('Steps', Steps);
 app.component('Toast', Toast);
 app.component('Textarea', Textarea);
+app.component('InlineMessage', InlineMessage);
 
 // Register Helpers
 app.provide('$helpers', Helpers);

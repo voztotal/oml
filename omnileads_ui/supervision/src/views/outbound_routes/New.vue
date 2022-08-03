@@ -2,7 +2,7 @@
   <div class="card">
     <Toolbar class="mb-4">
       <template #start>
-        <h1>{{ $t("forms.outbound_route.new_outbound_route") }}</h1>
+        <h1>{{ $t("views.outbound_route.new_title") }}</h1>
       </template>
       <template #end>
         <Button
@@ -26,10 +26,10 @@ export default {
         Form
     },
     created () {
-        this.initOutboundRouteForm();
+        this.initOutboundRoute();
     },
     methods: {
-        ...mapActions(['initOutboundRouteForm']),
+        ...mapActions(['initOutboundRoute']),
         backToOutboundRoutesList () {
             this.$router.push({ name: 'outbound_routes' });
         }

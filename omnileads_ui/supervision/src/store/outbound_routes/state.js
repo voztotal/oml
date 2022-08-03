@@ -1,9 +1,19 @@
 export default {
     outboundRoutes: [],
-    outboundRouteDetail: {},
-    outboundRouteForm: {
+    outboundRoute: {
         id: null,
-        nombre: ''
+        nombre: '',
+        ring_time: 25,
+        dial_options: 'Tt',
+        troncales: [],
+        patrones_de_discado: []
     },
-    sipTrunks: []
+    dialPattern: {
+        id: null,
+        prepend: null,
+        prefix: null,
+        match_pattern: null
+    },
+    sipTrunks: [],
+    orphanTrunks: []
 };

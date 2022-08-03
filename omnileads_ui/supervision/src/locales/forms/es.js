@@ -64,7 +64,16 @@ export default {
     },
     outbound_route: {
         enter_name: 'Ingresa el nombre',
-        edit_outbound_route: 'Edita la ruta saliente',
-        new_outbound_route: 'Nueva ruta saliente'
+        enter_ring_time: 'Ingresa el tiempo de ring',
+        enter_dial_option: 'Ingresa la opcion de discado',
+        validations: {
+            not_empty_dial_patterns: 'Debe existir al menos un patron de discado',
+            not_empty_trunks: 'Debe existir al menos una troncal',
+            repeated_route_name: 'Ya existe ruta saliente con ese nombre',
+            invalid_route_name: 'El nombre de la ruta es invalido'
+        }
+    },
+    dial_pattern: {
+        enter_pattern: 'Ingresa el patron'
     }
 };

@@ -26,13 +26,12 @@ from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
 from api_app.authentication import ExpiringTokenAuthentication
 from api_app.views.permissions import TienePermisoOML
-from api_app.serializers import (
+from api_app.serializers.outbound_route import (
     RutaSalienteSerializer,
     RutaSalienteTroncalSIPSerializer)
 from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP
-# from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
-#     SincronizadorDeConfiguracionRutaSalienteAsterisk,
-#     RestablecerConfiguracionTelefonicaError)
+from configuracion_telefonia_app.views.base import (
+    eliminar_ruta_saliente_config)
 
 
 class OutboundRouteList(APIView):
@@ -49,91 +48,89 @@ class OutboundRouteList(APIView):
                          'de forma exitosa'),
             'outboundRoutes': []}
         try:
-            rutas_entrantes = RutaSaliente.objects.all().order_by('id')
+            rutas_entrantes = RutaSaliente.objects.all().order_by('orden')
             data['outboundRoutes'] = [
                 RutaSalienteSerializer(r).data for r in rutas_entrantes]
             return Response(data=data, status=status.HTTP_200_OK)
-        except Exception as e:
-            print('ERROR')
-            print(e)
+        except Exception:
             data['status'] = 'ERROR'
             data['message'] = _(u'Error al obtener las rutas salientes')
             return Response(
                 data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-# class OutboundRouteCreate(APIView):
-#     permission_classes = (TienePermisoOML, )
-#     authentication_classes = (
-#         SessionAuthentication, ExpiringTokenAuthentication, )
-#     renderer_classes = (JSONRenderer, )
-#     http_method_names = ['post']
+class OutboundRouteCreate(APIView):
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (
+        SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['post']
 
-#     def post(self, request):
-#         try:
-#             responseData = {
-#                 'status': 'SUCCESS',
-#                 'errors': {},
-#                 'message': _('Se creo la ruta saliente '
-#                              'de forma exitosa')}
-#             ruta_entrante = RutaSalienteSerializer(data=request.data)
-#             if ruta_entrante.is_valid():
-#                 ruta_entrante.save()
-#                 return Response(data=responseData, status=status.HTTP_200_OK)
-#             else:
-#                 responseData['status'] = 'ERROR'
-#                 responseData['message'] = [
-#                     ruta_entrante.errors[key] for key in ruta_entrante.errors]
-#                 responseData['errors'] = ruta_entrante.errors
-#                 return Response(
-#                     data=responseData, status=status.HTTP_400_BAD_REQUEST)
-#         except Exception:
-#             responseData['status'] = 'ERROR'
-#             responseData['message'] = _('Error al crear la ruta saliente')
-#             return Response(
-#                 data=responseData,
-#                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    def post(self, request):
+        try:
+            responseData = {
+                'status': 'SUCCESS',
+                'errors': {},
+                'message': _('Se creo la ruta saliente '
+                             'de forma exitosa')}
+            ruta_saliente = RutaSalienteSerializer(data=request.data)
+            if ruta_saliente.is_valid():
+                ruta_saliente.save()
+                return Response(data=responseData, status=status.HTTP_200_OK)
+            else:
+                responseData['status'] = 'ERROR'
+                responseData['message'] = [
+                    ruta_saliente.errors[key] for key in ruta_saliente.errors]
+                responseData['errors'] = ruta_saliente.errors
+                return Response(
+                    data=responseData, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            responseData['status'] = 'ERROR'
+            responseData['message'] = _('Error al crear la ruta saliente')
+            return Response(
+                data=responseData,
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-# class OutboundRouteUpdate(APIView):
-#     permission_classes = (TienePermisoOML, )
-#     authentication_classes = (
-#         SessionAuthentication, ExpiringTokenAuthentication, )
-#     renderer_classes = (JSONRenderer, )
-#     http_method_names = ['put']
+class OutboundRouteUpdate(APIView):
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (
+        SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['put']
 
-#     def put(self, request, pk):
-#         data = {
-#             'status': 'SUCCESS',
-#             'errors': {},
-#             'message': _('Se actualizo la ruta saliente '
-#                          'de forma exitosa')}
-#         try:
-#             ruta_entrante = RutaSaliente.objects.get(pk=pk)
-#             serializer = RutaSalienteSerializer(
-#                 ruta_entrante, data=request.data)
-#             if serializer.is_valid():
-#                 serializer.save()
-#                 return Response(data=data, status=status.HTTP_200_OK)
-#             else:
-#                 data['status'] = 'ERROR'
-#                 data['message'] = [
-#                     serializer.errors[key] for key in serializer.errors]
-#                 data['errors'] = serializer.errors
-#                 return Response(
-#                     data=data, status=status.HTTP_400_BAD_REQUEST)
-#         except RutaSaliente.DoesNotExist:
-#             data['status'] = 'ERROR'
-#             data['message'] = _('No existe la ruta saliente '
-#                                 'que se quiere actualizar')
-#             return Response(
-#                 data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-#         except Exception:
-#             data['status'] = 'ERROR'
-#             data['message'] = _('Error al actualizar '
-#                                 'la ruta saliente')
-#             return Response(
-#                 data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    def put(self, request, pk):
+        data = {
+            'status': 'SUCCESS',
+            'errors': {},
+            'message': _('Se actualizo la ruta saliente '
+                         'de forma exitosa')}
+        try:
+            ruta_entrante = RutaSaliente.objects.get(pk=pk)
+            serializer = RutaSalienteSerializer(
+                ruta_entrante, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(data=data, status=status.HTTP_200_OK)
+            else:
+                data['status'] = 'ERROR'
+                data['message'] = [
+                    serializer.errors[key] for key in serializer.errors]
+                data['errors'] = serializer.errors
+                return Response(
+                    data=data, status=status.HTTP_400_BAD_REQUEST)
+        except RutaSaliente.DoesNotExist:
+            data['status'] = 'ERROR'
+            data['message'] = _('No existe la ruta saliente '
+                                'que se quiere actualizar')
+            return Response(
+                data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception:
+            data['status'] = 'ERROR'
+            data['message'] = _('Error al actualizar '
+                                'la ruta saliente')
+            return Response(
+                data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class OutboundRouteDetail(APIView):
@@ -168,46 +165,40 @@ class OutboundRouteDetail(APIView):
                 data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-# class OutboundRouteDelete(APIView):
-#     permission_classes = (TienePermisoOML, )
-#     authentication_classes = (
-#         SessionAuthentication, ExpiringTokenAuthentication, )
-#     renderer_classes = (JSONRenderer, )
-#     http_method_names = ['delete']
+class OutboundRouteDelete(APIView):
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (
+        SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['delete']
 
-#     def delete(self, request, pk):
-#         data = {
-#             'status': 'SUCCESS',
-#             'message': _('Se elimino la ruta saliente '
-#                          'de forma exitosa')}
-#         try:
-#             ruta_entrante = RutaSaliente.objects.get(pk=pk)
-#             if ruta_entrante.destino.tipo == 1 \
-#                     and ruta_entrante.destino.content_object.outr:
-#                 data['status'] = 'ERROR'
-#                 data['message'] = _('No está permitido eliminar una '
-#                                     'Ruta Entrante asociada con una campaña '
-#                                     'que tiene una Ruta Saliente.')
-#                 return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
-#             else:
-#                 sincronizador = SincronizadorDeConfiguracionRutaSalienteAsterisk()
-#                 sincronizador.eliminar_y_regenerar_asterisk(ruta_entrante)
-#                 ruta_entrante.delete()
-#             return Response(data=data, status=status.HTTP_200_OK)
-#         except RutaSaliente.DoesNotExist:
-#             data['status'] = 'ERROR'
-#             data['message'] = _(u'No existe la ruta saliente')
-#             return Response(
-#                 data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-#         except RestablecerConfiguracionTelefonicaError as e:
-#             data['status'] = 'ERROR'
-#             data['message'] = _('Error al eliminar la '
-#                                 'ruta saliente: {0}'.format(e))
-#         except Exception:
-#             data['status'] = 'ERROR'
-#             data['message'] = _(u'Error al eliminar la ruta saliente')
-#             return Response(
-#                 data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    def delete(self, request, pk):
+        data = {
+            'status': 'SUCCESS',
+            'message': _('Se elimino la ruta saliente '
+                         'de forma exitosa')}
+        try:
+            ruta_saliente = RutaSaliente.objects.get(pk=pk)
+            if ruta_saliente.campana_set.exists():
+                data['status'] = 'ERROR'
+                data['message'] = _('No está permitido eliminar una '
+                                    'ruta saliente asociada a una campaña')
+                return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                eliminar_ruta_saliente_config(self, ruta_saliente)
+                ruta_saliente.delete()
+            return Response(data=data, status=status.HTTP_200_OK)
+        except RutaSaliente.DoesNotExist:
+            data['status'] = 'ERROR'
+            data['message'] = _(u'No existe la ruta saliente')
+            return Response(
+                data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception:
+            data['status'] = 'ERROR'
+            data['message'] = _(u'Error al eliminar la ruta saliente')
+            return Response(
+                data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class OutboundRouteSIPTrunksList(APIView):
     permission_classes = (TienePermisoOML, )
@@ -230,5 +221,40 @@ class OutboundRouteSIPTrunksList(APIView):
         except Exception:
             data['status'] = 'ERROR'
             data['message'] = _(u'Error al obtener las troncales')
+            return Response(
+                data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class OutboundRouteOrphanTrunks(APIView):
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (
+        SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['get']
+
+    def get(self, request, pk):
+        data = {
+            'status': 'SUCCESS',
+            'message': _('Se obtuvieron las troncales huerfanas '
+                         'de la ruta saliente de forma exitosa'),
+            'orphanTrunks': []}
+        try:
+            ruta_saliente = RutaSaliente.objects.get(pk=pk)
+            huerfanos = []
+            for orden in ruta_saliente.secuencia_troncales.all():
+                troncal = orden.troncal
+                if troncal.ordenes_en_rutas_salientes.count() <= 1:
+                    huerfanos.append(troncal)
+            data['orphanTrunks'] = [
+                RutaSalienteTroncalSIPSerializer(h).data for h in huerfanos]
+            return Response(data=data, status=status.HTTP_200_OK)
+        except RutaSaliente.DoesNotExist:
+            data['status'] = 'ERROR'
+            data['message'] = _(u'No existe la ruta saliente')
+            return Response(
+                data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception:
+            data['status'] = 'ERROR'
+            data['message'] = _(u'Error al obtener las troncales huerfanas de la ruta saliente')
             return Response(
                 data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

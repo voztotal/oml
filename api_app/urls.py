@@ -35,14 +35,15 @@ from api_app.views.supervisor import (
     LlamadasDeCampanaView, CalificacionesDeCampanaView,
     ReasignarAgendaContactoView, DataAgendaContactoView,
     ExportarCSVContactados, ExportarCSVCalificados, ExportarCSVNoAtendidos,
-    StatusCampanasEntrantesView, Pausas,
-    ContactosAsignadosCampanaPreviewView, ExportarCSVCalificacionesCampana,
-    ExportarCSVFormularioGestionCampana, ExportarCSVResultadosBaseContactados,
-    DashboardSupervision, AuditSupervisor,
-    AgentesCampana, ActualizaAgentesCampana, AgentesActivos,
+    StatusCampanasEntrantesView, ContactosAsignadosCampanaPreviewView,
+    ExportarCSVCalificacionesCampana, ExportarCSVFormularioGestionCampana,
+    ExportarCSVResultadosBaseContactados, DashboardSupervision, AuditSupervisor)
+from api_app.views.campaigns.add_agents_to_campaign import (
+    AgentesCampana, ActualizaAgentesCampana, AgentesActivos)
+from api_app.views.pause_set import (
     ConjuntoDePausaCreate, ConjuntoDePausaDelete, ConjuntoDePausaDetalle,
     ConjuntoDePausaList, ConjuntoDePausaUpdate, ConfiguracionDePausaCreate,
-    ConfiguracionDePausaDelete, ConfiguracionDePausaUpdate)
+    ConfiguracionDePausaDelete, ConfiguracionDePausaUpdate, Pausas)
 from api_app.views.external_site import (
     SitioExternoCreate, SitioExternoDelete, SitioExternoDesocultar,
     SitioExternoDetalle, SitioExternoList, SitioExternoOcultar,
@@ -60,14 +61,11 @@ from api_app.views.pause import (
     PauseCreate, PauseDelete, PauseDetail, PauseList, PauseReactivate,
     PauseUpdate)
 from api_app.views.inbound_route import (
-    InboundRouteCreate,
-    InboundRouteDelete,
-    InboundRouteDestinations,
-    InboundRouteDetail,
-    InboundRouteList,
-    InboundRouteUpdate)
+    InboundRouteCreate, InboundRouteDelete, InboundRouteDestinations,
+    InboundRouteDetail, InboundRouteList, InboundRouteUpdate)
 from api_app.views.outbound_route import (
-    OutboundRouteList, OutboundRouteDetail, OutboundRouteSIPTrunksList)
+    OutboundRouteCreate, OutboundRouteDelete, OutboundRouteList,
+    OutboundRouteDetail, OutboundRouteOrphanTrunks, OutboundRouteSIPTrunksList, OutboundRouteUpdate)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
@@ -364,21 +362,24 @@ urlpatterns = [
     re_path(r'api/v1/outbound_routes/$',
             OutboundRouteList.as_view(),
             name='api_outbound_routes_list'),
-#     re_path(r'api/v1/outbound_routes/create/$',
-#             InboundRouteCreate.as_view(),
-#             name='api_outbound_routes_create'),
-#     re_path(r'api/v1/outbound_routes/(?P<pk>\d+)/update/$',
-#             InboundRouteUpdate.as_view(),
-#             name='api_outbound_routes_update'),
+    re_path(r'api/v1/outbound_routes/create/$',
+            OutboundRouteCreate.as_view(),
+            name='api_outbound_routes_create'),
+    re_path(r'api/v1/outbound_routes/(?P<pk>\d+)/update/$',
+            OutboundRouteUpdate.as_view(),
+            name='api_outbound_routes_update'),
     re_path(r'api/v1/outbound_routes/(?P<pk>\d+)/$',
             OutboundRouteDetail.as_view(),
             name='api_outbound_routes_detail'),
-#     re_path(r'api/v1/outbound_routes/(?P<pk>\d+)/delete/$',
-#             InboundRouteDelete.as_view(),
-#             name='api_outbound_routes_delete'),
+    re_path(r'api/v1/outbound_routes/(?P<pk>\d+)/delete/$',
+            OutboundRouteDelete.as_view(),
+            name='api_outbound_routes_delete'),
     re_path(r'api/v1/outbound_routes/sip_trunks$',
             OutboundRouteSIPTrunksList.as_view(),
             name='api_outbound_routes_sip_trunks'),
+    re_path(r'api/v1/outbound_routes/(?P<pk>\d+)/orphan_trunks$',
+            OutboundRouteOrphanTrunks.as_view(),
+            name='api_outbound_routes_orphan_trunks'),
     # ###########     AGENTE      ############ #
     re_path(r'^api/v1/campaign/(?P<pk_campana>\d+)/contacts/$',
             API_ObtenerContactosCampanaView.as_view(), name='api_contactos_campana'),

@@ -16,23 +16,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-
-from __future__ import unicode_literals
-from api_app.views.permissions import TienePermisoOML
-from api_app.authentication import ExpiringTokenAuthentication
-from rest_framework.authentication import SessionAuthentication
-from rest_framework import viewsets
-from api_app.serializers.base import AudioSerializer
-from ominicontacto_app.models import ArchivoDeAudio
+from ominicontacto_app.models import Pausa
+from rest_framework import serializers
 
 
-class ListadoAudiosView(viewsets.ReadOnlyModelViewSet):
-    permission_classes = (TienePermisoOML, )
-    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
-    serializer_class = AudioSerializer
+class PausaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pausa
+        fields = '__all__'
 
-    def get_queryset(self):
-        return ArchivoDeAudio \
-            .objects \
-            .all() \
-            .exclude(borrado=True)
+    def create(self, validated_data):
+        return Pausa.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.nombre = validated_data.get('nombre', instance.nombre)
+        instance.tipo = validated_data.get('tipo', instance.tipo)
+        instance.save()
+        return instance
