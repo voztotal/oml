@@ -243,6 +243,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_outbound_routes_orphan_trunks',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_outbound_routes_reorder',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
     informacion_de_permisos = {
@@ -547,5 +549,8 @@ class ApiAppConfig(AppConfig):
              'version': '1.23.0'},
         'api_outbound_routes_orphan_trunks':
             {'descripcion': _('Obtiene las troncales huerfanas de una ruta saliente'),
+             'version': '1.23.0'},
+        'api_outbound_routes_reorder':
+            {'descripcion': _('Reordena las rutas salientes'),
              'version': '1.23.0'},
     }

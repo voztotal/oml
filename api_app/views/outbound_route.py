@@ -19,6 +19,9 @@
 
 from __future__ import unicode_literals
 from django.utils.translation import ugettext as _
+from django.db.models import Case, When, Max, Min
+from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
+    SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk)
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework import status
@@ -256,5 +259,72 @@ class OutboundRouteOrphanTrunks(APIView):
         except Exception:
             data['status'] = 'ERROR'
             data['message'] = _(u'Error al obtener las troncales huerfanas de la ruta saliente')
+            return Response(
+                data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class OutboundRouteReorder(APIView):
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (
+        SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['put']
+
+    def put(self, request):
+        data = {
+            'status': 'SUCCESS',
+            'message': _('El orden de las rutas salientes se actualizo '
+                         'de forma exitosa')}
+        try:
+            orden = request.data['orden'] if 'orden' in request.data.keys() else None
+            if orden is None:
+                data['status'] = 'ERROR'
+                data['message'] = _('El orden es un campo requerido')
+                return Response(
+                    data=data, status=status.HTTP_400_BAD_REQUEST)
+            if not isinstance(orden, list):
+                data['status'] = 'ERROR'
+                data['message'] = _('El orden debe ser una lista de numeros enteros')
+                return Response(
+                    data=data, status=status.HTTP_400_BAD_REQUEST)
+            for o in orden:
+                if not isinstance(o, int):
+                    data['message'] = _('El orden debe ser una lista de numeros enteros')
+                    return Response(
+                        data=data, status=status.HTTP_400_BAD_REQUEST)
+            if len(orden) != RutaSaliente.objects.all().count():
+                data['status'] = 'ERROR'
+                data['message'] = _('El nuevo orden no coincide con la cantidad de rutas saliente')
+                return Response(
+                    data=data, status=status.HTTP_400_BAD_REQUEST)
+            visited = set()
+            dup = [x for x in orden if x in visited or (visited.add(x) or False)]
+            if len(dup) > 0:
+                data['status'] = 'ERROR'
+                data['message'] = _('No puede haber orden repetido en las rutas salientes')
+                return Response(
+                    data=data, status=status.HTTP_400_BAD_REQUEST)
+            preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(orden)])
+            rutas_ordenadas = RutaSaliente.objects.filter(pk__in=orden).order_by(preserved)
+            cantidad = rutas_ordenadas.count()
+            mayor = RutaSaliente.objects.aggregate(Max('orden'))['orden__max']
+            menor = RutaSaliente.objects.aggregate(Min('orden'))['orden__min']
+            # Con esto aseguro no repetir ordenes en la base
+            i = mayor + 1
+            # Para que el valor no se vaya muy alto vuelvo a empezar desde el 1
+            if cantidad < (menor - 1):
+                i = 1
+            # TODO: Ver la manera de utilizar un bulk_update para no hacer 1 query por cada Ruta
+            for ruta in rutas_ordenadas:
+                ruta.orden = i
+                ruta.save()
+                i += 1
+            sincronizador = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
+            sincronizador._generar_y_recargar_archivos_conf_asterisk()
+            return Response(data=data, status=status.HTTP_200_OK)
+        except Exception:
+            data['status'] = 'ERROR'
+            data['message'] = _('Error al actualizar el orden de '
+                                'las rutas salientes')
             return Response(
                 data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -32,6 +32,9 @@ export default {
         const { status, orphanTrunks } = await service.orphanTrunks(id);
         commit('initOutboundRouteOrphanTrunks', status === 'SUCCESS' ? orphanTrunks : []);
     },
+    async reorderOutboundRoutes ({ commit }, data) {
+        return await service.reorder(data);
+    },
     initDialPatternForm ({ commit }, data = null) {
         commit('initDialPatternForm', data);
     },

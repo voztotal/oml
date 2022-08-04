@@ -91,6 +91,7 @@ export default {
     up: 'Mover arriba',
     down: 'Mover abajo',
     reactivate: 'Reactivar',
+    reorder: 'Reordenar',
     // ---------------------
     // --- Notifications ---
     // ---------------------

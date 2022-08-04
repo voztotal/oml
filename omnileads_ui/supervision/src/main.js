@@ -36,6 +36,7 @@ import Checkbox from 'primevue/checkbox';
 import Calendar from 'primevue/calendar';
 import Steps from 'primevue/steps';
 import Toast from 'primevue/toast';
+import ToastService from 'primevue/toastservice';
 import Textarea from 'primevue/textarea';
 import InlineMessage from 'primevue/inlinemessage';
 
@@ -84,4 +85,5 @@ app.use(i18n)
     .use(router)
     .use(VueSweetalert2)
     .use(PrimeVue)
+    .use(ToastService)
     .mount('#app');

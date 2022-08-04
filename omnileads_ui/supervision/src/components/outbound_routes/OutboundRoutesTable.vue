@@ -1,13 +1,13 @@
 <template>
   <div class="card">
+    <Toast />
     <DataTable
-      :value="outboundRoutes"
+      :value="orderedOutboundRoutes"
       class="p-datatable-sm"
       showGridlines
       :scrollable="true"
       scrollHeight="600px"
       responsiveLayout="scroll"
-      dataKey="id"
       :rows="10"
       :rowsPerPageOptions="[10, 20, 50]"
       :paginator="true"
@@ -22,7 +22,7 @@
       :filters="filters"
       filterDisplay="menu"
       :globalFilterFields="['nombre']"
-      :reorderableColumns="true" @rowReorder="onRowReorder"
+      @rowReorder="onRowReorder"
     >
       <template #header>
         <div class="flex justify-content-between flex-wrap">
@@ -46,20 +46,29 @@
                 "
               />
             </span>
+            <Button
+              type="button"
+              icon="pi pi-sort-alt"
+              :label="$t('globals.reorder')"
+              class="p-button-secondary ml-2"
+              @click="orderRoutes"
+            />
           </div>
         </div>
       </template>
       <template #empty> {{ $t("globals.without_data") }} </template>
       <template #loading> {{ $t("globals.load_info") }} </template>
-      <Column :rowReorder="true" headerStyle="width: 1rem" :reorderableColumn="false" />
+      <Column :rowReorder="true" headerStyle="width: 20px" ></Column>
+      <Column
+        field="id"
+        :header="$t('models.outbound_route.id')"
+      ></Column>
       <Column
         field="nombre"
-        :sortable="true"
         :header="$t('models.outbound_route.name')"
       ></Column>
       <Column
         field="ring_time"
-        :sortable="true"
         :header="$t('models.outbound_route.ring_time')"
       ></Column>
       <Column
@@ -117,6 +126,7 @@ export default {
         return {
             filters: null,
             showModalDetail: false,
+            orderedOutboundRoutes: [],
             outboundRouteDetail: {}
         };
     },
@@ -127,12 +137,32 @@ export default {
         ...mapState(['orphanTrunks'])
     },
     methods: {
-        ...mapActions(['initOutboundRoutes', 'deleteOutboundRoute', 'initOutboundRouteOrphanTrunks']),
+        ...mapActions(['initOutboundRoutes', 'deleteOutboundRoute', 'initOutboundRouteOrphanTrunks', 'reorderOutboundRoutes']),
+        async orderRoutes () {
+            const response = await this.reorderOutboundRoutes({ orden: this.orderedOutboundRoutes.map(r => r.id) });
+            const { status, message } = response;
+            if (status === 'SUCCESS') {
+                this.initOutboundRoutes();
+                this.$swal(
+                    this.$helpers.getToasConfig(
+                        this.$t('globals.success_notification'),
+                        message,
+                        this.$t('globals.icon_success')
+                    )
+                );
+            } else {
+                this.$swal(
+                    this.$helpers.getToasConfig(
+                        this.$t('globals.error_notification'),
+                        message,
+                        this.$t('globals.icon_error')
+                    )
+                );
+            }
+        },
         onRowReorder (event) {
-            console.log('onRowReorder');
-            console.log(event);
-            // this.outboundRoutes = event.value;
-            // this.$toast.add({severity:'success', summary: 'Rows Reordered', life: 3000});
+            this.orderedOutboundRoutes = event.value;
+            this.$toast.add({ severity: 'success', summary: 'Rutas reordenadas, para finalizar el cambio ejecuta la accion reordenar', life: 4000 });
         },
         clearFilter () {
             this.initFilters();
@@ -228,7 +258,9 @@ export default {
     },
     watch: {
         outboundRoutes: {
-            handler () {},
+            handler () {
+                this.orderedOutboundRoutes = this.outboundRoutes;
+            },
             deep: true,
             immediate: true
         }
