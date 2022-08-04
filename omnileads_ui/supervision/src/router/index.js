@@ -38,8 +38,7 @@ const routes = [
 ];
 
 const router = createRouter({
-    history: createWebHistory('/'),
-    // history: createWebHistory('/static/omnileads-ui-supervision/'),
+    history: createWebHistory('/static/omnileads-ui-supervision/'),
     routes
 });
 
