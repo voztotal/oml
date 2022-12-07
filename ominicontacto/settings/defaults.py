@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'api_app.apps.ApiAppConfig',
+    'whatsapp_app.apps.WhatsappAppConfig',
     'constance',
     'django_js_reverse',
     'import_export',
@@ -196,7 +197,7 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 STATICFILES_DIRS = [
-  ("omnileads-ui-supervision", os.path.join(BASE_DIR, "omnileads_ui/supervision/dist")),
+    ("omnileads-ui-supervision", os.path.join(BASE_DIR, "omnileads_ui/supervision/dist")),
 ]
 
 AUTH_USER_MODEL = 'ominicontacto_app.User'
@@ -383,6 +384,7 @@ LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'reportes_app/locale'),
     os.path.join(BASE_DIR, 'reciclado_app/locale'),
     os.path.join(BASE_DIR, 'supervision_app/locale'),
+    os.path.join(BASE_DIR, 'whatsapp_app/locale'),
 )
 
 LANGUAGES = (
@@ -401,14 +403,14 @@ ALLOW_FEEDBACK = False
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 
 DJANGO_EASY_AUDIT_REGISTERED_CLASSES = [
-    'ominicontacto_app.campana', 
-    'ominicontacto_app.queue', 
+    'ominicontacto_app.campana',
+    'ominicontacto_app.queue',
     'ominicontacto_app.agenteprofile'
 ]
 
 DJANGO_EASY_AUDIT_REGISTERED_URLS = [
-    r'^/reporte/llamadas/', 
-    r'^/reportes/agentes_tiempos/', 
+    r'^/reporte/llamadas/',
+    r'^/reportes/agentes_tiempos/',
     r'^/auditar_gestion/buscar/(\d+)/',
     r'^/campana/(\d+)/reporte_grafico/',
     r'^/reporte_de_resultados/(\d+)/',
