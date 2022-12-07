@@ -18,10 +18,12 @@
 
 from django.urls import path
 from django.contrib.auth.decorators import login_required
+from django.conf.urls import include
 
 from whatsapp_app.views import (
     WhatsappProvidersConfigurationView, WhatsappLinesConfigurationView,
     WhatsappTemplatesConfigurationView, MessageTemplatesConfigurationView)
+from whatsapp_app.api.urls import api_urls_v1
 
 urlpatterns = [
     path('connections/whatsapp/providers/',
@@ -40,4 +42,5 @@ urlpatterns = [
          login_required(MessageTemplatesConfigurationView.as_view()),
          name='message_templates_configuration',
          ),
+    path('api/v1/whatsapp/', include((api_urls_v1, 'whatsapp_app'), namespace='v1')),
 ]
