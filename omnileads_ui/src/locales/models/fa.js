@@ -150,5 +150,26 @@ export default {
         dtmf: 'DTMF',
         destination_type: 'نوع مقصد',
         destination: 'سرنوشت'
+    },
+    whatsapp: {
+        provider: {
+            nombre: 'نام',
+            tipo_proveedor: 'تامین کننده',
+            configuracion: {
+                api_key: 'کلید ای پی ای'
+            }
+        },
+        line: {
+            nombre: 'نام',
+            proveedor: 'تامین کنندگان',
+            numero: 'عدد',
+            identificador: 'مشخص کننده',
+            es_verificado: 'تایید شده است',
+            token_validacion: 'نشانه اعتبارسنجی',
+            destino: 'سرنوشت',
+            tipo_de_destino: 'نوع مقصد',
+            mensaje_bienvenida: 'پیام خوش امد گویی',
+            mensaje_despedida: 'پیام خداحافظی'
+        }
     }
 };
