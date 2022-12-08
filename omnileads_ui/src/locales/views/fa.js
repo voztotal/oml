@@ -118,5 +118,15 @@ export default {
     destination_option: {
         new_title: 'مقصد جدید',
         edit_title: 'مقصد را ویرایش کنید'
+    },
+    whatsapp: {
+        line: {
+            new_title: 'خط واتساپ ایجاد کنید',
+            edit_title: 'خط واتساپ را ویرایش کنید'
+        },
+        provider: {
+            new_title: 'تامین کننده جدید',
+            edit_title: 'ارائه دهنده را ویرایش کنید'
+        }
     }
 };

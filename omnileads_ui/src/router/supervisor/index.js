@@ -12,6 +12,7 @@ import InboundRoutes from './inbound_route_routes';
 import OutboundRoutes from './outbound_route_routes';
 import GroupOfHourRoutes from './group_of_hour_routes';
 import IVRRoutes from './ivr_routes';
+import WhatsAppRoutes from './whatsapp';
 
 export const supervisorRoutes = [
     ...SupervisionDashboardRoutes,
@@ -27,5 +28,6 @@ export const supervisorRoutes = [
     ...InboundRoutes,
     ...OutboundRoutes,
     ...GroupOfHourRoutes,
-    ...IVRRoutes
+    ...IVRRoutes,
+    ...WhatsAppRoutes
 ];
