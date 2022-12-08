@@ -224,6 +224,11 @@ export default {
                     url: 'URL pública del archivo de sticker'
                 }
             }
+        },
+        line: {
+            validations: {
+                field_is_required: '{field} es requerido'
+            }
         }
     }
 };
