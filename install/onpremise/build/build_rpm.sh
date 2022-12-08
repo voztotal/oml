@@ -25,7 +25,7 @@ cp -a scripts/oml_uwsgi.ini ${INSTALL_PREFIX}/run
 echo "Copying cert of keys server"
 cp -a cert ${INSTALL_PREFIX}
 echo "Building Vue components"
-cd ${INSTALL_PREFIX}/ominicontacto/omnileads_ui/supervision
+cd ${INSTALL_PREFIX}/ominicontacto/omnileads_ui
 npm install
 npm run build
 rm -rf node_modules

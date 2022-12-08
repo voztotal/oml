@@ -435,7 +435,7 @@ services:
     networks:
       - devenv
     volumes:
-      - ../../../omnileads_ui/:/home/app/
+      - ../../../omnileads_ui/:/home/oml_frontend/
 
   minio:
     tty: true
