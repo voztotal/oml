@@ -197,6 +197,11 @@ export default {
             modificado: 'Updated at',
             tipo: 'Type',
             categoria: 'Category'
+        },
+        group_of_message_template: {
+            nombre: 'Name',
+            plantillas: 'Templates',
+            status: 'Status'
         }
     }
 };
