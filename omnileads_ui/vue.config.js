@@ -18,7 +18,7 @@ function getPageConfig (pageName) {
 }
 
 module.exports = {
-    publicPath: '/static/omnileads-ui-supervision/',
+    publicPath: '/static/omnileads-frontend/',
     pages: {
         supervision_dashboard: getPageConfig('supervision_dashboard'),
         security_audit: getPageConfig('security_audit'),

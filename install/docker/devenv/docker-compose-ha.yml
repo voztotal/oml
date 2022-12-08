@@ -207,7 +207,7 @@ services:
     networks:
       - devenv
     volumes:
-      - ../../../omnileads_ui/:/home/app/
+      - ../../../omnileads_ui/:/home/oml_frontend/
       - ../../../survey_app/:/home/survey/
       
   minio:
