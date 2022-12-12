@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { EXTERNAL_AUDIO, DTMF_REGEX } from '@/globals/ivr';
+import { EXTERNAL_AUDIO, DTMF_REGEX } from '@/globals/supervisor/ivr';
 
 export function isDTMFValid (dtmf) {
     return DTMF_REGEX.test(dtmf);

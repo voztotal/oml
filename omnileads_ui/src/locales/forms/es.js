@@ -35,7 +35,8 @@ export default {
             not_empty_list: 'La lista no puede estar vacia',
             field_already_in_form: 'El campo ya existe en el formulario',
             option_already_in_list: 'La opcion ya esta en la lista',
-            not_empty_form_field: 'Debe existir al menos un campo en el formulario'
+            not_empty_form_field: 'Debe existir al menos un campo en el formulario',
+            repeated_form_name: 'Ya existe formulario con ese nombre'
         }
     },
     pause: {

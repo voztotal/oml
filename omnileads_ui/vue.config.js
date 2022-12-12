@@ -19,21 +19,23 @@ function getPageConfig (pageName) {
 
 module.exports = {
     publicPath: '/static/omnileads-frontend/',
+    lintOnSave: process.env.NODE_ENV !== 'production',
     pages: {
-        supervision_dashboard: getPageConfig('supervision_dashboard'),
-        security_audit: getPageConfig('security_audit'),
-        add_agents_to_campaign: getPageConfig('add_agents_to_campaign'),
-        pause_sets: getPageConfig('pause_sets'),
-        external_sites: getPageConfig('external_sites'),
-        external_site_authentications: getPageConfig('external_site_authentications'),
-        call_dispositions: getPageConfig('call_dispositions'),
-        external_systems: getPageConfig('external_systems'),
-        forms: getPageConfig('forms'),
-        pauses: getPageConfig('pauses'),
-        inbound_routes: getPageConfig('inbound_routes'),
-        outbound_routes: getPageConfig('outbound_routes'),
-        group_of_hours: getPageConfig('group_of_hours'),
-        ivrs: getPageConfig('ivrs')
+        // Supervisor Pages
+        supervisor_supervision_dashboard: getPageConfig('supervisor_supervision_dashboard'),
+        supervisor_security_audit: getPageConfig('supervisor_security_audit'),
+        supervisor_add_agents_to_campaign: getPageConfig('supervisor_add_agents_to_campaign'),
+        supervisor_pause_sets: getPageConfig('supervisor_pause_sets'),
+        supervisor_external_sites: getPageConfig('supervisor_external_sites'),
+        supervisor_external_site_authentications: getPageConfig('supervisor_external_site_authentications'),
+        supervisor_call_dispositions: getPageConfig('supervisor_call_dispositions'),
+        supervisor_external_systems: getPageConfig('supervisor_external_systems'),
+        supervisor_forms: getPageConfig('supervisor_forms'),
+        supervisor_pauses: getPageConfig('supervisor_pauses'),
+        supervisor_inbound_routes: getPageConfig('supervisor_inbound_routes'),
+        supervisor_outbound_routes: getPageConfig('supervisor_outbound_routes'),
+        supervisor_group_of_hours: getPageConfig('supervisor_group_of_hours'),
+        supervisor_ivrs: getPageConfig('supervisor_ivrs')
     },
     devServer: {
         proxy: {
@@ -53,6 +55,10 @@ module.exports = {
                 target: 'https://nginx',
                 changeOrigin: true
             }
+        },
+        overlay: {
+            warnings: true,
+            errors: true
         }
     }
 };
