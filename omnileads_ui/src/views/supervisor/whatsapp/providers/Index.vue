@@ -12,29 +12,26 @@
         />
       </template>
     </Toolbar>
-    <FormsTable :forms="forms" />
+    <ProvidersTable />
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
-import FormsTable from '@/components/supervisor/forms/FormsTable';
+import { mapActions } from 'vuex';
+import ProvidersTable from '@/components/supervisor/whatsapp/providers/ProvidersTable';
 
 export default {
     components: {
-        FormsTable
+        ProvidersTable
     },
     async created () {
-        await this.initForms();
+        await this.initWhatsappProviders();
     },
     methods: {
         newForm () {
             this.$router.push({ name: 'supervisor_forms_new_step1' });
         },
-        ...mapActions(['initForms'])
-    },
-    computed: {
-        ...mapState(['forms'])
+        ...mapActions(['initWhatsappProviders'])
     }
 };
 </script>
