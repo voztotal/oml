@@ -150,5 +150,13 @@ export default {
         dtmf: 'DTMF',
         destination_type: 'نوع مقصد',
         destination: 'سرنوشت'
+    },
+    whatsapp: {
+        provider: {
+            nombre: 'نام',
+            tipo_proveedor: 'تامین کننده',
+            identificador: 'مشخص کننده',
+            token_autorizacion: 'رمز'
+        }
     }
 };
