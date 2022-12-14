@@ -21,7 +21,9 @@ import string
 from factory import (DjangoModelFactory, fuzzy, lazy_attribute, Sequence, SubFactory)
 
 from ominicontacto_app.tests.factories import UserFactory
-from whatsapp_app.models import ConfiguracionProveedor
+from ominicontacto_app.tests.factories import CampanaFactory
+from configuracion_telefonia_app.models import DestinoEntrante
+from whatsapp_app.models import ConfiguracionProveedor, Linea
 
 
 faker = faker.Factory.create()
@@ -34,5 +36,28 @@ class ConfiguracionProveedorFactory(DjangoModelFactory):
     tipo_proveedor = lazy_attribute(lambda a: faker.random_number(3))
     identificador = fuzzy.FuzzyText(length=12, chars=string.ascii_uppercase + string.digits)
     token_autorizacion = fuzzy.FuzzyText(length=12, chars=string.ascii_uppercase + string.digits)
+    created_by = SubFactory(UserFactory)
+    updated_by = SubFactory(UserFactory)
+
+
+class DestinoEntranteFactory(DjangoModelFactory):
+
+    class Meta:
+        model = DestinoEntrante
+
+    nombre = Sequence(lambda n: "DestinoEntrante {0}".format(n))
+    tipo = 0
+    content_object = SubFactory(CampanaFactory)
+
+
+class LineaFactory(DjangoModelFactory):
+    class Meta:
+        model = Linea
+    nombre = Sequence(lambda n: "proveedor_{0}".format(n))
+    proveedor = SubFactory(ConfiguracionProveedorFactory)
+    destino = SubFactory(DestinoEntranteFactory)
+    numero = fuzzy.FuzzyText(length=12, chars=string.ascii_uppercase + string.digits)
+    identificador = fuzzy.FuzzyText(length=12, chars=string.ascii_uppercase + string.digits)
+    token_validacion = fuzzy.FuzzyText(length=12, chars=string.ascii_uppercase + string.digits)
     created_by = SubFactory(UserFactory)
     updated_by = SubFactory(UserFactory)

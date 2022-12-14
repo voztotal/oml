@@ -24,6 +24,7 @@ from whatsapp_app.views import (
     WhatsappProvidersConfigurationView, WhatsappLinesConfigurationView,
     WhatsappTemplatesConfigurationView, MessageTemplatesConfigurationView)
 from whatsapp_app.api.urls import api_urls_v1
+from whatsapp_app.webhook import WebhookView
 
 urlpatterns = [
     path('connections/whatsapp/providers/',
@@ -41,6 +42,9 @@ urlpatterns = [
     path('resources/message_templates/',
          login_required(MessageTemplatesConfigurationView.as_view()),
          name='message_templates_configuration',
+         ),
+    path('webhook/line/<int:identificador>/', WebhookView.as_view(),
+         name='webhook',
          ),
     path('api/v1/whatsapp/', include((api_urls_v1, 'whatsapp_app'), namespace='v1')),
 ]
