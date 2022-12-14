@@ -2,13 +2,13 @@
   <div class="card">
     <Toolbar class="mb-4">
       <template #start>
-        <h1>{{ $tc("globals.form", 2) }}</h1>
+        <h1>{{ $tc("globals.whatsapp.provider", 2) }}</h1>
       </template>
       <template #end>
         <Button
           :label="$tc('globals.new')"
           icon="pi pi-plus"
-          @click="newForm"
+          @click="newProvider"
         />
       </template>
     </Toolbar>
@@ -28,8 +28,8 @@ export default {
         await this.initWhatsappProviders();
     },
     methods: {
-        newForm () {
-            this.$router.push({ name: 'supervisor_forms_new_step1' });
+        newProvider () {
+            this.$router.push({ name: 'supervisor_whatsapp_providers_new' });
         },
         ...mapActions(['initWhatsappProviders'])
     }

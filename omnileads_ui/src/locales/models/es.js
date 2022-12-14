@@ -150,5 +150,13 @@ export default {
         dtmf: 'DTMF',
         destination_type: 'Tipo de destino',
         destination: 'Destino'
+    },
+    whatsapp: {
+        provider: {
+            nombre: 'Nombre',
+            tipo_proveedor: 'Proveedor',
+            identificador: 'Identificador',
+            token_autorizacion: 'Token'
+        }
     }
 };

@@ -35,7 +35,8 @@ module.exports = {
         supervisor_inbound_routes: getPageConfig('supervisor_inbound_routes'),
         supervisor_outbound_routes: getPageConfig('supervisor_outbound_routes'),
         supervisor_group_of_hours: getPageConfig('supervisor_group_of_hours'),
-        supervisor_ivrs: getPageConfig('supervisor_ivrs')
+        supervisor_ivrs: getPageConfig('supervisor_ivrs'),
+        supervisor_whatsapp: getPageConfig('supervisor_whatsapp')
     },
     devServer: {
         proxy: {

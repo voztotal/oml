@@ -11,9 +11,9 @@ export function getRestRoutesByModule (module) {
 export function getRestWhatsappRoutesByModule (module) {
     return {
         List: `/api/v1/whatsapp/${module}`,
-        Create: `/api/v1/whatsapp/${module}/create/`,
+        Create: `/api/v1/whatsapp/${module}`,
         Detail: (id) => `/api/v1/whatsapp/${module}/${id}`,
-        Delete: (id) => `/api/v1/whatsapp/${module}/${id}/delete`,
-        Update: (id) => `/api/v1/whatsapp/${module}/${id}/update/`
+        Delete: (id) => `/api/v1/whatsapp/${module}/${id}`,
+        Update: (id) => `/api/v1/whatsapp/${module}/${id}`
     };
 }

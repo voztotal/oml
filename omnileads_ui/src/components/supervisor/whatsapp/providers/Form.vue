@@ -3,170 +3,162 @@
     <div class="grid formgrid mt-4">
       <div class="field col-6">
         <label
-          id="external_site_name"
+          id="whatsapp_provider_nombre"
           :class="{
-            'p-error': v$.externalSiteForm.nombre.$invalid && submitted,
+            'p-error': v$.supWhatsappProviderForm.nombre.$invalid && submitted,
           }"
-          >{{ $t("models.external_site.name") }}*</label
+          >{{ $t("models.whatsapp.provider.nombre") }}*</label
         >
         <div class="p-inputgroup mt-2">
           <span class="p-inputgroup-addon">
             <i class="pi pi-list"></i>
           </span>
           <InputText
-            id="external_site_name"
+            id="whatsapp_provider_nombre"
             :class="{
-              'p-invalid': v$.externalSiteForm.nombre.$invalid && submitted,
+              'p-invalid':
+                v$.supWhatsappProviderForm.nombre.$invalid && submitted,
             }"
-            v-model="v$.externalSiteForm.nombre.$model"
+            v-model="v$.supWhatsappProviderForm.nombre.$model"
           />
         </div>
         <small
           v-if="
-            (v$.externalSiteForm.nombre.$invalid && submitted) ||
-            v$.externalSiteForm.nombre.$pending.$response
+            (v$.supWhatsappProviderForm.nombre.$invalid && submitted) ||
+            v$.supWhatsappProviderForm.nombre.$pending.$response
           "
           class="p-error"
           >{{
-            v$.externalSiteForm.nombre.required.$message.replace(
+            v$.supWhatsappProviderForm.nombre.required.$message.replace(
               "Value",
-              $t("models.external_site.name")
+              $t("models.whatsapp.provider.nombre")
             )
           }}</small
         >
       </div>
       <div class="field col-6">
         <label
-          id="external_site_url"
-          :class="{ 'p-error': v$.externalSiteForm.url.$invalid && submitted }"
-          >{{ $t("models.external_site.url") }}*</label
+          id="whatsapp_provider_proveedor"
+          :class="{
+            'p-error':
+              v$.supWhatsappProviderForm.tipo_proveedor.$invalid && submitted,
+          }"
+          >{{ $t("models.whatsapp.provider.tipo_proveedor") }}*</label
         >
         <div class="p-inputgroup mt-2">
           <span class="p-inputgroup-addon">
-            <i class="pi pi-link"></i>
+            <i class="pi pi-sitemap"></i>
           </span>
-          <InputText
-            id="external_site_url"
+          <Dropdown
+            id="whatsapp_provider_proveedor"
+            v-model="v$.supWhatsappProviderForm.tipo_proveedor.$model"
+            class="w-full"
             :class="{
-              'p-invalid': v$.externalSiteForm.url.$invalid && submitted,
+              'p-invalid':
+                v$.supWhatsappProviderForm.tipo_proveedor.$invalid && submitted,
             }"
-            v-model="v$.externalSiteForm.url.$model"
+            :options="providers"
+            placeholder="-----"
+            optionLabel="name"
+            optionValue="value"
+            :emptyFilterMessage="$t('globals.without_data')"
+            :filter="true"
+            v-bind:filterPlaceholder="
+              $t('globals.find_by', { field: $tc('globals.name') }, 1)
+            "
           />
         </div>
         <small
           v-if="
-            (v$.externalSiteForm.url.$invalid && submitted) ||
-            v$.externalSiteForm.url.$pending.$response
+            (v$.supWhatsappProviderForm.tipo_proveedor.$invalid && submitted) ||
+            v$.supWhatsappProviderForm.tipo_proveedor.$pending.$response
           "
           class="p-error"
         >
-          <span
-            v-for="error of v$.externalSiteForm.url.$errors"
-            :key="error.$uid"
-          >
-            {{
-              error.$message.replace(
-                "Value",
-                $t("models.external_site.url")
-              )
-            }}
-          </span>
+          {{
+            v$.supWhatsappProviderForm.tipo_proveedor.required.$message.replace(
+              "Value",
+              $t("models.whatsapp.provider.tipo_proveedor")
+            )
+          }}
         </small>
       </div>
     </div>
     <div class="grid formgrid mt-4">
       <div class="field col-6">
-        <label>{{ $t("models.external_site.trigger") }}</label>
-        <Dropdown
-          v-model="externalSiteForm.disparador"
-          class="w-full"
-          :options="triggers"
-          placeholder="Servidor"
-          optionLabel="name"
-          optionValue="value"
-          @change="triggerEvent"
-          :emptyFilterMessage="$t('globals.without_data')"
-          :filter="true"
-          v-bind:filterPlaceholder="
-            $t('globals.find_by', { field: $tc('globals.name') }, 1)
+        <label
+          id="whatsapp_provider_identificador"
+          :class="{
+            'p-error':
+              v$.supWhatsappProviderForm.identificador.$invalid && submitted,
+          }"
+          >{{ $t("models.whatsapp.provider.identificador") }}*</label
+        >
+        <div class="p-inputgroup mt-2">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-id-card"></i>
+          </span>
+          <InputText
+            id="whatsapp_provider_identificador"
+            :class="{
+              'p-invalid':
+                v$.supWhatsappProviderForm.identificador.$invalid && submitted,
+            }"
+            v-model="v$.supWhatsappProviderForm.identificador.$model"
+          />
+        </div>
+        <small
+          v-if="
+            (v$.supWhatsappProviderForm.identificador.$invalid && submitted) ||
+            v$.supWhatsappProviderForm.identificador.$pending.$response
           "
-        />
+          class="p-error"
+          >{{
+            v$.supWhatsappProviderForm.identificador.required.$message.replace(
+              "Value",
+              $t("models.whatsapp.provider.identificador")
+            )
+          }}</small
+        >
       </div>
       <div class="field col-6">
-        <label>{{ $t("models.external_site.method") }}</label>
-        <Dropdown
-          v-model="externalSiteForm.metodo"
-          class="w-full"
-          :options="methods"
-          optionLabel="name"
-          placeholder="GET"
-          optionValue="value"
-          @change="methodEvent"
-          :emptyFilterMessage="$t('globals.without_data')"
-          :filter="true"
-          v-bind:filterPlaceholder="
-            $t('globals.find_by', { field: $tc('globals.name') }, 1)
+        <label
+          id="whatsapp_provider_token_autorizacion"
+          :class="{
+            'p-error':
+              v$.supWhatsappProviderForm.token_autorizacion.$invalid &&
+              submitted,
+          }"
+          >{{ $t("models.whatsapp.provider.token_autorizacion") }}*</label
+        >
+        <div class="p-inputgroup mt-2">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-key"></i>
+          </span>
+          <InputText
+            id="whatsapp_provider_token_autorizacion"
+            :class="{
+              'p-invalid':
+                v$.supWhatsappProviderForm.token_autorizacion.$invalid &&
+                submitted,
+            }"
+            v-model="v$.supWhatsappProviderForm.token_autorizacion.$model"
+          />
+        </div>
+        <small
+          v-if="
+            (v$.supWhatsappProviderForm.token_autorizacion.$invalid &&
+              submitted) ||
+            v$.supWhatsappProviderForm.token_autorizacion.$pending.$response
           "
-        />
-      </div>
-    </div>
-    <div class="fluid grid formgrid mt-4">
-      <div class="field col-6">
-        <label>{{ $t("models.external_site.format") }}</label>
-        <Dropdown
-          v-model="externalSiteForm.formato"
-          class="w-full"
-          :options="formats"
-          optionLabel="name"
-          optionValue="value"
-          placeholder="-------"
-          @change="formatEvent"
-          :emptyFilterMessage="$t('globals.without_data')"
-          :filter="true"
-          :disabled="status_format"
-          v-bind:filterPlaceholder="
-            $t('globals.find_by', { field: $tc('globals.name') }, 1)
-          "
-        />
-        <small v-if="invalid_format" class="p-error">
-          Si el metodo es POST debe elegirse un formato valido
-        </small>
-      </div>
-      <div class="field col-6">
-        <label>{{ $t("models.external_site.objective") }}</label>
-        <Dropdown
-          v-model="externalSiteForm.objetivo"
-          class="w-full"
-          :options="objectives"
-          optionLabel="name"
-          optionValue="value"
-          placeholder="-------"
-          disbled
-          :emptyFilterMessage="$t('globals.without_data')"
-          :filter="true"
-          :disabled="status_objective"
-          v-bind:filterPlaceholder="
-            $t('globals.find_by', { field: $tc('globals.name') }, 1)
-          "
-        />
-      </div>
-    </div>
-    <div class="fluid grid formgrid mt-4">
-      <div class="field col-6">
-        <label>{{ $t("globals.external_site_authentication") }}</label>
-        <Dropdown
-          v-model="externalSiteForm.autenticacion"
-          class="w-full"
-          :options="externalSiteAuthentications"
-          optionLabel="nombre"
-          optionValue="id"
-          placeholder="-------"
-          :emptyFilterMessage="$t('globals.without_data')"
-          :filter="true"
-          v-bind:filterPlaceholder="
-            $t('globals.find_by', { field: $tc('globals.name') }, 1)
-          "
-        />
+          class="p-error"
+          >{{
+            v$.supWhatsappProviderForm.token_autorizacion.required.$message.replace(
+              "Value",
+              $t("models.whatsapp.provider.token_autorizacion")
+            )
+          }}</small
+        >
       </div>
     </div>
     <div class="flex justify-content-end flex-wrap">
@@ -187,14 +179,17 @@ import { FilterMatchMode } from 'primevue/api';
 import { required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 import { mapActions, mapState } from 'vuex';
+import { PROVIDER_TYPES } from '@/globals/supervisor/whatsapp/provider';
 
 export default {
     setup: () => ({ v$: useVuelidate() }),
     validations () {
         return {
-            externalSiteForm: {
+            supWhatsappProviderForm: {
                 nombre: { required },
-                url: { required }
+                tipo_proveedor: { required },
+                identificador: { required },
+                token_autorizacion: { required }
             }
         };
     },
@@ -203,96 +198,61 @@ export default {
         formToCreate: {
             type: Boolean,
             default: true
-        },
-        externalSite: {
-            type: Object,
-            default () {
-                return {
-                    nombre: '',
-                    url: '',
-                    metodo: 0,
-                    disparador: 0,
-                    formato: null,
-                    objetivo: null,
-                    autenticacion: null
-                };
-            }
         }
     },
     data () {
         return {
-            externalSiteForm: {
+            supWhatsappProviderForm: {
+                id: null,
                 nombre: '',
-                url: '',
-                metodo: 0,
-                disparador: 0,
-                formato: null,
-                objetivo: null,
-                autenticacion: null
+                tipo_proveedor: 0,
+                identificador: '',
+                token_autorizacion: ''
             },
             submitted: false,
             filters: null,
-            invalid_format: false,
-            status_format: true,
-            status_objective: true,
-            methods: [
-                { name: 'GET', value: 1 },
-                { name: 'POST', value: 2 }
-            ],
-            objectives: [
+            providers: [
                 { name: '-------', value: null },
-                { name: 'Embebido', value: 1 },
-                { name: 'Nueva pestaña', value: 2 }
-            ],
-            formats: [
-                { name: '-------', value: null },
-                { name: 'multipart/form-data', value: 1 },
-                { name: 'application/x-www-form-urlencoded', value: 2 },
-                { name: 'text/plain', value: 3 },
-                { name: 'application/json', value: 4 }
-            ],
-            triggers: [
-                { name: 'Agente', value: 1 },
-                { name: 'Automático', value: 2 },
-                { name: 'Servidor', value: 3 },
-                { name: 'Calificación', value: 4 }
+                {
+                    name: this.$t('forms.whatsapp.provider.types.twilio'),
+                    value: PROVIDER_TYPES.TWILIO
+                },
+                {
+                    name: this.$t('forms.whatsapp.provider.types.meta'),
+                    value: PROVIDER_TYPES.META
+                },
+                {
+                    name: this.$t('forms.whatsapp.provider.types.gupshup'),
+                    value: PROVIDER_TYPES.GUPSHUP
+                }
             ]
         };
     },
-    async created () {
-        await this.initExternalSiteAuthentications();
-        await this.initializeData();
+    created () {
+        this.initializeData();
     },
     computed: {
-        ...mapState(['externalSiteAuthentications'])
+        ...mapState(['supWhatsappProvider'])
     },
     methods: {
-        ...mapActions(['createExternalSite', 'updateExternalSite', 'initExternalSiteAuthentications']),
+        ...mapActions([
+            'createWhatsappProvider',
+            'updateWhatsappProvider',
+            'initExternalSiteAuthentications'
+        ]),
         initializeData () {
-            this.externalSiteAuthentications.splice(0, 0, { id: null, nombre: '------' });
             this.initFormData();
             this.submitted = false;
         },
         initFormData () {
-            this.externalSiteForm.nombre = this.externalSite.nombre;
-            this.externalSiteForm.url = this.externalSite.url;
-            this.externalSiteForm.metodo = this.externalSite.metodo;
-            this.externalSiteForm.disparador = this.externalSite.disparador;
-            this.externalSiteForm.formato = this.externalSite.formato;
-            this.externalSiteForm.objetivo = this.externalSite.objetivo;
-            this.externalSiteForm.autenticacion = this.externalSite.autenticacion;
-            if ([1, 0].includes(this.externalSite.metodo)) {
-                this.externalSiteForm.formato = null;
-                this.status_format = true;
-            } else {
-                this.status_format = false;
-            }
-            if ([3, 0].includes(this.externalSite.disparador)) {
-                this.externalSiteForm.objetivo = null;
-                this.status_objective = true;
-            } else {
-                this.status_objective = false;
-            }
+            this.supWhatsappProviderForm.id = this.supWhatsappProvider.id;
+            this.supWhatsappProviderForm.nombre = this.supWhatsappProvider.nombre;
+            this.supWhatsappProviderForm.tipo_proveedor =
+        this.supWhatsappProvider.tipo_proveedor;
+            this.supWhatsappProviderForm.identificador =
+        this.supWhatsappProvider.identificador;
+            this.supWhatsappProviderForm.token_autorizacion =
+        this.supWhatsappProvider.token_autorizacion;
         },
         clearFilter () {
             this.initFilters();
@@ -302,106 +262,25 @@ export default {
                 global: { value: null, matchMode: FilterMatchMode.CONTAINS }
             };
         },
-        handleObjetiveStatus () {
-            if (
-                [3, 0].includes(this.externalSiteForm.disparador) ||
-        this.externalSiteForm.formato === 4
-            ) {
-                this.status_objective = true;
-                this.externalSiteForm.objetivo = null;
-            } else if (this.externalSiteForm.disparador === 4 && [1, 0].includes(this.externalSiteForm.metodo)) {
-                this.status_objective = false;
-                this.externalSiteForm.objetivo = 1;
-                this.objectives = [
-                    { name: 'Embebido', value: 1 },
-                    { name: 'Nueva pestaña', value: 2 }
-                ];
-            } else if (this.externalSiteForm.disparador === 4 && this.externalSiteForm.metodo === 2) {
-                this.status_objective = false;
-                this.externalSiteForm.objetivo = null;
-                this.objectives = [
-                    { name: '-------', value: null },
-                    { name: 'Embebido', value: 1 },
-                    { name: 'Nueva pestaña', value: 2 }
-                ];
-            } else {
-                this.status_objective = false;
-                this.externalSiteForm.objetivo = 1;
-            }
-        },
-        triggerEvent () {
-            this.handleObjetiveStatus();
-        },
-        methodEvent () {
-            // Manejamos el objetivo
-            this.handleObjetiveStatus();
-
-            // Manejamos el formato
-            if ([1, 0].includes(this.externalSiteForm.metodo)) {
-                this.status_format = true;
-                this.externalSiteForm.formato = null;
-            } else {
-                this.status_format = false;
-                this.externalSiteForm.formato = 1;
-            }
-        },
-        formatEvent () {
-            if (
-                this.externalSiteForm.formato !== 4 &&
-        [3, 0].includes(this.externalSiteForm.disparador)
-            ) {
-                this.status_objective = true;
-                this.externalSiteForm.objetivo = null;
-            } else if (
-                this.externalSiteForm.formato === 4 &&
-        ![3, 0].includes(this.externalSiteForm.disparador)
-            ) {
-                this.status_objective = true;
-                this.externalSiteForm.objetivo = null;
-            } else {
-                this.status_objective = false;
-                this.externalSiteForm.objetivo = 1;
-            }
-        },
         async saveExternalSite (isFormValid) {
             this.submitted = true;
-            if (this.externalSiteForm.disparador === 0) {
-                this.externalSiteForm.disparador = 3;
-            }
-            if (this.externalSiteForm.metodo === 0) {
-                this.externalSiteForm.metodo = 1;
-            }
             if (!isFormValid) {
-                if (
-                    this.externalSiteForm.metodo === 2 &&
-          this.externalSiteForm.formato === null
-                ) {
-                    this.invalid_format = true;
-                } else {
-                    this.invalid_format = false;
-                }
                 return null;
             }
-            if (
-                this.externalSiteForm.metodo === 2 &&
-        this.externalSiteForm.formato === null
-            ) {
-                this.invalid_format = true;
-                return null;
-            }
-            this.invalid_format = false;
             var response = null;
             if (this.formToCreate) {
-                response = await this.createExternalSite(this.externalSiteForm);
+                response = await this.createWhatsappProvider(
+                    this.supWhatsappProviderForm
+                );
             } else {
-                response = await this.updateExternalSite({
-                    id: this.externalSite.id,
-                    data: this.externalSiteForm
+                response = await this.updateWhatsappProvider({
+                    id: this.supWhatsappProvider.id,
+                    data: this.supWhatsappProviderForm
                 });
             }
             const { status, message } = response;
             if (status === 'SUCCESS') {
-                this.$router.push({ name: 'supervisor_external_sites' });
+                this.$router.push({ name: 'supervisor_whatsapp_providers' });
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.success_notification'),
@@ -421,9 +300,11 @@ export default {
         }
     },
     watch: {
-        externalSite: {
+        supWhatsappProvider: {
             handler () {
-                this.initFormData();
+                if (this.supWhatsappProvider) {
+                    this.initFormData();
+                }
             },
             deep: true,
             immediate: true

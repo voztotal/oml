@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <DataTable
-      :value="externalSitesFilter"
+      :value="supWhatsappProviders"
       class="p-datatable-sm"
       showGridlines
       :scrollable="true"
@@ -34,20 +34,6 @@
             />
           </div>
           <div class="flex align-items-center justify-content-center">
-            <Button
-              v-if="!showAllInfo"
-              type="button"
-              class="mr-2"
-              :label="$t('views.external_sites.show_hiddens')"
-              @click="handleShowData(true)"
-            />
-            <Button
-              v-else
-              type="button"
-              class="mr-2 p-button-secondary"
-              :label="$t('views.external_sites.remove_hiddens')"
-              @click="handleShowData(false)"
-            />
             <span class="p-input-icon-left">
               <i class="pi pi-search" />
               <InputText
@@ -66,62 +52,30 @@
       <Column
         field="nombre"
         :sortable="true"
-        :header="$t('models.external_site.name')"
+        :header="$t('models.whatsapp.provider.nombre')"
       ></Column>
       <Column
-        field="metodo"
-        :sortable="true"
-        :header="$t('models.external_site.method')"
+        field="tipo_proveedor"
+        :header="$t('models.whatsapp.provider.tipo_proveedor')"
       >
         <template #body="slotProps">
-          {{ getMethod(slotProps.data.metodo) }}
+          {{ getProvider(slotProps.data.tipo_proveedor) }}
         </template>
       </Column>
       <Column
-        field="disparador"
-        :sortable="true"
-        :header="$t('models.external_site.trigger')"
-      >
-        <template #body="slotProps">
-          {{ getTigger(slotProps.data.disparador) }}
-        </template>
-      </Column>
+        field="identificador"
+        :header="$t('models.whatsapp.provider.identificador')"
+      ></Column>
       <Column
-        :header="$t('models.external_site.status')"
-        dataType="boolean"
-        field="oculto"
-        :sortable="true"
-        style="max-width: 8rem"
-      >
-        <template #body="{ data }">
-          <i
-            v-if="!data.oculto"
-            class="pi pi-check-circle"
-            style="color: green"
-          ></i>
-          <i v-else class="pi pi-times-circle" style="color: red"></i>
-        </template>
-      </Column>
+        field="token_autorizacion"
+        :header="$t('models.whatsapp.provider.token_autorizacion')"
+      ></Column>
       <Column :header="$tc('globals.option', 2)" :exportable="false">
         <template #body="slotProps">
           <Button
-            icon="pi pi-eye"
-            v-if="slotProps.data.oculto == true"
-            class="ml-2"
-            @click="show(slotProps.data.id)"
-            v-tooltip.top="$t('views.external_sites.show')"
-          />
-          <Button
-            icon="pi pi-eye-slash"
-            v-if="slotProps.data.oculto == false"
-            class="p-button-secondary ml-2"
-            @click="hide(slotProps.data.id)"
-            v-tooltip.top="$t('views.external_sites.hide')"
-          />
-          <Button
             icon="pi pi-pencil"
             class="p-button-warning ml-2"
-            @click="toEditExternalSite(slotProps.data)"
+            @click="edit(slotProps.data)"
             v-tooltip.top="$t('globals.edit')"
           />
           <Button
@@ -129,12 +83,6 @@
             class="p-button-danger ml-2"
             @click="remove(slotProps.data.id)"
             v-tooltip.top="$t('globals.delete')"
-          />
-          <Button
-            icon="pi pi-info-circle"
-            class="p-button-info ml-2"
-            @click="showExternalSiteDetail(slotProps.data)"
-            v-tooltip.top="$t('globals.show')"
           />
         </template>
       </Column>
@@ -155,7 +103,6 @@ export default {
     },
     created () {
         this.initFilters();
-        this.initDataTable();
     },
     computed: {
         ...mapState(['supWhatsappProviders'])
@@ -164,35 +111,25 @@ export default {
         clearFilter () {
             this.initFilters();
         },
-        initDataTable () {
-            if (this.showAllInfo) {
-                this.externalSitesFilter = this.externalSites;
-            } else {
-                this.externalSitesFilter = this.externalSites.filter(
-                    (es) => es.oculto === false
-                );
-            }
-        },
         initFilters () {
             this.filters = {
                 global: { value: null, matchMode: FilterMatchMode.CONTAINS }
             };
         },
-        showExternalSiteDetail (externalSite) {
-            this.$emit('showDetail', externalSite);
-        },
-        getMethod (option) {
-            if (option === 1) {
-                return 'GET';
+        getProvider (option) {
+            if (option === 0) {
+                return 'Twilio';
+            } else if (option === 1) {
+                return 'Meta';
             } else {
-                return 'POST';
+                return 'GupShup';
             }
         },
-        toEditExternalSite (externalSite) {
+        edit (provider) {
             this.$router.push({
-                name: 'external_sites_update',
-                params: { id: externalSite.id },
-                props: { externalSite }
+                name: 'supervisor_whatsapp_providers_update',
+                params: { id: provider.id },
+                props: { provider }
             });
         },
         async remove (id) {
@@ -216,10 +153,10 @@ export default {
                             this.$swal.showLoading();
                         }
                     });
-                    const { status, message } = await this.deleteExternalSite(id);
+                    const { status, message } = await this.deleteWhatsappProvider(id);
                     this.$swal.close();
                     if (status === 'SUCCESS') {
-                        this.initExternalSites();
+                        this.initWhatsappProviders();
                         this.$swal(
                             this.$helpers.getToasConfig(
                                 this.$t('globals.success_notification'),
@@ -241,7 +178,7 @@ export default {
                         this.$helpers.getToasConfig(
                             this.$t('globals.cancelled'),
                             this.$tc('globals.error_to_deleted_type', {
-                                type: this.$tc('globals.external_site')
+                                type: this.$tc('globals.whatsapp.provider')
                             }),
                             this.$t('globals.icon_error')
                         )
@@ -249,10 +186,7 @@ export default {
                 }
             });
         },
-        ...mapActions([
-            'deleteExternalSite',
-            'initExternalSites'
-        ])
+        ...mapActions(['deleteWhatsappProvider', 'initWhatsappProviders'])
     },
     watch: {
         supWhatsappProviders: {

@@ -33,6 +33,7 @@ import GroupOfHourState from './group_of_hours/state';
 import IVRActions from './ivrs/actions';
 import IVRMutations from './ivrs/mutations';
 import IVRState from './ivrs/state';
+import { SupervisorWhatsappActions, SupervisorWhatsappMutations, SupervisorWhatsappState } from './whatsapp';
 const agentsCampaignService = new AgentsCampaignService();
 
 export const supervisorState = {
@@ -50,7 +51,8 @@ export const supervisorState = {
     ...InboundRouteState,
     ...OutboundRouteState,
     ...GroupOfHourState,
-    ...IVRState
+    ...IVRState,
+    ...SupervisorWhatsappState
 };
 
 export const supervisorMutations = {
@@ -87,7 +89,8 @@ export const supervisorMutations = {
     ...InboundRouteMutations,
     ...OutboundRouteMutations,
     ...GroupOfHourMutations,
-    ...IVRMutations
+    ...IVRMutations,
+    ...SupervisorWhatsappMutations
 };
 
 export const supervisorActions = {
@@ -120,7 +123,8 @@ export const supervisorActions = {
     ...InboundRouteActions,
     ...OutboundRouteActions,
     ...GroupOfHourActions,
-    ...IVRActions
+    ...IVRActions,
+    ...SupervisorWhatsappActions
 };
 
 export const supervisorGetters = {

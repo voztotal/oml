@@ -1,10 +1,12 @@
-import Index from '@/views/supervisor/forms/Index';
+import Index from '@/views/supervisor/whatsapp/Index';
 import ProviderRoutes from './provider_routes';
+
+const BASE_URL = 'supervisor_whatsapp';
 
 export default [
     {
-        path: '/supervisor_forms.html',
-        name: 'supervisor_forms',
+        path: `/${BASE_URL}`,
+        name: `${BASE_URL}`,
         component: Index
     },
     ...ProviderRoutes
