@@ -17,6 +17,8 @@
 #
 
 import whatsapp_app.api.v1.proveedor
+import whatsapp_app.api.v1.linea
+import whatsapp_app.api.v1.destinos
 
 from whatsapp_app.api import ViewSetRouter
 
@@ -24,6 +26,8 @@ router = ViewSetRouter(trailing_slash=False)
 
 routes = (
     (r"providers", whatsapp_app.api.v1.proveedor.ViewSet),
+    (r"lines", whatsapp_app.api.v1.linea.ViewSet),
+    (r"destinos", whatsapp_app.api.v1.destinos.ViewSet),
 )
 
 for route in routes:

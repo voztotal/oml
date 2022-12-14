@@ -19,6 +19,7 @@
 from django.db import models
 from .mixins import AuditableModelMixin
 from django.utils.translation import ugettext_lazy as _
+from configuracion_telefonia_app.models import DestinoEntrante
 
 
 class ConfiguracionProveedor(AuditableModelMixin, models.Model):
@@ -33,4 +34,18 @@ class ConfiguracionProveedor(AuditableModelMixin, models.Model):
     nombre = models.CharField(max_length=100)
     tipo_proveedor = models.IntegerField(choices=PROVEEDOR_TIPOS)
     identificador = models.CharField(max_length=100)
-    token_autorizacion = models.CharField(max_length=100)
+    token_autorizacion = models.CharField(max_length=250)
+
+
+class Linea(AuditableModelMixin, models.Model):
+    nombre = models.CharField(max_length=100)
+    proveedor = models.ForeignKey(
+        ConfiguracionProveedor, on_delete=models.CASCADE, related_name="lineas")
+    numero = models.CharField(max_length=100)
+    identificador = models.CharField(max_length=100)
+    es_verificado = models.BooleanField(default=False)
+    token_validacion = models.CharField(max_length=100)
+    destino = models.ForeignKey(
+        DestinoEntrante, on_delete=models.CASCADE, related_name="lineas", blank=True, null=True)
+    mensaje_bienvenida = models.TextField(blank=True, null=True)
+    mensaje_despedida = models.TextField(blank=True, null=True)
