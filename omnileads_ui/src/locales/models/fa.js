@@ -157,6 +157,18 @@ export default {
             tipo_proveedor: 'تامین کننده',
             identificador: 'مشخص کننده',
             token_autorizacion: 'رمز'
+        },
+        line: {
+            nombre: 'نام',
+            proveedor: 'تامین کنندگان',
+            numero: 'عدد',
+            identificador: 'مشخص کننده',
+            es_verificado: 'تایید شده است',
+            token_validacion: 'نشانه اعتبارسنجی',
+            destino: 'سرنوشت',
+            tipo_de_destino: 'نوع مقصد',
+            mensaje_bienvenida: 'پیام خوش امد گویی',
+            mensaje_despedida: 'پیام خداحافظی'
         }
     }
 };

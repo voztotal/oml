@@ -118,5 +118,11 @@ export default {
     destination_option: {
         new_title: 'Novo destino',
         edit_title: 'Editar o destino'
+    },
+    whatsapp: {
+        line: {
+            new_title: 'Criar linha whatsapp',
+            edit_title: 'Editar linha do whatsapp'
+        }
     }
 };

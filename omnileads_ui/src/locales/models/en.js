@@ -157,6 +157,18 @@ export default {
             tipo_proveedor: 'Provider',
             identificador: 'Identifier',
             token_autorizacion: 'Token'
+        },
+        line: {
+            nombre: 'Name',
+            proveedor: 'Provider',
+            numero: 'Number',
+            identificador: 'Identifier',
+            es_verificado: 'Verified',
+            token_validacion: 'Validation token',
+            destino: 'Destiny',
+            tipo_de_destino: 'Destination type',
+            mensaje_bienvenida: 'Welcome message',
+            mensaje_despedida: 'Goodbye message'
         }
     }
 };

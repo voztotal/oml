@@ -37,7 +37,8 @@ module.exports = {
         supervisor_group_of_hours: getPageConfig('supervisor_group_of_hours'),
         supervisor_ivrs: getPageConfig('supervisor_ivrs'),
         // WhatsApp
-        supervisor_whatsapp_providers: getPageConfig('supervisor_whatsapp_providers')
+        supervisor_whatsapp_providers: getPageConfig('supervisor_whatsapp_providers'),
+        supervisor_whatsapp_lines: getPageConfig('supervisor_whatsapp_lines')
     },
     devServer: {
         proxy: {

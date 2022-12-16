@@ -56,7 +56,8 @@ export default {
     ivr: 'IVR | IVRs',
     whatsapp: {
         title: 'Whatsapp',
-        provider: 'Proveedor de Whatsapp | Proveedores de Whatsapp'
+        provider: 'Proveedor de Whatsapp | Proveedores de Whatsapp',
+        line: 'Linea de Whatsapp | Lineas de Whatsapp'
     },
     // -------------
     // -- Actions --
