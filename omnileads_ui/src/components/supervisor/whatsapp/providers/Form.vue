@@ -135,8 +135,10 @@
           <span class="p-inputgroup-addon">
             <i class="pi pi-key"></i>
           </span>
-          <InputText
+          <Password
             id="whatsapp_provider_token_autorizacion"
+            toggleMask
+            :feedback="false"
             :class="{
               'p-invalid':
                 v$.supWhatsappProviderForm.token_autorizacion.$invalid &&
