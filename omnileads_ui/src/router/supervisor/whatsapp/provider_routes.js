@@ -1,23 +1,22 @@
 import Index from '@/views/supervisor/whatsapp/providers/Index';
 import New from '@/views/supervisor/whatsapp/providers/New';
 import Edit from '@/views/supervisor/whatsapp/providers/Edit';
-
-const BASE_URL = 'supervisor_whatsapp';
+import { WHATSAPP_URL_NAME } from '@/globals/supervisor/whatsapp';
 
 export default [
     {
-        path: `/${BASE_URL}/providers`,
-        name: `${BASE_URL}_providers`,
+        path: `/${WHATSAPP_URL_NAME}_providers.html`,
+        name: `${WHATSAPP_URL_NAME}_providers`,
         component: Index
     },
     {
-        path: `/${BASE_URL}/providers/new`,
-        name: `${BASE_URL}_providers_new`,
+        path: `/${WHATSAPP_URL_NAME}_providers/new`,
+        name: `${WHATSAPP_URL_NAME}_providers_new`,
         component: New
     },
     {
-        path: `/${BASE_URL}/providers/:id/update`,
-        name: `${BASE_URL}_providers_update`,
+        path: `/${WHATSAPP_URL_NAME}_providers/:id/update`,
+        name: `${WHATSAPP_URL_NAME}_providers_update`,
         component: Edit
     }
 ];
