@@ -3,7 +3,7 @@ import { WHATSAPP_URL_NAME } from '@/globals/supervisor/whatsapp';
 
 export default [
     {
-        path: `/${WHATSAPP_URL_NAME}_lines`,
+        path: `/${WHATSAPP_URL_NAME}_lines.html`,
         name: `${WHATSAPP_URL_NAME}_lines`,
         component: Index
     }
