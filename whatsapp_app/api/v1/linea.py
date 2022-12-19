@@ -38,11 +38,13 @@ from whatsapp_app.models import Linea
 class ListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     nombre = serializers.CharField()
-    proveedor = serializers.CharField(source='proveedor.id')
+    proveedor = serializers.IntegerField(source='proveedor.id')
     numero = serializers.CharField()
     identificador = serializers.CharField()
     token_validacion = serializers.CharField()
-    destino = serializers.CharField(source='destino.nombre', required=False)
+    destino = serializers.IntegerField(source='destino.id', required=False)
+    tipo_de_destino = serializers.IntegerField(source='destino.tipo', required=False)
+    es_verificado = serializers.BooleanField()
     mensaje_bienvenida = serializers.CharField()
     mensaje_despedida = serializers.CharField()
 
@@ -59,6 +61,7 @@ class CreateSerializer(serializers.ModelSerializer):
             'identificador',
             'token_validacion',
             'destino',
+            'es_verificado',
             'mensaje_bienvenida',
             'mensaje_despedida',
         ]
@@ -67,11 +70,13 @@ class CreateSerializer(serializers.ModelSerializer):
 class RetrieveSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     nombre = serializers.CharField()
-    proveedor = serializers.CharField(source='proveedor.id')
+    proveedor = serializers.IntegerField(source='proveedor.id')
     numero = serializers.CharField()
     identificador = serializers.CharField()
     token_validacion = serializers.CharField()
-    destino = serializers.CharField(source='destino.id')
+    destino = serializers.IntegerField(source='destino.id', required=False)
+    tipo_de_destino = serializers.IntegerField(source='destino.tipo', required=False)
+    es_verificado = serializers.BooleanField()
     mensaje_bienvenida = serializers.CharField()
     mensaje_despedida = serializers.CharField()
 
@@ -88,6 +93,7 @@ class UpdateSerializer(serializers.ModelSerializer):
             'identificador',
             'token_validacion',
             'destino',
+            'es_verificado',
             'mensaje_bienvenida',
             'mensaje_despedida',
         ]
@@ -227,7 +233,8 @@ class ViewSet(viewsets.ViewSet):
             return response.Response(
                 data=get_response_data(message=_('Línea no encontrada')),
                 status=status.HTTP_404_NOT_FOUND)
-        except Exception:
+        except Exception as e:
+            print(e)
             return response.Response(
                 data=get_response_data(
                     message=_('Error al actualizar la línea')),
