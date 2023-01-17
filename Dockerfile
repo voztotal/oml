@@ -88,7 +88,8 @@ COPY configuracion_telefonia_app $INSTALL_PREFIX/ominicontacto/configuracion_tel
 COPY ominicontacto_app $INSTALL_PREFIX/ominicontacto/ominicontacto_app
 COPY reciclado_app $INSTALL_PREFIX/ominicontacto/reciclado_app
 COPY reportes_app $INSTALL_PREFIX/ominicontacto/reportes_app
-COPY supervision_app $INSTALL_PREFIX/ominicontacto/supervision_app
+COPY supervision_app $INSTALL_PREFIX/ominicontacto/slowsql
+COPY slowsql $INSTALL_PREFIX/ominicontacto/supervision_app
 COPY notification_app $INSTALL_PREFIX/ominicontacto/notification_app
 COPY utiles_globales.py manage.py $INSTALL_PREFIX/ominicontacto/
 COPY omnileads_ui $INSTALL_PREFIX/ominicontacto/omnileads_ui
