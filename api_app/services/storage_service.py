@@ -62,14 +62,14 @@ class StorageService(object):
                                        aws_access_key_id=self.access_key_id,
                                        aws_secret_access_key=self.secret_access_key,
                                        config=Config(signature_version='s3v4'),
-                                       endpoint_url=self.internal_url,
+                                       endpoint_url=self.url,
                                        region_name=self.region_name,
                                        verify=False)
         else:
             self.client = boto3.client("s3",
                                        aws_access_key_id=self.access_key_id,
                                        aws_secret_access_key=self.secret_access_key,
-                                       endpoint_url=self.internal_url,
+                                       endpoint_url=self.url,
                                        region_name=self.region_name)
 
     def get_file_url(self, filename):
