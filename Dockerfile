@@ -95,7 +95,7 @@ COPY utiles_globales.py manage.py $INSTALL_PREFIX/ominicontacto/
 COPY omnileads_ui $INSTALL_PREFIX/ominicontacto/omnileads_ui
 COPY build/oml_uwsgi.ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini
 COPY build/docker-entrypoint.sh /docker-entrypoint.sh
-COPY build/converter.sh /usr/local/bin/callrec_converter.sh
+COPY build/converter.sh /opt/omnileads/bin/callrec_converter.sh     
 COPY --from=dev /omnileads_ui/supervision/dist/ $INSTALL_PREFIX/ominicontacto/omnileads_ui/supervision/dist
 
 

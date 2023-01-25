@@ -24,12 +24,12 @@ Init_UWSGI() {
       echo "crontab disabled"
       cat /dev/null > /var/spool/cron/crontabs/root
     else
-      chown omnileads.omnileads /usr/local/bin/callrec_converter.sh
+      chown omnileads.omnileads /opt/omnileads/bin/callrec_converter.sh
       touch /var/spool/cron/crontabs/omnileads
       cat > /var/spool/cron/crontabs/omnileads << EOF
 SHELL=/bin/bash
-* * * * * flock -n /tmp/actualizar_campanas_preview.lock /usr/local/bin/python3 /opt/omnileads/ominicontacto/manage.py actualizar_campanas_preview  > /dev/stdout
-0 1 * * * flock -n /tmp/callrec_converter.lock /usr/local/bin/callrec_converter.sh  > /dev/stdout
+* * * * * flock -n /opt/omnileads/actualizar_campanas_preview.lock /usr/local/bin/python3 /opt/omnileads/ominicontacto/manage.py actualizar_campanas_preview
+0 1 * * * flock -n /opt/omnileads/callrec_converter.lock /opt/omnileads/bin/callrec_converter.sh
 EOF
       sed -i "s/8099/8097/g" ${INSTALL_PREFIX}/run/oml_uwsgi.ini
       exec crond &
