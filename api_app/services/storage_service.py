@@ -57,6 +57,14 @@ class StorageService(object):
                                            endpoint_url=self.url,
                                            region_name=self.region_name,
                                            verify=False)
+        elif self.storage_type == 's3-no-check-cert':
+            self.client = boto3.client("s3",
+                                       aws_access_key_id=self.access_key_id,
+                                       aws_secret_access_key=self.secret_access_key,
+                                       config=Config(signature_version='s3v4'),
+                                       endpoint_url=self.internal_url,
+                                       region_name=self.region_name,
+                                       verify=False)
         else:
             self.client = boto3.client("s3",
                                        aws_access_key_id=self.access_key_id,
