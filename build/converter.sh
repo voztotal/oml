@@ -25,10 +25,10 @@ case ${CALLREC_DEVICE} in
     s3-aws)
         aws s3 sync s3://${S3_BUCKET_NAME}/$Ano-$Mes-$Dia ./
         ;;
-    s3-minio)
+    s3-no-check-cert)
         aws --endpoint ${S3_ENDPOINT} --no-verify-ssl s3 sync s3://${S3_BUCKET_NAME}/$Ano-$Mes-$Dia ./
         ;;
-    s3)
+    *)
         aws --endpoint ${S3_ENDPOINT} s3 sync s3://${S3_BUCKET_NAME}/$Ano-$Mes-$Dia ./
         ;;
 esac
@@ -56,10 +56,10 @@ case ${CALLREC_DEVICE} in
     s3-aws)
         aws s3 sync ./ s3://${S3_BUCKET_NAME}/$Ano-$Mes-$Dia --delete
         ;;
-    s3-minio)
+    s3-no-check-cert)
         aws --endpoint ${S3_ENDPOINT} --no-verify-ssl s3 sync ./ s3://${S3_BUCKET_NAME}/$Ano-$Mes-$Dia --delete
         ;;
-    s3)
+    *)
         aws --endpoint ${S3_ENDPOINT} s3 sync ./ s3://${S3_BUCKET_NAME}/$Ano-$Mes-$Dia --delete
         ;;
 esac
