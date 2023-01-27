@@ -75,6 +75,8 @@ if [[ $CRON_ENABLE == "false" ]]; then
   $COMMAND adicionar_perfil_supervisor_admin
   chown -R $OMNIAPP_USER. ${INSTALL_PREFIX}
 else
+  $COMMAND regenerar_asterisk
+  chown -R $OMNIAPP_USER. ${INSTALL_PREFIX}
   echo "direct to Init_UWSGI"
 fi
   Init_UWSGI
