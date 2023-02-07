@@ -43,6 +43,7 @@ import Password from 'primevue/password';
 import FileUpload from 'primevue/fileupload';
 import RadioButton from 'primevue/radiobutton';
 import Fieldset from 'primevue/fieldset';
+import InputMask from 'primevue/inputmask';
 
 // Idiomas
 import { createI18n } from 'vue-i18n';
@@ -84,6 +85,7 @@ app.component('Password', Password);
 app.component('FileUpload', FileUpload);
 app.component('RadioButton', RadioButton);
 app.component('Fieldset', Fieldset);
+app.component('InputMask', InputMask);
 
 // Register Helpers
 app.provide('$helpers', Helpers);

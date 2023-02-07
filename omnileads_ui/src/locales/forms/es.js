@@ -172,5 +172,14 @@ export default {
             repeated_dtmf: 'Ya existe opcion de destino con ese DTMF',
             invalid_dtmf: 'El valor del DTMF debe ser un dígito(0-9) o un caracter (#, -, *)'
         }
+    },
+    whatsapp: {
+        provider: {
+            types: {
+                twilio: 'Twilio',
+                meta: 'Meta',
+                gupshup: 'GupShup'
+            }
+        }
     }
 };
