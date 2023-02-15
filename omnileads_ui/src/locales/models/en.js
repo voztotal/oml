@@ -151,6 +151,14 @@ export default {
         destination_type: 'Destination type',
         destination: 'Destination'
     },
+    campaign: {
+        types: {
+            inbound: 'Inbound',
+            manual: 'Manual',
+            dialer: 'Dialer',
+            preview: 'Preview'
+        }
+    },
     whatsapp: {
         provider: {
             nombre: 'Name',
@@ -163,9 +171,12 @@ export default {
             nombre: 'Name',
             proveedor: 'Provider',
             numero: 'Number',
-            identificador: 'Identifier',
-            es_verificado: 'Verified',
-            token_validacion: 'Validation token',
+            configuracion: {
+                app_name: 'App name',
+                app_id: 'App ID'
+            },
+            horario: 'Group of hour',
+            mensaje_fueradehora: 'After Hours Message',
             destino: 'Destiny',
             tipo_de_destino: 'Destination type',
             mensaje_bienvenida: 'Welcome message',
