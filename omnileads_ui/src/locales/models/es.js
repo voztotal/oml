@@ -186,6 +186,17 @@ export default {
             nombre: 'Nombre',
             tipo: 'Tipo',
             configuracion: 'Configuracion'
+        },
+        whatsapp_template: {
+            nombre: 'Nombre',
+            identificador: 'Identificador',
+            texto: 'Texto',
+            idioma: 'Idioma',
+            status: 'Estado',
+            creado: 'Creado',
+            modificado: 'Modificado',
+            tipo: 'Tipo',
+            categoria: 'Categoria'
         }
     }
 };
