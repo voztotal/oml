@@ -197,6 +197,11 @@ export default {
             modificado: 'Modificado',
             tipo: 'Tipo',
             categoria: 'Categoria'
+        },
+        group_of_message_template: {
+            nombre: 'Nombre',
+            plantillas: 'Plantillas',
+            status: 'Estado'
         }
     }
 };

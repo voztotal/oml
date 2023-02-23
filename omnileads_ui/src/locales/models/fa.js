@@ -197,6 +197,11 @@ export default {
             modificado: 'اصلاح شده',
             tipo: 'پسر',
             categoria: 'دسته بندی'
+        },
+        group_of_message_template: {
+            nombre: 'نام',
+            plantillas: 'قالب ها',
+            status: 'حالت'
         }
     }
 };

@@ -150,6 +150,10 @@ export default {
                 message: 'پیام ها',
                 destination: 'مقصد'
             }
+        },
+        group_of_message_template: {
+            new_title: 'گروه جدید',
+            edit_title: 'گروه ویرایش'
         }
     }
 };
