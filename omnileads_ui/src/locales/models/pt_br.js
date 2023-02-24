@@ -202,6 +202,11 @@ export default {
             nombre: 'Nome',
             plantillas: 'Plantillas',
             status: 'Estado'
+        },
+        group_of_whatsapp_template: {
+            nombre: 'Nome',
+            plantillas: 'Plantillas',
+            status: 'Estado'
         }
     }
 };

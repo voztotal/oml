@@ -229,6 +229,11 @@ export default {
             validations: {
                 not_empty_templates: 'Deve haver pelo menos um modelo'
             }
+        },
+        group_of_whatsapp_template: {
+            validations: {
+                not_empty_templates: 'Deve haver pelo menos um modelo'
+            }
         }
     }
 };
