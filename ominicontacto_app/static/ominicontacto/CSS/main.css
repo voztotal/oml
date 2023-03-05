@@ -912,6 +912,10 @@ body > h1 {
   color: #52C159;
 }
 
+#bottomBar #whatsappChat {
+  color: #52C159;
+}
+
 #bottomBar #webChat {
   color: #6A716A;
 }

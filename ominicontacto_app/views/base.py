@@ -209,6 +209,7 @@ class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
         context['tipos_salientes'] = LlamadaLog.TIPOS_LLAMADAS_SALIENTES
         context['campanas_preview_activas'] = campanas_preview_activas
         context['agente_profile'] = agente_profile
+        context['tiene_whatsapp'] = agente_profile.tiene_whatsapp()
         context['sip_usuario'] = sip_usuario
         context['sip_password'] = sip_password
         context['agentes'] = AgenteProfile.objects.obtener_activos().exclude(id=agente_profile.id)

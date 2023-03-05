@@ -432,6 +432,9 @@ class AgenteProfile(models.Model):
             return True, self.grupo.tiempo_maximo_para_agendar
         return False, 0
 
+    def tiene_whatsapp(self):
+        return True
+
 
 class SupervisorProfile(models.Model):
 
