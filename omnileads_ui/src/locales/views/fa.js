@@ -158,6 +158,10 @@ export default {
         group_of_message_template: {
             new_title: 'گروه جدید',
             edit_title: 'گروه ویرایش'
+        },
+        group_of_whatsapp_template: {
+            new_title: 'گروه جدید',
+            edit_title: 'گروه ویرایش'
         }
     }
 };
