@@ -45,7 +45,8 @@ module.exports = {
         supervisor_whatsapp_group_of_whatsapp_templates: getPageConfig('supervisor_whatsapp_group_of_whatsapp_templates'),
         // Agent Pages
         agent_whatsapp_index: getPageConfig('agent_whatsapp_index'),
-        agent_whatsapp_conversation: getPageConfig('agent_whatsapp_conversation')
+        agent_whatsapp_conversation: getPageConfig('agent_whatsapp_conversation'),
+        agent_whatsapp_templates: getPageConfig('agent_whatsapp_templates')
     },
     devServer: {
         proxy: {

@@ -1,17 +1,64 @@
 <template>
-    <div>
-        <Header />
-        <ListMessages />
-    </div>
+  <div>
+    <HeaderMessages />
+    <TabView>
+      <TabPanel>
+        <template #header>
+          <span>Contestados</span>
+          <Badge :value="numAnsweredMessages" class="ml-2"></Badge>
+        </template>
+        <ListMessages :messages="answeredMessages" />
+      </TabPanel>
+      <TabPanel>
+        <template #header>
+          <span>Nuevos</span>
+          <Badge :value="numNewMessages" class="ml-2"></Badge>
+        </template>
+        <ListMessages :messages="newMessages" />
+      </TabPanel>
+    </TabView>
+  </div>
 </template>
 
 <script>
-import Header from '@/components/agent/whatsapp/Header';
+import HeaderMessages from '@/components/agent/whatsapp/messages/HeaderMessages';
 import ListMessages from '@/components/agent/whatsapp/messages/ListMessages';
+import { mapState } from 'vuex';
 export default {
     components: {
-        Header,
+        HeaderMessages,
         ListMessages
+    },
+    computed: {
+        ...mapState(['agtWhatsMessages'])
+    },
+    data () {
+        return {
+            newMessages: [],
+            answeredMessages: [],
+            numNewMessages: 0,
+            numAnsweredMessages: 0
+        };
+    },
+    watch: {
+        agtWhatsMessages: {
+            handler () {
+                this.newMessages = this.agtWhatsMessages.filter(
+                    (m) => m.isNew === true
+                );
+                this.answeredMessages = this.agtWhatsMessages.filter(
+                    (m) => m.isNew === false
+                );
+                this.numNewMessages = this.agtWhatsMessages.filter(
+                    (m) => m.isNew === true && m.answered === false
+                ).length;
+                this.numAnsweredMessages = this.agtWhatsMessages.filter(
+                    (m) => m.isNew === false && m.answered === false
+                ).length;
+            },
+            deep: true,
+            immediate: true
+        }
     }
 };
 </script>

@@ -1,41 +1,40 @@
 <template>
   <Listbox
-    v-model="selectedCountries"
-    :options="countries"
+    :options="messages"
     :filter="true"
-    optionLabel="name"
-    filterPlaceholder="Search"
+    optionLabel="from"
+    filterPlaceholder="Busca por nombre"
   >
     <template #option="data">
-      <ConversationInfo :name="data.option.name" :time="time" />
+      <ConversationInfo
+        :from="data.option.from"
+        :date="data.option.date.toLocaleString()"
+        :numMessages="data.option.numMessages"
+        @click="conversationDetail(data.option.id)"
+      />
     </template>
   </Listbox>
 </template>
 
 <script>
 import ConversationInfo from '@/components/agent/whatsapp/shared/ConversationInfo';
-
 export default {
     components: {
         ConversationInfo
     },
-    data () {
-        return {
-            selectedCountries: null,
-            time: new Date().toLocaleString(),
-            countries: [
-                { name: 'Australia', code: 'AU' },
-                { name: 'Brazil', code: 'BR' },
-                { name: 'China', code: 'CN' },
-                { name: 'Egypt', code: 'EG' },
-                { name: 'France', code: 'FR' },
-                { name: 'Germany', code: 'DE' },
-                { name: 'India', code: 'IN' },
-                { name: 'Japan', code: 'JP' },
-                { name: 'Spain', code: 'ES' },
-                { name: 'United States', code: 'US' }
-            ]
-        };
+    props: {
+        messages: {
+            type: Array,
+            default: () => []
+        }
+    },
+    methods: {
+        conversationDetail (id) {
+            this.$router.push({
+                name: 'agent_whatsapp_conversation_detail',
+                params: { id }
+            });
+        }
     }
 };
 </script>

@@ -50,6 +50,14 @@ import Chip from 'primevue/chip';
 import Badge from 'primevue/badge';
 import BadgeDirective from 'primevue/badgedirective';
 import Listbox from 'primevue/listbox';
+import Editor from 'primevue/editor';
+import SpeedDial from 'primevue/speeddial';
+import SplitButton from 'primevue/splitbutton';
+import ScrollPanel from 'primevue/scrollpanel';
+import TabMenu from 'primevue/tabmenu';
+import TabView from 'primevue/tabview';
+import TabPanel from 'primevue/tabpanel';
+import ProgressBar from 'primevue/progressbar';
 
 // Idiomas
 import { createI18n } from 'vue-i18n';
@@ -101,6 +109,14 @@ app.component('AvatarGroup', AvatarGroup);
 app.component('Chip', Chip);
 app.component('Badge', Badge);
 app.component('Listbox', Listbox);
+app.component('Editor', Editor);
+app.component('SpeedDial', SpeedDial);
+app.component('SplitButton', SplitButton);
+app.component('ScrollPanel', ScrollPanel);
+app.component('TabMenu', TabMenu);
+app.component('TabView', TabView);
+app.component('TabPanel', TabPanel);
+app.component('ProgressBar', ProgressBar);
 
 // Register Helpers
 app.provide('$helpers', Helpers);

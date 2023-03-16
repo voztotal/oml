@@ -2,10 +2,7 @@
   <div class="card">
     <Toolbar class="mb-4">
       <template #start>
-        <h1>Whatsapp chat</h1>
-      </template>
-      <template #end>
-        <h1>Whatsapp chat</h1>
+        <h2 class="font-bold">Respuestas rapidas</h2>
       </template>
     </Toolbar>
   </div>

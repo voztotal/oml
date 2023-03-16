@@ -7,16 +7,16 @@
           size="large"
           shape="circle"
         />
-        <span class="pl-2">{{ name }}</span>
+        <span class="pl-2">{{ from }}</span>
       </div>
-      <div class="flex align-items-center justify-content-center">
-        <Badge value="4" severity="success" />
+      <div v-if="numMessages > 0" class="flex align-items-center justify-content-center">
+        <Badge :value="numMessages" />
       </div>
     </div>
     <div class="flex justify-content-end flex-wrap">
       <div class="flex align-items-center justify-content-center">
         <small class="font-italic">
-          {{ time }}
+          {{ date }}
         </small>
       </div>
     </div>
@@ -26,13 +26,17 @@
 <script>
 export default {
     props: {
-        name: {
+        from: {
             type: String,
             default: '-----'
         },
-        time: {
+        date: {
             type: String,
             default: '-----'
+        },
+        numMessages: {
+            type: Number,
+            default: 2
         }
     }
 };
