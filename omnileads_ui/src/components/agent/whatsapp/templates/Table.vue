@@ -53,27 +53,34 @@
         field="nombre"
         style="max-width: 15rem"
         :sortable="true"
-        :header="$t('models.whatsapp.provider.nombre')"
+        :header="$t('models.whatsapp.message_template.nombre')"
       ></Column>
       <Column
         field="configuracion"
-        :header="$t('models.whatsapp.provider.nombre')"
+        :header="$t('models.whatsapp.message_template.configuracion')"
       ></Column>
-      <!-- <Column
-          field="tipo_proveedor"
-          :header="$t('models.whatsapp.provider.tipo_proveedor')"
-        >
-          <template #body="slotProps">
-            {{ slotProps.data.tipo_proveedor }}
-          </template>
-        </Column> -->
+      <Column
+        field="tipo"
+        :header="$t('models.whatsapp.message_template.tipo')"
+        :sortable="true"
+        style="max-width: 15rem"
+      >
+        <template #body="slotProps">
+          <Tag
+            :icon="`pi ${getIconByType(slotProps.data.tipo)}`"
+            :value="getType(slotProps.data.tipo)"
+            :severity="getSeveretyByType(slotProps.data.tipo)"
+            rounded
+          ></Tag>
+        </template>
+      </Column>
       <Column :header="$tc('globals.option', 2)" style="max-width: 10rem">
         <template #body="slotProps">
           <Button
             icon="pi pi-send"
-            class="p-button-info ml-2"
+            class="p-button-secondary"
             @click="send(slotProps.data)"
-            v-tooltip.top="$t('globals.edit')"
+            v-tooltip.top="$t('globals.send')"
           />
         </template>
       </Column>
@@ -84,6 +91,7 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import { FilterMatchMode } from 'primevue/api';
+import { HTTP_STATUS } from '@/globals';
 
 export default {
     inject: ['$helpers'],
@@ -108,8 +116,34 @@ export default {
                 global: { value: null, matchMode: FilterMatchMode.CONTAINS }
             };
         },
-        send (template) {
-            this.agtWhatsTemplateSendMsg(template);
+        getType (type) {
+            return type === 0 ? 'Plantilla mensaje' : 'Template Whatsapp';
+        },
+        getSeveretyByType (type) {
+            return type === 0 ? 'info' : 'success';
+        },
+        getIconByType (type) {
+            return type === 0 ? 'pi-copy' : 'pi-whatsapp';
+        },
+        async send (template) {
+            const { status, message } = await this.agtWhatsTemplateSendMsg(template);
+            if (status === HTTP_STATUS.SUCCESS) {
+                this.$swal(
+                    this.$helpers.getToasConfig(
+                        this.$t('globals.success_notification'),
+                        message,
+                        this.$t('globals.icon_success')
+                    )
+                );
+            } else {
+                this.$swal(
+                    this.$helpers.getToasConfig(
+                        this.$t('globals.error_notification'),
+                        message,
+                        this.$t('globals.icon_error')
+                    )
+                );
+            }
         },
         ...mapActions(['agtWhatsTemplatesInit', 'agtWhatsTemplateSendMsg'])
     },

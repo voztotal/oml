@@ -58,6 +58,7 @@ import TabMenu from 'primevue/tabmenu';
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import ProgressBar from 'primevue/progressbar';
+import Tag from 'primevue/tag';
 
 // Idiomas
 import { createI18n } from 'vue-i18n';
@@ -117,6 +118,7 @@ app.component('TabMenu', TabMenu);
 app.component('TabView', TabView);
 app.component('TabPanel', TabPanel);
 app.component('ProgressBar', ProgressBar);
+app.component('Tag', Tag);
 
 // Register Helpers
 app.provide('$helpers', Helpers);

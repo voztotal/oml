@@ -1,6 +1,7 @@
 import Index from '@/views/agent/whatsapp/Index';
 import ConversationRoutes from './conversation_routes';
 import TemplateRoutes from './template_routes';
+import ManagementFormRoutes from './management_routes';
 import { WHATSAPP_URL_NAME } from '@/globals/agent/whatsapp';
 
 export default [
@@ -10,5 +11,6 @@ export default [
         component: Index
     },
     ...ConversationRoutes,
-    ...TemplateRoutes
+    ...TemplateRoutes,
+    ...ManagementFormRoutes
 ];

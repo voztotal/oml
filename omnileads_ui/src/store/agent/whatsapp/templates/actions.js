@@ -17,7 +17,7 @@ export default {
             {
                 id: 6,
                 nombre: 'Plantilla2',
-                tipo: 0,
+                tipo: 1,
                 configuracion: {
                     text: 'Hola Mundo',
                     type: 'text'
@@ -26,7 +26,11 @@ export default {
         ];
         commit('agtWhatsTemplatesInit', data);
     },
-    agtWhatsTemplateSendMsg ({ commit }, template) {
+    async agtWhatsTemplateSendMsg ({ commit }, template) {
         console.log('Send template message: ', template);
+        return await {
+            status: 'SUCCESS',
+            message: 'Template enviado exitosamente'
+        };
     }
 };

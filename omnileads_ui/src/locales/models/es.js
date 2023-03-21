@@ -207,6 +207,17 @@ export default {
             nombre: 'Nombre',
             templates: 'Plantillas',
             status: 'Estado'
+        },
+        management_form: {
+            phone: 'Telefono',
+            agent: 'Agente',
+            type: 'Tipo',
+            mean: 'Medio',
+            result: 'Resultado',
+            score: 'Calificacion',
+            start_datetime: 'Fecha de inicio',
+            end_datetime: 'Fecha de fin',
+            observation: 'Observaciones'
         }
     }
 };

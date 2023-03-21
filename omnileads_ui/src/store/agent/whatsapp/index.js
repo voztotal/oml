@@ -7,21 +7,27 @@ import MessageState from './messages/state';
 import TemplateActions from './templates/actions';
 import TemplateMutations from './templates/mutations';
 import TemplateState from './templates/state';
+import ManagementActions from './management/actions';
+import ManagementMutations from './management/mutations';
+import ManagementState from './management/state';
 
 export const AgentWhatsappState = {
     ...ConversationState,
     ...MessageState,
-    ...TemplateState
+    ...TemplateState,
+    ...ManagementState
 };
 
 export const AgentWhatsappMutations = {
     ...ConversationMutations,
     ...MessageMutations,
-    ...TemplateMutations
+    ...TemplateMutations,
+    ...ManagementMutations
 };
 
 export const AgentWhatsappActions = {
     ...ConversationActions,
     ...MessageActions,
-    ...TemplateActions
+    ...TemplateActions,
+    ...ManagementActions
 };

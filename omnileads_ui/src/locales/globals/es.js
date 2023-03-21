@@ -107,6 +107,7 @@ export default {
     reactivate: 'Reactivar',
     reorder: 'Reordenar',
     sync: 'Sincronizar',
+    send: 'Enviar',
     // ----------------
     // --- weekdays ---
     // ----------------
