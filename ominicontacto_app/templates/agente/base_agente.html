@@ -576,6 +576,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
   </div>
 </div> <!-- FIN FACEBOOK CHAT -->
 
+<!-- WHATSAPP MODALS -->
+{% include "agente/modals/whatsapp/index.html" %}
+
 <!-- modal informacion -->
 <div class="modal fade" id="modalMensaje" role="dialog">
   <div class="modal-dialog modal-sm">
@@ -909,17 +912,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
             <!-- Wrapper Whatsapp Panel -->
             <div class="hidden" id="wrapperWhatsapp">
-                <button id="btnCloseWhatsappWrapper"  type="button" class="btn close" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
                 <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15069.66681205729!2d-99.47000756547044!3d19.220662842080003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cdf3ff23634265%3A0xd8a04412ecdb95c5!2s52710%20San%20Nicol%C3%A1s%20Tlazala%2C%20M%C3%A9x.!5e0!3m2!1ses-419!2smx!4v1678044131121!5m2!1ses-419!2smx"
-                width="300"
-                style="border:0;"
-                allowfullscreen=""
-                loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade">
-                </iframe>
+                class="whatsapp_iframe_container"
+                style="width: 400px;"
+                src="{% static 'omnileads-frontend/agent_whatsapp_index.html' %}"></iframe>
             </div>
         </div> <!-- wrapper Inner Content -->
     </div> <!-- wrapper-content -->
@@ -942,10 +938,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </div>
         {% if tiene_whatsapp %}
         <div>
-            <div class="iconApp" id="whatsappChat">
-              <span class="icon icon-solid-messages"></span>
-            </div>
-            <div class="hidden">{% trans 'Whatsapp' %}</div>
+          <div class="iconApp" id="whatsappChat">
+            <span class="icon icon-solid-chat"></span>
+          </div>
+          <div class="hidden">{% trans 'Whatsapp' %}</div>
         </div>
         {% endif %}
         <div>
@@ -1008,6 +1004,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% endcompress %}
 <script type="text/javascript" src="{% static 'JS/ext/jitsi_external_api.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/seleccionContactosPreview.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/agente/whatsapp.js' %}"></script>
 <script type="text/javascript">
 
  $(document).ready(function () {
@@ -1029,22 +1026,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
      $('#wrapperWhatsapp').addClass('hidden');
    });
 
-
-   $('#whatsappChat').on('click',function(){
-     $('#wrapperWhatsapp').toggleClass('hidden');
-     $('#wrapperWebphone').removeClass('active');
-   });
-
-   $('#btnCloseWhatsappWrapper').on('click',function(){
-       $('#wrapperWhatsapp').addClass('hidden');
-       $('#wrapperWebphone').removeClass('active');
-   });
-
-   function setColor() {
-        var tiene_whatsapp = '{{ tiene_whatsapp|safe }}';
-        $('#whatsappChat').css({ color: tiene_whatsapp === 'True' ? '#52C159' : '#6A716A'});
-   }
-
    // Get current window path
    currentPath = window.location.pathname;
 
@@ -1057,8 +1038,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
    // Add active class to sidebar icon
    $("a[href='" + currentPath + "']").closest('.main-menu-li').find('.icon').addClass('active');
 
-   setColor();
-
+   var tiene_whatsapp = '{{ tiene_whatsapp|safe }}';
+   setWhatsappStatusIcon(tiene_whatsapp === 'True');
  });
 
 </script>

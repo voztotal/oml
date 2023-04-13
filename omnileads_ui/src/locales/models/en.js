@@ -207,6 +207,17 @@ export default {
             nombre: 'Name',
             templates: 'Templates',
             status: 'Status'
+        },
+        management_form: {
+            phone: 'Phone',
+            agent: 'Agent',
+            type: 'Type',
+            mean: 'Mean',
+            result: 'Result',
+            score: 'Score',
+            start_datetime: 'Start date',
+            end_datetime: 'End date',
+            observation: 'Observations'
         }
     }
 };

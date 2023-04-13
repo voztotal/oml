@@ -3,7 +3,10 @@
     :options="messages"
     :filter="true"
     optionLabel="from"
-    filterPlaceholder="Busca por nombre"
+    :emptyFilterMessage="$t('globals.without_data')"
+    v-bind:filterPlaceholder="
+      $t('globals.find_by', { field: $tc('globals.name') }, 1)
+    "
   >
     <template #option="data">
       <ConversationInfo

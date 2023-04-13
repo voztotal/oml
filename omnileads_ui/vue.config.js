@@ -47,7 +47,9 @@ module.exports = {
         agent_whatsapp_index: getPageConfig('agent_whatsapp_index'),
         agent_whatsapp_conversation: getPageConfig('agent_whatsapp_conversation'),
         agent_whatsapp_templates: getPageConfig('agent_whatsapp_templates'),
-        agent_whatsapp_management_form: getPageConfig('agent_whatsapp_management_form')
+        agent_whatsapp_management_form: getPageConfig('agent_whatsapp_management_form'),
+        agent_whatsapp_message_transfer: getPageConfig('agent_whatsapp_message_transfer'),
+        agent_whatsapp_media_uploader: getPageConfig('agent_whatsapp_media_uploader')
     },
     devServer: {
         proxy: {

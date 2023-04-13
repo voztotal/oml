@@ -3,7 +3,7 @@ import { WHATSAPP_URL_NAME } from '@/globals/agent/whatsapp';
 
 export default [
     {
-        path: `/${WHATSAPP_URL_NAME}_management_form`,
+        path: `/${WHATSAPP_URL_NAME}_management_form.html`,
         name: `${WHATSAPP_URL_NAME}_management_form`,
         component: Index
     }

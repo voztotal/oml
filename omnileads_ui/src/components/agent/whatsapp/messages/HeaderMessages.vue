@@ -2,15 +2,9 @@
   <div class="card">
     <Toolbar class="mb-4">
       <template #start>
-        <h2 class="font-bold">Whatsapp</h2>
+        <h2 class="font-bold">{{ $t('globals.whatsapp.title') }}</h2>
       </template>
       <template #end>
-        <!-- <Button
-        icon="pi pi-search"
-        class="p-button-rounded p-button-info p-button-outlined ml-2"
-        @click="search"
-        v-tooltip.top="'Buscar conversarion'"
-        /> -->
         <Button
         icon="pi pi-comment"
         class="p-button-secondary"
@@ -21,7 +15,7 @@
         icon="pi pi-times"
         class="p-button-danger ml-2"
         @click="close"
-        v-tooltip.top="'Cerrar'"
+        v-tooltip.top="$t('globals.close')"
         />
       </template>
     </Toolbar>
@@ -31,9 +25,22 @@
 <script>
 export default {
     methods: {
-        newConversation () {},
-        search () {},
-        close () {}
+        newConversation () {
+            const event = new CustomEvent('onWhatsappNewConversationEvent', {
+                detail: {
+                    new_conversation: false
+                }
+            });
+            window.parent.document.dispatchEvent(event);
+        },
+        close () {
+            const event = new CustomEvent('onWhatsappCloseContainerEvent', {
+                detail: {
+                    whatsapp_container: false
+                }
+            });
+            window.parent.document.dispatchEvent(event);
+        }
     }
 };
 </script>

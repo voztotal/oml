@@ -2,7 +2,9 @@
   <div class="card">
     <Toolbar class="mb-4">
       <template #start>
-        <h2 class="font-bold">{{ $t('views.whatsapp.management_form.management') }}</h2>
+        <h2 class="font-bold">
+          {{ $t("views.whatsapp.media_uploader.title") }}
+        </h2>
       </template>
       <template #end>
         <Button
@@ -21,9 +23,9 @@ export default {
     methods: {
         close () {
             this.$emit('handleCloseEvent');
-            const event = new CustomEvent('onWhatsappManagementFormEvent', {
+            const event = new CustomEvent('onWhatsappMediaFormEvent', {
                 detail: {
-                    management_form: false
+                    media_form: false
                 }
             });
             window.parent.document.dispatchEvent(event);

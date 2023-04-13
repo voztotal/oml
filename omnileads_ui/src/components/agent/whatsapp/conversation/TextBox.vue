@@ -15,7 +15,7 @@
         class="w-full"
         :disabled="this.message === ''"
         @click="sendMessage(message)"
-        v-tooltip.top="'Enviar'"
+        v-tooltip.top="$t('globals.send')"
       />
     </div>
   </div>

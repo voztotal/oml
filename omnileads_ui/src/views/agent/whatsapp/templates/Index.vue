@@ -1,7 +1,7 @@
 <template>
   <div>
-    <Header />
-    <Table />
+    <Header @handleClearFiltersEvent="clearFiltersEvent" />
+    <Table ref="tableRef" />
   </div>
 </template>
 
@@ -22,6 +22,11 @@ export default {
             newMessages: [],
             answeredMessages: []
         };
+    },
+    methods: {
+        clearFiltersEvent () {
+            this.$refs.tableRef.clearFilter();
+        }
     },
     watch: {
         agtWhatsMessages: {

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <Header />
-    <Tab />
+    <Header @handleCloseEvent="closeEvent"/>
+    <Tab ref="tabRef"/>
   </div>
 </template>
 
@@ -15,7 +15,10 @@ export default {
         Tab
     },
     methods: {
-        ...mapActions(['agtWhatsManagementInitData'])
+        ...mapActions(['agtWhatsManagementInitData']),
+        closeEvent () {
+            this.$refs.tabRef.closeEvent();
+        }
     },
     created () {
         this.agtWhatsManagementInitData();

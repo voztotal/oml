@@ -199,11 +199,11 @@
     </div>
     <div class="flex justify-content-end flex-wrap mt-2">
       <div class="flex align-items-center">
-        <!-- <Button
+        <Button
           class="p-button-danger p-button-outlined mr-2"
           :label="$t('globals.cancel')"
           @click="closeModal"
-        /> -->
+        />
         <Button
           :label="$t('globals.save')"
           icon="pi pi-save"
@@ -296,8 +296,25 @@ export default {
     },
     methods: {
         ...mapActions(['agtWhatsManagementCreate', 'agtWhatsManagementInitData']),
+        resetData () {
+            this.form = {
+                id: null,
+                tipo: null,
+                medio: null,
+                resultado: null,
+                calificacion: null,
+                observaciones: null
+            };
+            this.submitted = false;
+        },
         closeModal () {
-            this.$emit('closeModalEvent');
+            this.resetData();
+            const event = new CustomEvent('onWhatsappManagementFormEvent', {
+                detail: {
+                    management_form: false
+                }
+            });
+            window.parent.document.dispatchEvent(event);
         },
         initializeData () {
             this.initFormData();

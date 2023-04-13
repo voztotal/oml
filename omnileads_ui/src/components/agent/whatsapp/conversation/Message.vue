@@ -1,11 +1,11 @@
 <template>
-  <Card class="shadow-6 border-round-lg" :class="getClasses(message.itsMine)">
+  <Card class="shadow-6 border-round-xl" :class="getClasses(message.itsMine)">
     <template #content>
       <div class="py-0 my-0">
         <span
           ><b class="text-lg">{{ message.from }}</b></span
         >
-        <p>
+        <p class="mt-2 mb-3">
           {{ message.message }}
         </p>
         <div class="flex justify-content-end flex-wrap">

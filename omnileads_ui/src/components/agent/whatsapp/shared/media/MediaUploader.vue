@@ -2,47 +2,18 @@
   <FileUpload
     name="demo[]"
     url="./upload.php"
-    @upload="onTemplatedUpload($event)"
-    :multiple="true"
-    accept="image/*"
+    @upload="onFileUploaded($event)"
+    :multiple="false"
+    :accept="getFileType()"
+    :customUpload="true"
+    :fileLimit="1"
     :maxFileSize="1000000"
     @select="onSelectedFiles"
+    @uploader="customUploader()"
+    :cancelLabel="'Cancelar'"
+    :chooseLabel="'Selecciona'"
+    :uploadLabel="'Cargar'"
   >
-    <template
-      #header="{ chooseCallback, uploadCallback, clearCallback, files }"
-    >
-      <div
-        class="flex flex-wrap justify-content-between align-items-center flex-1 gap-2"
-      >
-        <div class="flex gap-2">
-          <Button
-            @click="chooseCallback()"
-            icon="pi pi-images"
-            class="p-button-rounded p-button-outlined"
-          />
-          <Button
-            @click="uploadEvent(uploadCallback)"
-            icon="pi pi-cloud-upload"
-            class="bg-danger"
-            :disabled="!files || files.length === 0"
-          />
-          <Button
-            @click="clearCallback()"
-            icon="pi pi-times"
-            class="p-button-rounded p-button-outlined p-button-danger"
-            :disabled="!files || files.length === 0"
-          />
-        </div>
-        <ProgressBar
-          :value="120"
-          :showValue="false"
-          class="w-20rem h-1rem w-full"
-          :class="progressBarStatus()"
-        >
-          <span class="white-space-nowrap">{{ totalSize }}B / 1Mb</span>
-        </ProgressBar>
-      </div>
-    </template>
     <template
       #content="{
         files,
@@ -75,7 +46,9 @@
             <Button
               icon="pi pi-times"
               @click="onRemoveTemplatingFile(file, removeFileCallback, index)"
-              class="p-button-rounded p-button-outlined p-button-danger"
+              outlined
+              rounded
+              severity="danger"
             />
           </div>
         </div>
@@ -105,7 +78,9 @@
             <Button
               icon="pi pi-times"
               @click="removeUploadedFileCallback(index)"
-              class="p-button-danger"
+              outlined
+              rounded
+              severity="danger"
             />
           </div>
         </div>
@@ -114,7 +89,7 @@
     <template #empty>
       <div class="flex align-items-center justify-content-center flex-column">
         <i
-          class="pi pi-cloud-upload border-2 border-circle p-5 text-8xl text-400 border-400"
+          class="pi pi-cloud-upload border-2 border-circle p-5 text-6xl text-400 border-400"
         />
         <p class="mt-4 mb-0">Drag and drop files to here to upload.</p>
       </div>
@@ -124,6 +99,12 @@
 
 <script>
 export default {
+    props: {
+        fileType: {
+            type: String,
+            default: 'img'
+        }
+    },
     data () {
         return {
             files: [],
@@ -139,6 +120,9 @@ export default {
         }
     },
     methods: {
+        getFileType () {
+            return this.fileType === 'img' ? 'image/*' : 'application/pdf';
+        },
         onRemoveTemplatingFile (file, removeFileCallback, index) {
             removeFileCallback(index);
             this.totalSize -= parseInt(this.formatSize(file.size));
@@ -159,7 +143,18 @@ export default {
             this.totalSizePercent = this.totalSize / 10;
             callback();
         },
-        onTemplatedUpload () {
+        async customUploader () {
+            console.log('customUploader');
+            const file = this.files[0];
+            console.log(file);
+            // const reader = new FileReader();
+            // let blob = await fetch(file.objectURL).then((r) => r.blob()); //blob:url
+            // reader.readAsDataURL(blob);
+            // reader.onloadend = function () {
+            //     const base64data = reader.result;
+            // };
+        },
+        onFileUploaded () {
             this.$toast.add({
                 severity: 'info',
                 summary: 'Success',
@@ -171,7 +166,6 @@ export default {
             if (bytes === 0) {
                 return '0 B';
             }
-
             const k = 1000;
             const dm = 3;
             const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];

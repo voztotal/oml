@@ -162,6 +162,14 @@ export default {
         group_of_whatsapp_template: {
             new_title: 'Nuevo grupo',
             edit_title: 'Edita grupo'
+        },
+        management_form: {
+            form: 'Formulario',
+            record: 'Historial',
+            management: 'Gestión'
+        },
+        media_uploader: {
+            title: 'Gestión de archivos'
         }
     }
 };

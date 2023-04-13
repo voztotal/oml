@@ -61,7 +61,8 @@ export default {
         message_template: 'Template de mensaje | Templates de mensajes',
         whatsapp_template: 'Template de whatsapp | Templates de whatsapp',
         group_of_message_template: 'Grupo de plantillas de mensaje | Grupos de plantillas de mensaje',
-        group_of_whatsapp_template: 'Grupo de plantillas de whatsapp | Grupos de plantillas de whatsapp'
+        group_of_whatsapp_template: 'Grupo de plantillas de whatsapp | Grupos de plantillas de whatsapp',
+        template: 'Plantilla | Plantillas'
     },
     // -------------
     // -- Actions --
@@ -108,6 +109,8 @@ export default {
     reorder: 'Reordenar',
     sync: 'Sincronizar',
     send: 'Enviar',
+    transfer: 'Transferir',
+    attach: 'Adjuntar',
     // ----------------
     // --- weekdays ---
     // ----------------
@@ -133,6 +136,13 @@ export default {
     october: 'Octubre',
     november: 'Noviembre',
     december: 'Diciembre',
+    // -------------
+    // --- Media ---
+    // -------------
+    media: {
+        image: 'Imagen | Imagenes',
+        doc: 'Documento | Documentos'
+    },
     // ---------------------
     // --- Notifications ---
     // ---------------------

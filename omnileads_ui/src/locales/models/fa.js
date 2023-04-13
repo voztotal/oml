@@ -207,6 +207,17 @@ export default {
             nombre: 'نام',
             plantillas: 'قالب ها',
             status: 'حالت'
+        },
+        management_form: {
+            phone: 'تلفن',
+            agent: 'عامل',
+            type: 'پسر',
+            mean: 'نیم',
+            result: 'نتیجه',
+            score: 'صلاحیت',
+            start_datetime: 'تاریخ شروع',
+            end_datetime: 'تاریخ پایان',
+            observation: 'مشاهدات'
         }
     }
 };

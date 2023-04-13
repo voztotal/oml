@@ -3,14 +3,14 @@
     <TabPanel>
       <template #header>
         <i class="pi pi-list mr-2"></i>
-        <span>Formulario</span>
+        <span>{{ $t('views.whatsapp.management_form.form') }}</span>
       </template>
-      <Form />
+      <Form ref="formRef"/>
     </TabPanel>
     <TabPanel>
       <template #header>
         <i class="pi pi-history mr-2"></i>
-        <span>Historial</span>
+        <span>{{ $t('views.whatsapp.management_form.record') }}</span>
       </template>
       <Historial />
     </TabPanel>
@@ -24,6 +24,11 @@ export default {
     components: {
         Form,
         Historial
+    },
+    methods: {
+        closeEvent () {
+            this.$refs.formRef.resetData();
+        }
     }
 };
 </script>
