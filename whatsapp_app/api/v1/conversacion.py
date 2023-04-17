@@ -27,7 +27,9 @@ from rest_framework.authentication import SessionAuthentication
 from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
-from whatsapp_app.api.v1.mensaje import MensajeCreateSerializer, MensajeListSerializer
+from whatsapp_app.api.v1.mensaje import (
+    MensajeTextCreateSerializer, MensajeAtachmentCreateSerializer, MensajeListSerializer,
+    MensajePlantillaCreateSerializer, MensajeWhatsappTemplateCreateSerializer)
 
 
 class ConversacionSerializer(serializers.Serializer):
@@ -201,25 +203,23 @@ class ViewSet(viewsets.ViewSet):
             status=status.HTTP_200_OK)
 
     @decorators.action(detail=True, methods=["post"])
-    def send_menssage(self, request, pk):
+    def send_menssage_text(self, request, pk):
         data = request.data.copy()
         data.update({"conversacion": pk})
-        serializer = MensajeCreateSerializer(data=data)
+        serializer = MensajeTextCreateSerializer(data=data)
         serializer.is_valid(raise_exception=True)
-        # instance = serializer.save()
-        # instance.status = _sent_menssage(instance)
+        serializer.save()
         return response.Response(
             data=get_response_data(status=HttpResponseStatus.SUCCESS, data=serializer.data),
             status=status.HTTP_200_OK)
 
     @decorators.action(detail=True, methods=["post"])
-    def send_attachment(self, request, pk):
+    def send_menssage_attachment(self, request, pk):
         data = request.data.copy()
         data.update({"conversacion": pk})
-        serializer = MensajeCreateSerializer(data=data)
+        serializer = MensajeAtachmentCreateSerializer(data=data)
         serializer.is_valid(raise_exception=True)
-        # instance = serializer.save()
-        # instance.status = _sent_menssage(instance)
+        serializer.save()
         return response.Response(
             data=get_response_data(status=HttpResponseStatus.SUCCESS, data=serializer.data),
             status=status.HTTP_200_OK)

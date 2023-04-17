@@ -37,7 +37,25 @@ class MensajeListSerializer(serializers.Serializer):
     emisor = serializers.CharField()
 
 
-class MensajeCreateSerializer(serializers.Serializer):
+class MensajeTextCreateSerializer(serializers.Serializer):
+    conversacion = serializers.IntegerField()
+    contenido = serializers.CharField()
+    emisor = serializers.CharField()
+
+
+class MensajeAtachmentCreateSerializer(serializers.Serializer):
+    conversacion = serializers.IntegerField()
+    contenido = serializers.CharField()
+    emisor = serializers.CharField()
+
+
+class MensajePlantillaCreateSerializer(serializers.Serializer):
+    conversacion = serializers.IntegerField()
+    contenido = serializers.CharField()
+    emisor = serializers.CharField()
+
+
+class MensajeWhatsappTemplateCreateSerializer(serializers.Serializer):
     conversacion = serializers.IntegerField()
     contenido = serializers.CharField()
     emisor = serializers.CharField()
