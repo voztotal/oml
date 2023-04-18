@@ -218,6 +218,10 @@ export default {
             start_datetime: 'Start date',
             end_datetime: 'End date',
             observation: 'Observations'
+        },
+        message_transfer: {
+            from: 'From',
+            to: 'To'
         }
     }
 };

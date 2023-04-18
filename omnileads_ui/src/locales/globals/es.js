@@ -111,6 +111,7 @@ export default {
     send: 'Enviar',
     transfer: 'Transferir',
     attach: 'Adjuntar',
+    upload: 'Subir',
     // ----------------
     // --- weekdays ---
     // ----------------
@@ -141,7 +142,13 @@ export default {
     // -------------
     media: {
         image: 'Imagen | Imagenes',
-        doc: 'Documento | Documentos'
+        doc: 'Documento | Documentos',
+        uploaderForm: {
+            invalid_file_limit_message: 'El número máximo de archivos que se pueden cargar es {num}',
+            invalid_file_size_message: 'Tamaño de archivo no válido, el tamaño del archivo debe ser menor que {num}',
+            invalid_file_type_message: 'Tipo de archivo invalido',
+            drag_and_drop: 'Arrastre y suelte los archivos aquí para cargarlos'
+        }
     },
     // ---------------------
     // --- Notifications ---

@@ -220,6 +220,10 @@ export default {
             start_datetime: 'Fecha de inicio',
             end_datetime: 'Fecha de fin',
             observation: 'Observaciones'
+        },
+        message_transfer: {
+            from: 'De',
+            to: 'Para'
         }
     }
 };

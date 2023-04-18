@@ -10,24 +10,30 @@ import TemplateState from './templates/state';
 import ManagementActions from './management/actions';
 import ManagementMutations from './management/mutations';
 import ManagementState from './management/state';
+import TransferChatActions from './transfer_chat/actions';
+import TransferChatMutations from './transfer_chat/mutations';
+import TransferChatState from './transfer_chat/state';
 
 export const AgentWhatsappState = {
     ...ConversationState,
     ...MessageState,
     ...TemplateState,
-    ...ManagementState
+    ...ManagementState,
+    ...TransferChatState
 };
 
 export const AgentWhatsappMutations = {
     ...ConversationMutations,
     ...MessageMutations,
     ...TemplateMutations,
-    ...ManagementMutations
+    ...ManagementMutations,
+    ...TransferChatMutations
 };
 
 export const AgentWhatsappActions = {
     ...ConversationActions,
     ...MessageActions,
     ...TemplateActions,
-    ...ManagementActions
+    ...ManagementActions,
+    ...TransferChatActions
 };

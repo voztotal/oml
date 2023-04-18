@@ -1,7 +1,7 @@
 <template>
   <div>
-    <Header />
-    <Form />
+    <Header @handleCloseEvent="closeEvent" />
+    <Form ref="formRef" />
   </div>
 </template>
 
@@ -15,10 +15,13 @@ export default {
         Form
     },
     methods: {
-        ...mapActions(['agtWhatsManagementInitData'])
+        ...mapActions(['agtWhatsTransferChatInitData']),
+        closeEvent () {
+            this.$refs.formRef.clearData();
+        }
     },
     created () {
-        this.agtWhatsManagementInitData();
+        this.agtWhatsTransferChatInitData(1);
     }
 };
 </script>

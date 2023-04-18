@@ -109,6 +109,7 @@ export default {
     sync: 'Sync up',
     send: 'Enviar',
     transfer: 'Transferir',
+    upload: 'Upload',
     // ----------------
     // --- weekdays ---
     // ----------------
@@ -134,6 +135,19 @@ export default {
     october: 'October',
     november: 'November',
     december: 'December',
+    // -------------
+    // --- Media ---
+    // -------------
+    media: {
+        image: 'Image | Images',
+        doc: 'File | Files',
+        uploaderForm: {
+            invalid_file_limit_message: 'Maximum number of files to be uploaded is {num}',
+            invalid_file_size_message: 'Invalid file size, file size should be smaller than {num}',
+            invalid_file_type_message: 'Invalid file type',
+            drag_and_drop: 'Drag and drop files to here to upload'
+        }
+    },
     // ---------------------
     // --- Notifications ---
     // ---------------------

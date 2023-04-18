@@ -1,100 +1,35 @@
 <template>
-  <FileUpload
-    name="demo[]"
-    url="./upload.php"
-    @upload="onFileUploaded($event)"
-    :multiple="false"
-    :accept="getFileType()"
-    :customUpload="true"
-    :fileLimit="1"
-    :maxFileSize="1000000"
-    @select="onSelectedFiles"
-    @uploader="customUploader()"
-    :cancelLabel="'Cancelar'"
-    :chooseLabel="'Selecciona'"
-    :uploadLabel="'Cargar'"
-  >
-    <template
-      #content="{
-        files,
-        uploadedFiles,
-        removeUploadedFileCallback,
-        removeFileCallback,
-      }"
+  <div>
+    <Toast />
+    <FileUpload
+      :multiple="multiple"
+      :customUpload="customUpload"
+      :maxFileSize="maxFileSize"
+      :fileLimit="fileLimit"
+      :accept="getFileType()"
+      @select="onSelectedFiles($event)"
+      @uploader="customUploader($event)"
+      @upload="fileUploaded($event)"
+      @error="errorToUpload($event)"
+      @remove="removeEvent($event)"
+      @clear="clearEvent()"
+      :invalidFileLimitMessage="$t('globals.media.uploaderForm.invalid_file_limit_message', {num: fileLimit})"
+      :invalidFileSizeMessage="$t('globals.media.uploaderForm.invalid_file_size_message', {num: maxFileSize})"
+      :invalidFileTypeMessage="$t('globals.media.uploaderForm.invalid_file_type_message')"
+      :cancelLabel="$t('globals.cancel')"
+      :chooseLabel="$t('globals.select')"
+      :uploadLabel="$t('globals.upload')"
     >
-      <div v-if="files.length > 0">
-        <h5>Pending</h5>
-        <div class="flex flex-wrap p-0 sm:p-5 gap-5">
-          <div
-            v-for="(file, index) of files"
-            :key="file.name + file.type + file.size"
-            class="card m-0 px-6 flex flex-column border-1 surface-border align-items-center gap-3"
-          >
-            <div>
-              <img
-                role="presentation"
-                :alt="file.name"
-                :src="file.objectURL"
-                width="100"
-                height="50"
-                class="shadow-2"
-              />
-            </div>
-            <span class="font-semibold">{{ file.name }}</span>
-            <div>{{ formatSize(file.size) }}</div>
-            <Badge value="Pending" severity="warning" />
-            <Button
-              icon="pi pi-times"
-              @click="onRemoveTemplatingFile(file, removeFileCallback, index)"
-              outlined
-              rounded
-              severity="danger"
-            />
-          </div>
+      <template #empty>
+        <div class="flex align-items-center justify-content-center flex-column">
+          <i
+            class="pi pi-cloud-upload border-2 border-circle p-5 text-6xl text-400 border-400"
+          />
+          <p class="mt-4 mb-0">{{ $t('globals.media.uploaderForm.drag_and_drop') }}</p>
         </div>
-      </div>
-
-      <div v-if="uploadedFiles.length > 0">
-        <h5>Completed</h5>
-        <div class="flex flex-wrap p-0 sm:p-5 gap-5">
-          <div
-            v-for="(file, index) of uploadedFiles"
-            :key="file.name + file.type + file.size"
-            class="card m-0 px-6 flex flex-column border-1 surface-border align-items-center gap-3"
-          >
-            <div>
-              <img
-                role="presentation"
-                :alt="file.name"
-                :src="file.objectURL"
-                width="100"
-                height="50"
-                class="shadow-2"
-              />
-            </div>
-            <span class="font-semibold">{{ file.name }}</span>
-            <div>{{ formatSize(file.size) }}</div>
-            <Badge value="Completed" class="mt-3" severity="success" />
-            <Button
-              icon="pi pi-times"
-              @click="removeUploadedFileCallback(index)"
-              outlined
-              rounded
-              severity="danger"
-            />
-          </div>
-        </div>
-      </div>
-    </template>
-    <template #empty>
-      <div class="flex align-items-center justify-content-center flex-column">
-        <i
-          class="pi pi-cloud-upload border-2 border-circle p-5 text-6xl text-400 border-400"
-        />
-        <p class="mt-4 mb-0">Drag and drop files to here to upload.</p>
-      </div>
-    </template>
-  </FileUpload>
+      </template>
+    </FileUpload>
+  </div>
 </template>
 
 <script>
@@ -103,6 +38,22 @@ export default {
         fileType: {
             type: String,
             default: 'img'
+        },
+        multiple: {
+            type: Boolean,
+            default: false
+        },
+        customUpload: {
+            type: Boolean,
+            default: true
+        },
+        maxFileSize: {
+            type: Number,
+            default: 1000000
+        },
+        fileLimit: {
+            type: Number,
+            default: 1
         }
     },
     data () {
@@ -112,26 +63,9 @@ export default {
             totalSizePercent: 0
         };
     },
-    computed: {
-        progressBarStatus () {
-            return {
-                'exceeded-progress-bar': this.totalSizePercent > 100
-            };
-        }
-    },
     methods: {
         getFileType () {
             return this.fileType === 'img' ? 'image/*' : 'application/pdf';
-        },
-        onRemoveTemplatingFile (file, removeFileCallback, index) {
-            removeFileCallback(index);
-            this.totalSize -= parseInt(this.formatSize(file.size));
-            this.totalSizePercent = this.totalSize / 10;
-        },
-        onClearTemplatingUpload (clear) {
-            clear();
-            this.totalSize = 0;
-            this.totalSizePercent = 0;
         },
         onSelectedFiles (event) {
             this.files = event.files;
@@ -139,28 +73,34 @@ export default {
                 this.totalSize += parseInt(this.formatSize(file.size));
             });
         },
-        uploadEvent (callback) {
-            this.totalSizePercent = this.totalSize / 10;
-            callback();
-        },
-        async customUploader () {
+        async customUploader ($event) {
             console.log('customUploader');
             const file = this.files[0];
             console.log(file);
-            // const reader = new FileReader();
-            // let blob = await fetch(file.objectURL).then((r) => r.blob()); //blob:url
-            // reader.readAsDataURL(blob);
+            const reader = new FileReader();
+            const blob = await fetch(file.objectURL).then((r) => r.blob());
+            reader.readAsDataURL(blob);
             // reader.onloadend = function () {
             //     const base64data = reader.result;
             // };
+            this.clearData();
+            this.$toast.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000 });
         },
-        onFileUploaded () {
-            this.$toast.add({
-                severity: 'info',
-                summary: 'Success',
-                detail: 'File Uploaded',
-                life: 3000
-            });
+        clearData () {
+            this.files = [];
+            this.totalSize = 0;
+            this.totalSizePercent = 0;
+        },
+        errorToUpload ($event) {
+            console.log('Error to upload file');
+            console.log($event);
+        },
+        clearEvent () {
+            console.log('Clear Event');
+        },
+        removeEvent ($event) {
+            console.log('Remove file');
+            console.log($event);
         },
         formatSize (bytes) {
             if (bytes === 0) {

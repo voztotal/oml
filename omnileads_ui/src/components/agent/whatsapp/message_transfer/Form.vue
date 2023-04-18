@@ -10,9 +10,8 @@
             <i class="pi pi-user"></i>
           </span>
           <InputText
-            v-model="v$.form.from.$model"
             disabled
-            placeholder="Disabled"
+            :placeholder="fromLabel"
           />
         </div>
       </div>
@@ -39,8 +38,8 @@
             }"
             :options="agents"
             placeholder="-----"
-            optionLabel="name"
-            optionValue="value"
+            optionLabel="agent_full_name"
+            optionValue="agent_id"
             :emptyFilterMessage="$t('globals.without_data')"
             :filter="true"
             v-bind:filterPlaceholder="
@@ -92,6 +91,7 @@ export default {
     validations () {
         return {
             form: {
+                conversationId: { required },
                 from: { required },
                 to: { required }
             }
@@ -109,33 +109,47 @@ export default {
             form: {
                 id: null,
                 from: null,
-                to: null
+                to: null,
+                conversationId: null
             },
             agents: [],
             submitted: false,
-            filters: null
+            filters: null,
+            fromLabel: ''
         };
     },
     created () {
         this.initializeData();
     },
     computed: {
-        ...mapState(['agtWhatsManagementForm'])
+        ...mapState(['agtWhatsTransferChatAgents', 'agtWhatsTransferChatForm'])
     },
     methods: {
-        ...mapActions(['agtWhatsManagementCreate', 'agtWhatsManagementInitData']),
+        ...mapActions(['agtWhatsTransferChatSend']),
         closeModal () {
-            this.initializeData();
-            this.$emit('closeModalEvent');
+            this.clearData();
+            const event = new CustomEvent('onWhatsappTransferChatEvent', {
+                detail: {
+                    transfer_chat: false
+                }
+            });
+            window.parent.document.dispatchEvent(event);
         },
-        initializeData (open = false) {
-            this.initFormData(open);
+        initializeData () {
+            this.initFormData();
             this.submitted = false;
         },
-        initFormData (open = false) {
-            this.form.id = open ? this.agtWhatsManagementForm?.id : null;
-            this.form.from = open ? this.agtWhatsManagementForm?.from : null;
-            this.form.to = open ? this.agtWhatsManagementForm?.to : null;
+        clearData () {
+            this.form.id = null;
+            this.form.from = null;
+            this.form.to = null;
+            this.submitted = false;
+        },
+        initFormData () {
+            this.form.id = this.agtWhatsTransferChatForm?.id;
+            this.form.from = this.agtWhatsTransferChatForm?.from;
+            this.form.to = this.agtWhatsTransferChatForm?.to;
+            this.form.conversationId = this.agtWhatsTransferChatForm?.conversationId;
         },
         clearFilter () {
             this.initFilters();
@@ -150,11 +164,10 @@ export default {
             if (!isFormValid) {
                 return null;
             }
-            const { status, message } = await this.agtWhatsManagementCreate(
+            const { status, message } = await this.agtWhatsTransferChatSend(
                 this.form
             );
             if (status === HTTP_STATUS.SUCCESS) {
-                await this.agtWhatsManagementInitData();
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.success_notification'),
@@ -171,14 +184,25 @@ export default {
                     )
                 );
             }
-            this.initializeData();
+            this.clearData();
         }
     },
     watch: {
-        agtWhatsManagementForm: {
+        agtWhatsTransferChatForm: {
             handler () {
-                if (this.agtWhatsManagementForm) {
+                if (this.agtWhatsTransferChatForm) {
                     this.initFormData();
+                    this.fromLabel = this.agents.find(a => a.agent_id === this.form?.from)?.agent_full_name || '';
+                }
+            },
+            deep: true,
+            immediate: true
+        },
+        agtWhatsTransferChatAgents: {
+            handler () {
+                if (this.agtWhatsTransferChatAgents) {
+                    this.agents = this.agtWhatsTransferChatAgents;
+                    this.fromLabel = this.agents.find(a => a.agent_id === this.form?.from)?.agent_full_name || '';
                 }
             },
             deep: true,
