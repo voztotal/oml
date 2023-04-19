@@ -26,7 +26,8 @@ const onWhatsappManagementFormEvent = ($event) => {
 };
 
 const onWhatsappMediaFormEvent = ($event) => {
-    const { media_form } = $event.detail;
+    const { media_form, fileType } = $event.detail;
+    $('#agentWhatsMediaFormType').val(fileType);
     modalMediaForm.modal(media_form === true ? 'show' : 'hide');
 };
 

@@ -184,7 +184,7 @@ export default {
                     )
                 );
             }
-            this.clearData();
+            this.closeModal();
         }
     },
     watch: {

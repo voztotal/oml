@@ -7,12 +7,10 @@
       :maxFileSize="maxFileSize"
       :fileLimit="fileLimit"
       :accept="getFileType()"
+      ref="fileUpload"
       @select="onSelectedFiles($event)"
       @uploader="customUploader($event)"
-      @upload="fileUploaded($event)"
       @error="errorToUpload($event)"
-      @remove="removeEvent($event)"
-      @clear="clearEvent()"
       :invalidFileLimitMessage="$t('globals.media.uploaderForm.invalid_file_limit_message', {num: fileLimit})"
       :invalidFileSizeMessage="$t('globals.media.uploaderForm.invalid_file_size_message', {num: maxFileSize})"
       :invalidFileTypeMessage="$t('globals.media.uploaderForm.invalid_file_type_message')"
@@ -74,9 +72,7 @@ export default {
             });
         },
         async customUploader ($event) {
-            console.log('customUploader');
             const file = this.files[0];
-            console.log(file);
             const reader = new FileReader();
             const blob = await fetch(file.objectURL).then((r) => r.blob());
             reader.readAsDataURL(blob);
@@ -84,23 +80,24 @@ export default {
             //     const base64data = reader.result;
             // };
             this.clearData();
-            this.$toast.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000 });
+            const event = new CustomEvent('onWhatsappMediaFormEvent', {
+                detail: {
+                    media_form: false,
+                    fileType: null
+                }
+            });
+            window.parent.document.dispatchEvent(event);
         },
         clearData () {
             this.files = [];
             this.totalSize = 0;
             this.totalSizePercent = 0;
+            this.$refs.fileUpload.clear();
+            this.$refs.fileUpload.uploadedFileCount = 0;
         },
         errorToUpload ($event) {
-            console.log('Error to upload file');
-            console.log($event);
-        },
-        clearEvent () {
-            console.log('Clear Event');
-        },
-        removeEvent ($event) {
-            console.log('Remove file');
-            console.log($event);
+            console.error('Error to upload file');
+            console.error($event);
         },
         formatSize (bytes) {
             if (bytes === 0) {

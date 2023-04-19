@@ -170,6 +170,9 @@ export default {
         },
         media_uploader: {
             title: 'Gestión de archivos'
+        },
+        message_transfer: {
+            title: 'Transferir chat'
         }
     }
 };

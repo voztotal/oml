@@ -14,7 +14,6 @@
     </template>
     <template #end>
       <SplitButton
-        @click="attach"
         icon="pi pi-paperclip"
         :model="attachOptions"
         v-tooltip.top="$t('globals.attach')"
@@ -69,12 +68,16 @@ export default {
                 {
                     label: this.$tc('globals.media.image', 2),
                     icon: 'pi pi-image',
-                    command: () => {}
+                    command: () => {
+                        this.attach();
+                    }
                 },
                 {
                     label: this.$tc('globals.media.doc', 2),
                     icon: 'pi pi-file-pdf',
-                    command: () => {}
+                    command: () => {
+                        this.attach('pdf');
+                    }
                 }
             ]
         };
@@ -91,10 +94,11 @@ export default {
             });
             window.parent.document.dispatchEvent(event);
         },
-        attach () {
-            const event = new CustomEvent('onWhatsappAttachMediaEvent', {
+        attach (fileType = 'img') {
+            const event = new CustomEvent('onWhatsappMediaFormEvent', {
                 detail: {
-                    attach_media: true
+                    media_form: true,
+                    fileType
                 }
             });
             window.parent.document.dispatchEvent(event);

@@ -1,6 +1,6 @@
 <template>
   <div class="grid mr-2">
-    <div class="xl:col-11 lg:col-10 md:col-9 sm:col-9">
+    <div class="xl:col-11 lg:col-10 md:col-8 sm:col-9">
       <InputText
         class="w-full"
         autofocus
@@ -9,11 +9,11 @@
         v-model="message"
       />
     </div>
-    <div class="xl:col-1 lg:col-2 md:col-3 sm:col-3">
+    <div class="xl:col-1 lg:col-2 md:col-4 sm:col-3">
       <Button
         icon="pi pi-send"
         class="w-full"
-        :disabled="this.message === ''"
+        :disabled="message === ''"
         @click="sendMessage(message)"
         v-tooltip.top="$t('globals.send')"
       />

@@ -19,11 +19,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 {% load i18n %}
 
+<input type="hidden" id="agentWhatsMediaFormType" value="pdf">
 <div class="modal fade" id="whatsapp-modal-media-form" role="dialog">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-body">
-                <iframe class="whatsapp_iframe_container" style="height: 600px;"
+                <iframe class="whatsapp_iframe_container" style="height: 500px;"
                     src="{% static 'omnileads-frontend/agent_whatsapp_media_uploader.html' %}"></iframe>
             </div>
         </div>
