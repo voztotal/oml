@@ -209,6 +209,8 @@ export default {
             status: 'Status'
         },
         management_form: {
+            from: 'From',
+            to: 'To',
             phone: 'Phone',
             agent: 'Agent',
             type: 'Type',

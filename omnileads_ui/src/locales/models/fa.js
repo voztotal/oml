@@ -209,6 +209,8 @@ export default {
             status: 'حالت'
         },
         management_form: {
+            from: 'از',
+            to: 'برای',
             phone: 'تلفن',
             agent: 'عامل',
             type: 'پسر',
@@ -218,6 +220,10 @@ export default {
             start_datetime: 'تاریخ شروع',
             end_datetime: 'تاریخ پایان',
             observation: 'مشاهدات'
+        },
+        message_transfer: {
+            from: 'از',
+            to: 'برای'
         }
     }
 };

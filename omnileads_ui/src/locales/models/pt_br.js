@@ -209,6 +209,8 @@ export default {
             status: 'Estado'
         },
         management_form: {
+            from: 'De',
+            to: 'Para',
             phone: 'Telefone',
             agent: 'Agente',
             type: 'Cara',
@@ -218,6 +220,10 @@ export default {
             start_datetime: 'Data de início',
             end_datetime: 'Data final',
             observation: 'Observações'
+        },
+        message_transfer: {
+            from: 'De',
+            to: 'Para'
         }
     }
 };

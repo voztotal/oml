@@ -173,6 +173,10 @@ export default {
         },
         message_transfer: {
             title: 'Transferir chat'
+        },
+        conversations: {
+            answered: 'Contestados',
+            new: 'Nuevos'
         }
     }
 };
