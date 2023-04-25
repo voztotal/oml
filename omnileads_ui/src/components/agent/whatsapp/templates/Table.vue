@@ -92,6 +92,7 @@
 import { mapActions, mapState } from 'vuex';
 import { FilterMatchMode } from 'primevue/api';
 import { HTTP_STATUS } from '@/globals';
+import { notificationEvent } from '@/globals/agent/whatsapp';
 
 export default {
     inject: ['$helpers'],
@@ -116,6 +117,14 @@ export default {
                 global: { value: null, matchMode: FilterMatchMode.CONTAINS }
             };
         },
+        closeModal () {
+            const event = new CustomEvent('onWhatsappTemplatesEvent', {
+                detail: {
+                    templates: false
+                }
+            });
+            window.parent.document.dispatchEvent(event);
+        },
         getType (type) {
             return type === 0 ? 'Plantilla mensaje' : 'Template Whatsapp';
         },
@@ -126,22 +135,29 @@ export default {
             return type === 0 ? 'pi-copy' : 'pi-whatsapp';
         },
         async send (template) {
-            const { status, message } = await this.agtWhatsTemplateSendMsg(template);
-            if (status === HTTP_STATUS.SUCCESS) {
-                this.$swal(
-                    this.$helpers.getToasConfig(
+            try {
+                const { status, message } = await this.agtWhatsTemplateSendMsg(template);
+                this.closeModal();
+                if (status === HTTP_STATUS.SUCCESS) {
+                    await notificationEvent(
                         this.$t('globals.success_notification'),
                         message,
                         this.$t('globals.icon_success')
                     )
-                );
-            } else {
-                this.$swal(
-                    this.$helpers.getToasConfig(
+                } else {
+                    await notificationEvent(
                         this.$t('globals.error_notification'),
                         message,
                         this.$t('globals.icon_error')
                     )
+                }
+            } catch (error) {
+                console.error('Error al enviar template');
+                console.error(error);
+                await notificationEvent(
+                    this.$t('globals.error_notification'),
+                    'Error al enviar template',
+                    this.$t('globals.icon_error')
                 );
             }
         },

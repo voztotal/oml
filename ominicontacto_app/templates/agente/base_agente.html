@@ -912,7 +912,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
             <!-- Wrapper Whatsapp Panel -->
             <div class="hidden" id="wrapperWhatsapp">
-                <iframe class="whatsapp_iframe_container" src="{% static 'omnileads-frontend/agent_whatsapp_index.html' %}"></iframe>
+                <iframe class="whatsapp_panel_view" src="{% static 'omnileads-frontend/agent_whatsapp_index.html' %}"></iframe>
             </div>
         </div> <!-- wrapper Inner Content -->
     </div> <!-- wrapper-content -->
@@ -999,12 +999,43 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/bootstrap-datetimepicker.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/Calendar.js' %}"></script>
 {% endcompress %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script type="text/javascript" src="{% static 'JS/ext/jitsi_external_api.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/seleccionContactosPreview.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/agente/whatsapp.js' %}"></script>
 <script type="text/javascript">
+$(document).ready(function () {
+     const MESSAGE = {
+         SUCCESS: '¡Operación exitosa!',
+         ERROR: '¡Operación erronea!',
+         WARNING: '¡Advertencia!'
+     };
+     const ICON = {
+         SUCCESS: 'success',
+         ERROR: 'error',
+         WARNING: 'warning',
+         INFO: 'info'
+     };
 
- $(document).ready(function () {
+    const fireNotification = async (text, title = MESSAGE.SUCCESS, icon = ICON.SUCCESS) => {
+        await Swal.fire({
+            title,
+            text,
+            icon,
+            timer: 5000,
+            showConfirmButton: false,
+            showCloseButton: true,
+            position: 'top-end',
+            toast: true
+        });
+    };
+
+    const onWhatsappNotificationEvent = async ($event) => {
+        const { title, text, icon } = $event.detail;
+        await fireNotification(text, title, icon);
+    };
+
+    window.document.addEventListener('onWhatsappNotificationEvent', onWhatsappNotificationEvent, false);
 
    /* Toggle sidebar */
    $('#sidebarCollapse').on('click',function(){

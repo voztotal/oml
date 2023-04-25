@@ -16,6 +16,8 @@ export default {
             };
             await commit('agtWhatsTransferChatInitData', data);
         } catch (error) {
+            console.error('agtWhatsTransferChatInitData');
+            console.error(error);
             await commit('agtWhatsTransferChatInitAgents', []);
             await commit('agtWhatsTransferChatInitData', {
                 from: null,
@@ -24,13 +26,13 @@ export default {
             });
         }
     },
-    async agtWhatsTransferChatSend ({ commit }, data) {
+    agtWhatsTransferChatSend ({ commit }, data) {
         // return await service.create(data);
         console.log('Transfer Chat');
         console.log(data);
-        return await {
+        return {
             status: 'SUCCESS',
-            message: 'Se creo transfirio satisfactoriamente el chat'
+            message: 'Se transfirio satisfactoriamente el chat'
         };
     }
 };

@@ -6,6 +6,42 @@ export default {
     agtWhatsTemplatesInit ({ commit }) {
         const data = [
             {
+                id: 1,
+                nombre: 'Plantilla1',
+                tipo: 0,
+                configuracion: {
+                    text: 'Hola Emi, que onda...asdfads',
+                    type: 'text'
+                }
+            },
+            {
+                id: 2,
+                nombre: 'Plantilla2',
+                tipo: 1,
+                configuracion: {
+                    text: 'Hola Mundo',
+                    type: 'text'
+                }
+            },
+            {
+                id: 3,
+                nombre: 'Plantilla1',
+                tipo: 0,
+                configuracion: {
+                    text: 'Hola Emi, que onda...asdfads',
+                    type: 'text'
+                }
+            },
+            {
+                id: 4,
+                nombre: 'Plantilla2',
+                tipo: 1,
+                configuracion: {
+                    text: 'Hola Mundo',
+                    type: 'text'
+                }
+            },
+            {
                 id: 5,
                 nombre: 'Plantilla1',
                 tipo: 0,
@@ -16,6 +52,42 @@ export default {
             },
             {
                 id: 6,
+                nombre: 'Plantilla2',
+                tipo: 1,
+                configuracion: {
+                    text: 'Hola Mundo',
+                    type: 'text'
+                }
+            },
+            {
+                id: 7,
+                nombre: 'Plantilla2',
+                tipo: 1,
+                configuracion: {
+                    text: 'Hola Mundo',
+                    type: 'text'
+                }
+            },
+            {
+                id: 8,
+                nombre: 'Plantilla1',
+                tipo: 0,
+                configuracion: {
+                    text: 'Hola Emi, que onda...asdfads',
+                    type: 'text'
+                }
+            },
+            {
+                id: 9,
+                nombre: 'Plantilla2',
+                tipo: 1,
+                configuracion: {
+                    text: 'Hola Mundo',
+                    type: 'text'
+                }
+            },
+            {
+                id: 10,
                 nombre: 'Plantilla2',
                 tipo: 1,
                 configuracion: {

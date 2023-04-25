@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 export default {
     props: {
         conversation: {
@@ -83,6 +84,7 @@ export default {
         };
     },
     methods: {
+        ...mapActions(['agtWhatsTransferChatInitData']),
         back () {
             this.$router.push({ name: 'agent_whatsapp' });
         },
@@ -111,7 +113,8 @@ export default {
             });
             window.parent.document.dispatchEvent(event);
         },
-        transfer () {
+        async transfer () {
+            await this.agtWhatsTransferChatInitData(1);
             const event = new CustomEvent('onWhatsappTransferChatEvent', {
                 detail: {
                     transfer_chat: true

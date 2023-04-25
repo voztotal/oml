@@ -8,20 +8,20 @@
 <script>
 import Header from '@/components/agent/whatsapp/message_transfer/Header';
 import Form from '@/components/agent/whatsapp/message_transfer/Form';
-import { mapActions } from 'vuex';
+// import { mapActions } from 'vuex';
 export default {
     components: {
         Header,
         Form
     },
     methods: {
-        ...mapActions(['agtWhatsTransferChatInitData']),
+        // ...mapActions(['agtWhatsTransferChatInitData']),
         closeEvent () {
             this.$refs.formRef.clearData();
         }
-    },
-    created () {
-        this.agtWhatsTransferChatInitData(1);
     }
+    // async created () {
+    //     await this.agtWhatsTransferChatInitData(1);
+    // }
 };
 </script>

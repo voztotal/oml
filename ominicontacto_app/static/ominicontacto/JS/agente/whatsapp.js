@@ -1,7 +1,8 @@
 const modalTransferChat = $('#whatsapp-modal-transfer-chat');
 const modalTemplates = $('#whatsapp-modal-templates');
 const modalManagementForm = $('#whatsapp-modal-managenment-form');
-const modalMediaForm = $('#whatsapp-modal-media-form');
+const modalMediaImageForm = $('#whatsapp-modal-media-image-form');
+const modalMediaFileForm = $('#whatsapp-modal-media-file-form');
 const whatsappWrapper = $('#wrapperWhatsapp');
 
 $(function () {
@@ -27,8 +28,16 @@ const onWhatsappManagementFormEvent = ($event) => {
 
 const onWhatsappMediaFormEvent = ($event) => {
     const { media_form, fileType } = $event.detail;
-    $('#agentWhatsMediaFormType').val(fileType);
-    modalMediaForm.modal(media_form === true ? 'show' : 'hide');
+    if (media_form) {
+        if (fileType === 'img') {
+            modalMediaImageForm.modal('show');
+        } else {
+            modalMediaFileForm.modal('show');
+        }
+    } else {
+        modalMediaFileForm.modal('hide');
+        modalMediaImageForm.modal('hide');
+    }
 };
 
 const onWhatsappCloseContainerEvent = ($event) => {

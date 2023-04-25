@@ -19,17 +19,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 {% load i18n %}
 
-<div class="modal fade" id="whatsapp-modal-templates" role="dialog">
-    <div class="modal-dialog modal-lg">
+<div class="modal" id="whatsapp-modal-templates">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
         <div class="modal-content">
-            <!-- <div class="modal-header">
-                <h5 class="modal-title">Templates</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div> -->
             <div class="modal-body">
-                <iframe class="whatsapp_iframe_container" style="height: 600px;"
+                <iframe class="whatsapp_iframe_container" style="height: 880px;"
                     src="{% static 'omnileads-frontend/agent_whatsapp_templates.html' %}"></iframe>
             </div>
         </div>

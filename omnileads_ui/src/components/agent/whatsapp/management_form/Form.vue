@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <div class="grid formgrid mt-2">
+    <div class="grid formgrid mt-1">
       <div class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
         <label
           id="management_form_tipo"
@@ -92,7 +92,7 @@
         </small>
       </div>
     </div>
-    <div class="grid formgrid mt-2">
+    <div class="grid formgrid mt-1">
       <div class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
         <label
           id="management_form_medio"
@@ -184,7 +184,7 @@
         </small>
       </div>
     </div>
-    <div class="grid formgrid mt-2">
+    <div class="grid formgrid mt-1">
       <div class="field sm:col-12 md:col-12 lg:col-12 xl:col-12">
         <label id="management_form_observaciones">{{
           $t("models.whatsapp.management_form.observation")
@@ -226,6 +226,7 @@ import {
     MEANS
 } from '@/globals/agent/whatsapp/management';
 import { HTTP_STATUS } from '@/globals';
+import { notificationEvent } from '@/globals/agent/whatsapp';
 
 export default {
     setup: () => ({ v$: useVuelidate() }),
@@ -337,34 +338,41 @@ export default {
             };
         },
         async save (isFormValid) {
-            this.submitted = true;
-            if (!isFormValid) {
-                return null;
-            }
-            var response = null;
-            if (this.formToCreate) {
-                response = await this.agtWhatsManagementCreate(this.form);
-            }
-            const { status, message } = response;
-            if (status === HTTP_STATUS.SUCCESS) {
-                await this.agtWhatsManagementInitData();
-                this.$swal(
-                    this.$helpers.getToasConfig(
+            try {
+                this.submitted = true;
+                if (!isFormValid) {
+                    return null;
+                }
+                var response = null;
+                if (this.formToCreate) {
+                    response = await this.agtWhatsManagementCreate(this.form);
+                }
+                const { status, message } = response;
+                this.closeModal()
+                if (status === HTTP_STATUS.SUCCESS) {
+                    await this.agtWhatsManagementInitData();
+                    await notificationEvent(
                         this.$t('globals.success_notification'),
                         message,
                         this.$t('globals.icon_success')
                     )
-                );
-            } else {
-                this.$swal(
-                    this.$helpers.getToasConfig(
+                } else {
+                    await notificationEvent(
                         this.$t('globals.error_notification'),
                         message,
                         this.$t('globals.icon_error')
-                    )
+                    );
+                }
+                this.initializeData();
+            } catch (error) {
+                console.error('ERROR Al calificar conversacion');
+                console.error(error);
+                await notificationEvent(
+                    this.$t('globals.error_notification'),
+                    'Error al calificar conversacion',
+                    this.$t('globals.icon_error')
                 );
             }
-            this.initializeData();
         }
     },
     watch: {

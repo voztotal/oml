@@ -27,10 +27,6 @@ export default {
         const element = window.parent.document.getElementById(
             'agentWhatsMediaFormType'
         );
-        element.addEventListener('input', (e) => {
-            console.log('Input change value');
-            console.log(e.target);
-        });
         this.fileType = element?.value || 'img';
     }
 };

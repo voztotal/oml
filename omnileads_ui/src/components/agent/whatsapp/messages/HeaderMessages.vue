@@ -4,12 +4,12 @@
       <h2 class="font-bold">{{ $t('globals.whatsapp.title') }}</h2>
     </template>
     <template #end>
-      <Button
+      <!-- <Button
       icon="pi pi-comment"
       class="p-button-secondary"
       @click="newConversation"
       v-tooltip.top="'Nueva conversarion'"
-      />
+      /> -->
       <Button
       icon="pi pi-times"
       class="p-button-danger ml-2"

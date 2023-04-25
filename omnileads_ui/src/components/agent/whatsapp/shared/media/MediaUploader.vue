@@ -31,6 +31,8 @@
 </template>
 
 <script>
+import { HTTP_STATUS } from '@/globals';
+import { notificationEvent } from '@/globals/agent/whatsapp';
 export default {
     props: {
         fileType: {
@@ -72,21 +74,47 @@ export default {
             });
         },
         async customUploader ($event) {
-            const file = this.files[0];
-            const reader = new FileReader();
-            const blob = await fetch(file.objectURL).then((r) => r.blob());
-            reader.readAsDataURL(blob);
-            // reader.onloadend = function () {
-            //     const base64data = reader.result;
-            // };
-            this.clearData();
-            const event = new CustomEvent('onWhatsappMediaFormEvent', {
-                detail: {
-                    media_form: false,
-                    fileType: null
+            try {
+                const file = this.files[0];
+                const reader = new FileReader();
+                const blob = await fetch(file.objectURL).then((r) => r.blob());
+                reader.readAsDataURL(blob);
+                // reader.onloadend = function () {
+                //     const base64data = reader.result;
+                // };
+                this.clearData();
+                const event = new CustomEvent('onWhatsappMediaFormEvent', {
+                    detail: {
+                        media_form: false,
+                        fileType: null
+                    }
+                });
+                window.parent.document.dispatchEvent(event);
+                // const { status, message } = await this.agtWhatsTemplateSendMsg(template);
+                const status = 'SUCCESS';
+                const message = 'Se envio el documento satisfactoriamente';
+                if (status === HTTP_STATUS.SUCCESS) {
+                    await notificationEvent(
+                        this.$t('globals.success_notification'),
+                        message,
+                        this.$t('globals.icon_success')
+                    )
+                } else {
+                    await notificationEvent(
+                        this.$t('globals.error_notification'),
+                        message,
+                        this.$t('globals.icon_error')
+                    )
                 }
-            });
-            window.parent.document.dispatchEvent(event);
+            } catch (error) {
+                console.error('Error al enviar template');
+                console.error(error);
+                await notificationEvent(
+                    this.$t('globals.error_notification'),
+                    'Error al enviar template',
+                    this.$t('globals.icon_error')
+                );
+            }
         },
         clearData () {
             this.files = [];
@@ -107,7 +135,6 @@ export default {
             const dm = 3;
             const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
             const i = Math.floor(Math.log(bytes) / Math.log(k));
-
             return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
         }
     }
