@@ -45,19 +45,13 @@ import RadioButton from 'primevue/radiobutton';
 import Fieldset from 'primevue/fieldset';
 import InputMask from 'primevue/inputmask';
 import Avatar from 'primevue/avatar';
-import AvatarGroup from 'primevue/avatargroup';
 import Chip from 'primevue/chip';
 import Badge from 'primevue/badge';
 import BadgeDirective from 'primevue/badgedirective';
 import Listbox from 'primevue/listbox';
-import Editor from 'primevue/editor';
-import SpeedDial from 'primevue/speeddial';
 import SplitButton from 'primevue/splitbutton';
-import ScrollPanel from 'primevue/scrollpanel';
-import TabMenu from 'primevue/tabmenu';
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
-import ProgressBar from 'primevue/progressbar';
 import Tag from 'primevue/tag';
 
 // Idiomas
@@ -106,18 +100,12 @@ app.component('RadioButton', RadioButton);
 app.component('Fieldset', Fieldset);
 app.component('InputMask', InputMask);
 app.component('Avatar', Avatar);
-app.component('AvatarGroup', AvatarGroup);
 app.component('Chip', Chip);
 app.component('Badge', Badge);
 app.component('Listbox', Listbox);
-app.component('Editor', Editor);
-app.component('SpeedDial', SpeedDial);
 app.component('SplitButton', SplitButton);
-app.component('ScrollPanel', ScrollPanel);
-app.component('TabMenu', TabMenu);
 app.component('TabView', TabView);
 app.component('TabPanel', TabPanel);
-app.component('ProgressBar', ProgressBar);
 app.component('Tag', Tag);
 
 // Register Helpers
