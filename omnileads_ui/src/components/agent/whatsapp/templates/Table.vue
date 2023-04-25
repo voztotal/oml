@@ -143,13 +143,13 @@ export default {
                         this.$t('globals.success_notification'),
                         message,
                         this.$t('globals.icon_success')
-                    )
+                    );
                 } else {
                     await notificationEvent(
                         this.$t('globals.error_notification'),
                         message,
                         this.$t('globals.icon_error')
-                    )
+                    );
                 }
             } catch (error) {
                 console.error('Error al enviar template');

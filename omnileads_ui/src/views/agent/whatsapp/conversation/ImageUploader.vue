@@ -1,7 +1,7 @@
 <template>
   <div>
     <HeaderMediaUploader @handleCloseEvent="closeEvent" />
-    <MediaUploader ref="mediaFormRef" :fileType="fileType" />
+    <MediaUploader ref="mediaFormRef" :fileType="'img'" />
   </div>
 </template>
 
@@ -17,17 +17,6 @@ export default {
         closeEvent () {
             this.$refs.mediaFormRef.clearData();
         }
-    },
-    data () {
-        return {
-            fileType: 'img'
-        };
-    },
-    created () {
-        const element = window.parent.document.getElementById(
-            'agentWhatsMediaFormType'
-        );
-        this.fileType = element?.value || 'img';
     }
 };
 </script>

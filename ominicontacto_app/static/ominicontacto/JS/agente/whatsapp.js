@@ -7,8 +7,6 @@ const whatsappWrapper = $('#wrapperWhatsapp');
 
 $(function () {
     setEventListeners();
-    var tiene_whatsapp = '{{ tiene_whatsapp|safe }}';
-    setWhatsappStatusIcon(tiene_whatsapp === 'True');
 });
 
 const onWhatsappTransferChatEvent = ($event) => {

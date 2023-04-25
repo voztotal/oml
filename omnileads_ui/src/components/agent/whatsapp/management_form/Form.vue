@@ -348,14 +348,14 @@ export default {
                     response = await this.agtWhatsManagementCreate(this.form);
                 }
                 const { status, message } = response;
-                this.closeModal()
+                this.closeModal();
                 if (status === HTTP_STATUS.SUCCESS) {
                     await this.agtWhatsManagementInitData();
                     await notificationEvent(
                         this.$t('globals.success_notification'),
                         message,
                         this.$t('globals.icon_success')
-                    )
+                    );
                 } else {
                     await notificationEvent(
                         this.$t('globals.error_notification'),

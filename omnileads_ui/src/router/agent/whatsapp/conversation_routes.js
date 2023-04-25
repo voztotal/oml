@@ -1,5 +1,6 @@
 import Index from '@/views/agent/whatsapp/conversation/Index';
-import MediaUploader from '@/views/agent/whatsapp/conversation/MediaUploader';
+import ImageUploader from '@/views/agent/whatsapp/conversation/ImageUploader';
+import FileUploader from '@/views/agent/whatsapp/conversation/FileUploader';
 import { WHATSAPP_URL_NAME } from '@/globals/agent/whatsapp';
 
 export default [
@@ -9,8 +10,13 @@ export default [
         component: Index
     },
     {
-        path: `/${WHATSAPP_URL_NAME}_media_uploader.html`,
-        name: `${WHATSAPP_URL_NAME}_media_uploader`,
-        component: MediaUploader
+        path: `/${WHATSAPP_URL_NAME}_image_uploader.html`,
+        name: `${WHATSAPP_URL_NAME}_image_uploader`,
+        component: ImageUploader
+    },
+    {
+        path: `/${WHATSAPP_URL_NAME}_file_uploader.html`,
+        name: `${WHATSAPP_URL_NAME}_file_uploader`,
+        component: FileUploader
     }
 ];
