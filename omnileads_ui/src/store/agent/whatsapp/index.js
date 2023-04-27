@@ -13,6 +13,7 @@ import ManagementState from './management/state';
 import TransferChatActions from './transfer_chat/actions';
 import TransferChatMutations from './transfer_chat/mutations';
 import TransferChatState from './transfer_chat/state';
+import TransferChatGetters from './transfer_chat/getters';
 
 export const AgentWhatsappState = {
     ...ConversationState,
@@ -36,4 +37,8 @@ export const AgentWhatsappActions = {
     ...TemplateActions,
     ...ManagementActions,
     ...TransferChatActions
+};
+
+export const AgentWhatsappGetters = {
+    ...TransferChatGetters
 };

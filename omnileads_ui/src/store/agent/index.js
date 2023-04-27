@@ -1,7 +1,8 @@
 import {
     AgentWhatsappActions,
     AgentWhatsappMutations,
-    AgentWhatsappState
+    AgentWhatsappState,
+    AgentWhatsappGetters
 } from './whatsapp';
 
 export const agentState = {
@@ -14,4 +15,8 @@ export const agentMutations = {
 
 export const agentActions = {
     ...AgentWhatsappActions
+};
+
+export const agentGetters = {
+    ...AgentWhatsappGetters
 };

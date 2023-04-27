@@ -141,7 +141,7 @@ export default {
         this.initializeData();
     },
     computed: {
-        ...mapState(['agtWhatsTransferChatAgents', 'agtWhatsTransferChatForm'])
+        ...mapState(['agtWhatsTransferChatAgents'])
     },
     methods: {
         ...mapActions(['agtWhatsTransferChatSend']),
