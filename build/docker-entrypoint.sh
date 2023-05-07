@@ -33,15 +33,15 @@ EOF
 
   if [[ $DJANGO_SETTINGS_MODULE == *"develop"* ]]; then
     echo "Iniciando Django Server"
-    exec $COMMAND runserver ${DJANGO_HOSTNAME}:8099
+    exec $COMMAND runserver 0.0.0.0:8099
   else
     echo "Iniciando uWSGI"
 
     if [[ $LOGS_FILE == "True" ]]; then
     echo "crontab disabled"
-    exec /usr/local/bin/uwsgi --ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini --logger file:/opt/omnileads/log/django.log
+    exec /usr/local/bin/uwsgi --ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini --logger file:/opt/omnileads/log/django.log --http-socket ${DJANGO_HOSTNAME}:8099
     else
-    exec /usr/local/bin/uwsgi --ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini
+    exec /usr/local/bin/uwsgi --ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini --http-socket ${DJANGO_HOSTNAME}:8099
     fi
   fi
 }
