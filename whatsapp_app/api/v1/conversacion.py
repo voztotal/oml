@@ -34,22 +34,22 @@ from whatsapp_app.api.v1.mensaje import (
 
 class ConversacionSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    id_campana = serializers.IntegerField()
-    nombre_campana = serializers.CharField()
-    nombre_cliente = serializers.CharField()
-    numero_cliente = serializers.CharField()
-    foto = serializers.CharField()
-    fecha = serializers.DateTimeField()
+    campaing_id = serializers.IntegerField()
+    campaing_name = serializers.CharField()
+    client_name = serializers.CharField()
+    client_number = serializers.CharField()
+    photo = serializers.CharField()
+    date = serializers.DateTimeField()
 
 
 class ConversacionNuevaSerializer(ConversacionSerializer):
-    es_transferencia_campana = serializers.BooleanField()
-    cantidad_mensajes = serializers.IntegerField()
+    is_transfer_campaing = serializers.BooleanField()
+    number_messages = serializers.IntegerField()
 
 
 class ConversacionEnCursoSerializer(ConversacionSerializer):
-    es_transferencia_agente = serializers.BooleanField()
-    cantidad_mensajes_nuevos = serializers.IntegerField()
+    is_transfer_agent = serializers.BooleanField()
+    number_new_messages = serializers.IntegerField()
 
 
 class ViewSet(viewsets.ViewSet):
@@ -78,55 +78,55 @@ class ViewSet(viewsets.ViewSet):
         conversaciones_nuevas = [
             {
                 "id": 1,
-                "id_campana": 1,
-                "nombre_campana": "nombre_campana",
-                "nombre_cliente": "cliente",
-                "numero_cliente": "0000000",
-                "foto": "foto.jpg",
-                "fecha": "23-03-08 01:30",
-                "es_transferencia_campana": True,
-                "cantidad_mensajes": 10
+                "campaing_id": 1,
+                "campaing_name": "nombre_campana",
+                "client_name": "cliente",
+                "client_number": "0000000",
+                "photo": "foto.jpg",
+                "date": "23-03-08 01:30",
+                "is_transfer_campaing": True,
+                "number_messages": 10
             },
             {
                 "id": 2,
-                "id_campana": 1,
-                "nombre_campana": "nombre_campana",
-                "nombre_cliente": "cliente",
-                "numero_cliente": "0000000",
-                "foto": "foto.jpg",
-                "fecha": "23-03-08 02:30",
-                "es_transferencia_campana": True,
-                "cantidad_mensajes": 10
+                "campaing_id": 1,
+                "campaing_name": "nombre_campana",
+                "client_name": "cliente",
+                "client_number": "0000000",
+                "photo": "foto.jpg",
+                "date": "23-03-08 01:30",
+                "is_transfer_campaing": True,
+                "number_messages": 10
             }
         ]
         conversaciones_en_curso = [
             {
-                "id": 1,
-                "id_campana": 1,
-                "nombre_campana": "nombre_campana",
-                "nombre_cliente": "cliente",
-                "numero_cliente": "0000000",
-                "foto": "foto.jpg",
-                "fecha": "23-03-08 01:30",
-                "es_transferencia_agente": False,
-                "cantidad_mensajes_nuevos": 5
+                "id": 3,
+                "campaing_id": 1,
+                "campaing_name": "nombre_campana",
+                "client_name": "cliente",
+                "client_number": "0000000",
+                "photo": "foto.jpg",
+                "date": "23-03-08 01:30",
+                "is_transfer_agent": True,
+                "number_new_messages": 10
             },
             {
-                "id": 2,
-                "id_campana": 1,
-                "nombre_campana": "nombre_campana",
-                "nombre_cliente": "cliente",
-                "numero_cliente": "0000000",
-                "foto": "foto.jpg",
-                "fecha": "23-03-08 02:30",
-                "es_transferencia_agente": True,
-                "cantidad_mensajes_nuevos": 5
+                "id": 4,
+                "campaing_id": 1,
+                "campaing_name": "nombre_campana",
+                "client_name": "cliente",
+                "client_number": "0000000",
+                "photo": "foto.jpg",
+                "date": "23-03-08 01:30",
+                "is_transfer_agent": True,
+                "number_new_messages": 10
             }
         ]
         data = {
-            "conversaciones_nuevas": ConversacionNuevaSerializer(
+            "conversations_new": ConversacionNuevaSerializer(
                 conversaciones_nuevas, many=True).data,
-            "conversaciones_en_curso": ConversacionEnCursoSerializer(
+            "conversations_in_progress": ConversacionEnCursoSerializer(
                 conversaciones_en_curso, many=True).data
         }
         return response.Response(
@@ -135,40 +135,42 @@ class ViewSet(viewsets.ViewSet):
                 data=data),
             status=status.HTTP_201_CREATED)
 
-    @decorators.action(detail=True, methods=["get"])
+    @decorators.action(detail=True, methods=["post"])
     def attend_chat(self, request, pk):
         #  agente = request.user.get_agente_profile()
         conversacion = {
             "id": 1,
-            "id_campana": 1,
-            "nombre_campana": "nombre_campana",
-            "nombre_cliente": "cliente",
-            "numero_cliente": "0000000",
-            "foto": "foto.jpg",
-            "fecha": "23-03-08 01:30"
+            "campaing_id": 1,
+            "campaing_name": "nombre_campana",
+            "client_name": "cliente",
+            "client_number": "0000000",
+            "photo": "foto.jpg",
+            "date": "23-03-08 01:30",
         }  # Conversacion.objects.get(pk=pk)
         mensajes = [
             {
                 "id": 1,
-                "contenido": "Buenos días",
+                "conversation": 1,
+                "content": "Buenos días",
                 "status": "",
-                "fecha": "2023-03-07 01:30",
-                "emisor": "cliente"
+                "date": "2023-03-07 01:30",
+                "sender": "cliente"
             },
             {
                 "id": 2,
-                "contenido": "Hola",
+                "conversation": 1,
+                "content": "Hola",
                 "status": "",
-                "fecha": "2023-03-07 01:30",
-                "emisor": "cliente"
+                "date": "2023-03-07 01:30",
+                "sender": "cliente"
             }
         ]  # Mensajes.objects.filter(conversacion_id=pk)
         serializer_conversacion = ConversacionSerializer(conversacion)
         serializer_mensajes = MensajeListSerializer(mensajes, many=True)
         data = {
-            "conversacion_otorgada": True,  # conversacion.otorgar(agente),
-            "datos_de_conversacion": serializer_conversacion.data,
-            "mensajes": serializer_mensajes.data
+            "conversation_granted": True,  # conversacion.otorgar(agente),
+            "conversation_data": serializer_conversacion.data,
+            "messages": serializer_mensajes.data
         }
         return response.Response(
             data=get_response_data(status=HttpResponseStatus.SUCCESS, data=data),
@@ -179,24 +181,24 @@ class ViewSet(viewsets.ViewSet):
         mensajes = [
             {
                 "id": 1,
-                "conversacion": 1,
-                "contenido": "Buenos días",
+                "conversation": 1,
+                "content": "Buenos días",
                 "status": "",
-                "fecha": "2023-03-07 01:30",
-                "emisor": "cliente"
+                "date": "2023-03-07 01:30",
+                "sender": "cliente"
             },
             {
                 "id": 2,
-                "conversacion": 1,
-                "contenido": "Hola",
+                "conversation": 1,
+                "content": "Hola",
                 "status": "",
-                "fecha": "2023-03-07 01:30",
-                "emisor": "cliente"
+                "date": "2023-03-07 01:30",
+                "sender": "cliente"
             }
         ]  # Mensajes.objects.filter(conversacion_id=pk)
         serializer_mensajes = MensajeListSerializer(mensajes, many=True)
         data = {
-            "mensajes": serializer_mensajes.data
+            "messages": serializer_mensajes.data
         }
         return response.Response(
             data=get_response_data(status=HttpResponseStatus.SUCCESS, data=data),
@@ -205,7 +207,7 @@ class ViewSet(viewsets.ViewSet):
     @decorators.action(detail=True, methods=["post"])
     def send_menssage_text(self, request, pk):
         data = request.data.copy()
-        data.update({"conversacion": pk})
+        data.update({"conversation": pk})
         serializer = MensajeTextCreateSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -216,7 +218,7 @@ class ViewSet(viewsets.ViewSet):
     @decorators.action(detail=True, methods=["post"])
     def send_menssage_attachment(self, request, pk):
         data = request.data.copy()
-        data.update({"conversacion": pk})
+        data.update({"conversation": pk})
         serializer = MensajeAtachmentCreateSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         # serializer.save()
@@ -227,7 +229,7 @@ class ViewSet(viewsets.ViewSet):
     @decorators.action(detail=True, methods=["post"])
     def send_message_template(self, request, pk):
         data = request.data.copy()  # Id Plantilla, Parámetros
-        data.update({"conversacion": pk})
+        data.update({"conversation": pk})
         serializer = MensajePlantillaCreateSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         # serializer.save()
@@ -238,7 +240,7 @@ class ViewSet(viewsets.ViewSet):
     @decorators.action(detail=True, methods=["post"])
     def send_message_whatsapp_template(self, request, pk):
         data = request.data.copy()  # Id Template
-        data.update({"conversacion": pk})
+        data.update({"conversation": pk})
         serializer = MensajeWhatsappTemplateCreateSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         # serializer.save()

@@ -30,14 +30,14 @@ from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 
 
 class ListSerializer(serializers.Serializer):
-    id_conversation = serializers.IntegerField()
-    id_camapana = serializers.IntegerField()
+    conversation = serializers.IntegerField()
+    campaing = serializers.IntegerField()
     destination = serializers.IntegerField()
 
 
 class AgenteListSerializer(serializers.Serializer):
-    id_agente = serializers.IntegerField()
-    nombre_agente = serializers.CharField()
+    agent = serializers.IntegerField()
+    agent_name = serializers.CharField()
     status = serializers.CharField()
 
 
@@ -49,18 +49,18 @@ class ViewSet(viewsets.ViewSet):
         try:
             queryset = [
                 {
-                    "id_conversation": "1",
-                    "id_camapana": "1",
+                    "conversation": "1",
+                    "campaing": "1",
                     "destination": "1"
                 },
                 {
-                    "id_conversation": "2",
-                    "id_camapana": "2",
+                    "conversation": "2",
+                    "campaing": "2",
                     "destination": "2"
                 },
                 {
-                    "id_conversation": "3",
-                    "id_camapana": "3",
+                    "conversation": "3",
+                    "campaing": "3",
                     "destination": "3"
                 },
             ]
@@ -81,18 +81,18 @@ class ViewSet(viewsets.ViewSet):
         try:
             queryset = [
                 {
-                    "id_agente": "1",
-                    "nombre_agente": "agente1",
+                    "agent": "1",
+                    "agent_name": "agente1",
                     "status": "ready"
                 },
                 {
-                    "id_agente": "2",
-                    "nombre_agente": "agente2",
+                    "agent": "2",
+                    "agent_name": "agente2",
                     "status": "ready"
                 },
                 {
-                    "id_agente": "3",
-                    "nombre_agente": "agente3",
+                    "agent": "3",
+                    "agent_name": "agente3",
                     "status": "ready"
                 },
             ]

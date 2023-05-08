@@ -30,51 +30,73 @@ from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 from whatsapp_app.api.v1.plantilla_mensaje import ListSerializer as ListPlantillaMensajeSerializer
 from whatsapp_app.api.v1.template_whatsapp import ListSerializer as ListTemplateWhatsappSerializer
 from whatsapp_app.models import ConfiguracionWhatsappCampana
+from ominicontacto_app.models import Campana
+from whatsapp_app.models import Linea
+from whatsapp_app.models import GrupoTemplateWhatsapp
+from whatsapp_app.models import GrupoPlantillaMensaje
 
 
 class ListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    campana = serializers.IntegerField(source='campana.id')
-    linea = serializers.IntegerField(source='linea.id')
-    grupo_template_whatsapp = serializers.IntegerField(source='grupo_template_whatsapp.id')
-    grupo_plantilla_whatsapp = serializers.IntegerField(source='grupo_plantilla_whatsapp.id')
-    nivel_servicio = serializers.IntegerField()
+    campaing = serializers.IntegerField(source='campana.id')
+    line = serializers.IntegerField(source='linea.id')
+    group_template_whatsapp = serializers.IntegerField(source='grupo_template_whatsapp.id')
+    group_template_message = serializers.IntegerField(source='grupo_plantilla_whatsapp.id')
+    service_level = serializers.IntegerField(source='nivel_servicio')
 
 
 class CreateSerializer(serializers.ModelSerializer):
+    campaing = serializers.PrimaryKeyRelatedField(
+        queryset=Campana.objects_default.all(), source='campana')
+    line = serializers.PrimaryKeyRelatedField(
+        allow_null=True, queryset=Linea.objects.all(), required=False, source='linea')
+    group_template_whatsapp = serializers.PrimaryKeyRelatedField(
+        queryset=GrupoTemplateWhatsapp.objects.all(), source='grupo_template_whatsapp')
+    group_template_message = serializers.PrimaryKeyRelatedField(
+        queryset=GrupoPlantillaMensaje.objects.all(), source='grupo_plantilla_whatsapp')
+    service_level = serializers.IntegerField(source='nivel_servicio')
 
     class Meta:
         model = ConfiguracionWhatsappCampana
         fields = [
             'id',
-            'campana',
-            'linea',
-            'grupo_template_whatsapp',
-            'grupo_plantilla_whatsapp',
-            'nivel_servicio'
+            'campaing',
+            'line',
+            'group_template_whatsapp',
+            'group_template_message',
+            'service_level'
         ]
 
 
 class RetrieveSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    campana = serializers.IntegerField(source='campana.id')
-    linea = serializers.IntegerField(source='linea.id')
-    grupo_template_whatsapp = serializers.IntegerField(source='grupo_template_whatsapp.id')
-    grupo_plantilla_whatsapp = serializers.IntegerField(source='grupo_plantilla_whatsapp.id')
-    nivel_servicio = serializers.IntegerField()
+    campaing = serializers.IntegerField(source='campana.id')
+    line = serializers.IntegerField(source='linea.id')
+    group_template_whatsapp = serializers.IntegerField(source='grupo_template_whatsapp.id')
+    group_template_message = serializers.IntegerField(source='grupo_plantilla_whatsapp.id')
+    service_level = serializers.IntegerField(source='nivel_servicio')
 
 
 class UpdateSerializer(serializers.ModelSerializer):
+    campaing = serializers.PrimaryKeyRelatedField(
+        queryset=Campana.objects_default.all(), source='campana')
+    line = serializers.PrimaryKeyRelatedField(
+        allow_null=True, queryset=Linea.objects.all(), required=False, source='linea')
+    group_template_whatsapp = serializers.PrimaryKeyRelatedField(
+        queryset=GrupoTemplateWhatsapp.objects.all(), source='grupo_template_whatsapp')
+    group_template_message = serializers.PrimaryKeyRelatedField(
+        queryset=GrupoPlantillaMensaje.objects.all(), source='grupo_plantilla_whatsapp')
+    service_level = serializers.IntegerField(source='nivel_servicio')
 
     class Meta:
         model = ConfiguracionWhatsappCampana
         fields = [
             'id',
-            'campana',
-            'linea',
-            'grupo_template_whatsapp',
-            'grupo_plantilla_whatsapp',
-            'nivel_servicio'
+            'campaing',
+            'line',
+            'group_template_whatsapp',
+            'group_template_message',
+            'service_level'
         ]
 
 
@@ -118,7 +140,8 @@ class ViewSet(viewsets.ViewSet):
                     data=get_response_data(
                         message=_('Error en los datos'), errors=serializer.errors),
                     status=status.HTTP_400_BAD_REQUEST)
-        except Exception:
+        except Exception as e:
+            print(e)
             return response.Response(
                 data=get_response_data(message=_('Error al crear la configuraciones de whatsapp')),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
