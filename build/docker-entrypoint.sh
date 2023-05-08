@@ -27,8 +27,7 @@ SHELL=/bin/bash
 * * * * * flock -n /opt/omnileads/actualizar_campanas_preview.lock /usr/local/bin/python3 /opt/omnileads/ominicontacto/manage.py actualizar_campanas_preview
 0 1 * * * flock -n /opt/omnileads/callrec_converter.lock /opt/omnileads/bin/callrec_converter.sh
 EOF
-    sed -i "s/8099/8097/g" ${INSTALL_PREFIX}/run/oml_uwsgi.ini
-    exec crond
+    exec crond &
   fi
 
   if [[ $DJANGO_SETTINGS_MODULE == *"develop"* ]]; then
@@ -39,9 +38,9 @@ EOF
 
     if [[ $LOGS_FILE == "True" ]]; then
     echo "crontab disabled"
-    exec /usr/local/bin/uwsgi --ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini --logger file:/opt/omnileads/log/django.log --http-socket ${DJANGO_HOSTNAME}:8099
+    exec /usr/local/bin/uwsgi --ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini --logger file:/opt/omnileads/log/django.log --http-socket ${DJANGO_HOSTNAME}:${UWSGI_PORT}
     else
-    exec /usr/local/bin/uwsgi --ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini --http-socket ${DJANGO_HOSTNAME}:8099
+    exec /usr/local/bin/uwsgi --ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini --http-socket ${DJANGO_HOSTNAME}:${UWSGI_PORT}
     fi
   fi
 }
