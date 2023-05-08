@@ -28,7 +28,7 @@ SHELL=/bin/bash
 0 1 * * * flock -n /opt/omnileads/callrec_converter.lock /opt/omnileads/bin/callrec_converter.sh
 EOF
     sed -i "s/8099/8097/g" ${INSTALL_PREFIX}/run/oml_uwsgi.ini
-    exec crond &
+    exec crond
   fi
 
   if [[ $DJANGO_SETTINGS_MODULE == *"develop"* ]]; then
