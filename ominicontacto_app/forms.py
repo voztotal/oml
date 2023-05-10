@@ -1983,7 +1983,7 @@ class GrupoForm(forms.ModelForm):
                   'show_console_timers', 'acceso_contactos_agente',
                   'acceso_agendas_agente', 'acceso_calificaciones_agente',
                   'acceso_campanas_preview_agente', 'conjunto_de_pausa',
-                  'obligar_despausa')
+                  'obligar_despausa', 'whatsapp_habilitado')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
             'cantidad_agendas_personales': forms.NumberInput(attrs={
@@ -2011,7 +2011,7 @@ class GrupoForm(forms.ModelForm):
 
     def validate_required_field(self, cleaned_data, field_name,
                                 message=_('Este campo es requerido')):
-        if(field_name in cleaned_data and
+        if (field_name in cleaned_data and
                 cleaned_data[field_name] is None):
             self._errors[field_name] = self.error_class([message])
             del cleaned_data[field_name]
