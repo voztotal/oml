@@ -46,7 +46,7 @@ GPLv3. Every source code file contains the license preamble and copyright detail
 
 ## Installation
 
-OMniLeads deploy tool: https://gitlab.com/omnileads/omldeploytool
+OMniLeads documentation: https://docs.omnileads.net/
 
 ## Documentation
 
