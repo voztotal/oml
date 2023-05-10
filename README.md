@@ -44,13 +44,10 @@ The main technologies involved in OMniLeads (OML) are also part of Open Source p
 ## License
 GPLv3. Every source code file contains the license preamble and copyright details.
 
-## Installation
-
-OMniLeads documentation: https://docs.omnileads.net/
 
 ## Documentation
 
-Official documentation for the proyect can be found in two languages: [Spanish](https://documentacion-omnileads.readthedocs.io/es/stable/) or [English](https://documentacion-omnileads.readthedocs.io/en/stable/).
+OMniLeads documentation: https://docs.omnileads.net/
 
 ## OMniLeads (OML) repository:
 The official project repository is in Gitlab: https://gitlab.com/omnileads/ominicontacto
