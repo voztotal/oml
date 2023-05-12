@@ -195,7 +195,14 @@ class ViewSet(viewsets.ViewSet):
                 "date": "2023-03-07 01:30",
                 "sender": "cliente"
             }
-        ]  # Mensajes.objects.filter(conversacion_id=pk)
+        ]
+        # if 'message_id' in self.request.GET:
+        #     last_message = Mensajes.objects.get(id=message_id).date
+        #     mensajes =\
+        #         Mensajes.objects.filter(chat_id=pk, date__lt=last_message.date)
+        #         .order_by('-date')[:MESSAGE_LIMIT]
+        # else:
+        #     mensajes = Mensajes.objects.filter(chat_id=pk).order_by('-date')[:MESSAGE_LIMIT]
         serializer_mensajes = MensajeListSerializer(mensajes, many=True)
         data = {
             "messages": serializer_mensajes.data
@@ -205,45 +212,81 @@ class ViewSet(viewsets.ViewSet):
             status=status.HTTP_200_OK)
 
     @decorators.action(detail=True, methods=["post"])
-    def send_menssage_text(self, request, pk):
+    def send_message_text(self, request, pk):
         data = request.data.copy()
-        data.update({"conversation": pk})
+        data.update({
+            "conversation": pk,
+            "sender": "user"  # request.user.get_agente_profile()
+        })
         serializer = MensajeTextCreateSerializer(data=data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        # serializer.save()
+        # orquestador_response = end_message_text(serializer.data) # orquestador
+        orquestador_response = {
+            "status": "send",
+            "message_id": "1",
+            "date": "01-01-2022 09:10"
+        }
         return response.Response(
-            data=get_response_data(status=HttpResponseStatus.SUCCESS, data=serializer.data),
+            data=get_response_data(status=HttpResponseStatus.SUCCESS, data=orquestador_response),
             status=status.HTTP_200_OK)
 
     @decorators.action(detail=True, methods=["post"])
-    def send_menssage_attachment(self, request, pk):
+    def send_message_attachment(self, request, pk):
         data = request.data.copy()
-        data.update({"conversation": pk})
+        data.update({
+            "conversation": pk,
+            "sender": "user"  # request.user.get_agente_profile()
+        })
         serializer = MensajeAtachmentCreateSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         # serializer.save()
+        # orquestador_response = end_message_attachment(serializer.data) # orquestador
+        orquestador_response = {
+            "status": "send",
+            "message_id": "1",
+            "date": "01-01-2022 09:10"
+        }
         return response.Response(
-            data=get_response_data(status=HttpResponseStatus.SUCCESS, data=serializer.data),
+            data=get_response_data(status=HttpResponseStatus.SUCCESS, data=orquestador_response),
             status=status.HTTP_200_OK)
 
     @decorators.action(detail=True, methods=["post"])
     def send_message_template(self, request, pk):
         data = request.data.copy()  # Id Plantilla, Parámetros
-        data.update({"conversation": pk})
+        data.update({
+            "conversation": pk,
+            "sender": "user"  # request.user.get_agente_profile()
+        })
         serializer = MensajePlantillaCreateSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         # serializer.save()
+        # orquestador_response = send_message_template(serializer.data) # orquestador
+        orquestador_response = {
+            "status": "send",
+            "message_id": "1",
+            "date": "01-01-2022 09:10"
+        }
         return response.Response(
-            data=get_response_data(status=HttpResponseStatus.SUCCESS, data=serializer.data),
+            data=get_response_data(status=HttpResponseStatus.SUCCESS, data=orquestador_response),
             status=status.HTTP_200_OK)
 
     @decorators.action(detail=True, methods=["post"])
     def send_message_whatsapp_template(self, request, pk):
         data = request.data.copy()  # Id Template
-        data.update({"conversation": pk})
+        data.update({
+            "conversation": pk,
+            "sender": "user"  # request.user.get_agente_profile()
+        })
         serializer = MensajeWhatsappTemplateCreateSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         # serializer.save()
+        # orquestador_response = send_message_whatsapp_template(serializer.data) # orquestador
+        orquestador_response = {
+            "status": "send",
+            "message_id": "1",
+            "date": "01-01-2022 09:10"
+        }
         return response.Response(
-            data=get_response_data(status=HttpResponseStatus.SUCCESS, data=serializer.data),
+            data=get_response_data(status=HttpResponseStatus.SUCCESS, data=orquestador_response),
             status=status.HTTP_200_OK)
