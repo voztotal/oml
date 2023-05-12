@@ -35,9 +35,9 @@ EOF
     exec $COMMAND runserver 0.0.0.0:8099
   else
     echo "Iniciando uWSGI"
-
+    
     if [[ $LOGS_FILE == "True" ]]; then
-    echo "crontab disabled"
+    echo "Logs to file"
     exec /usr/local/bin/uwsgi --ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini --logger file:/opt/omnileads/log/django.log --http-socket ${DJANGO_HOSTNAME}:${UWSGI_PORT}
     else
     exec /usr/local/bin/uwsgi --ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini --http-socket ${DJANGO_HOSTNAME}:${UWSGI_PORT}
@@ -54,6 +54,10 @@ Init_ASGI() {
 if [ "$1" = "" ]; then
   if [ ! -f /etc/localtime ]; then
     ln -s /usr/share/zoneinfo/$TZ /etc/localtime
+  fi
+
+  if [[ $DJANGO_HOSTNAME == "app" ]]; then
+      DJANGO_HOSTNAME=0.0.0.0
   fi
 
   if [[ $DAPHNE_ENABLE == "True" ]]; then
