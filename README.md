@@ -41,13 +41,13 @@ The main technologies involved in OMniLeads (OML) are also part of Open Source p
 * Docker
 * Podman
 
-## License
-GPLv3. Every source code file contains the license preamble and copyright details.
-
-
 ## Documentation
 
 OMniLeads documentation: https://docs.omnileads.net/
+
+## License
+
+GPLv3. Every source code file contains the license preamble and copyright details.
 
 ## OMniLeads (OML) repository:
 The official project repository is in Gitlab: https://gitlab.com/omnileads/ominicontacto
