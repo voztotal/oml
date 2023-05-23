@@ -44,6 +44,15 @@ import FileUpload from 'primevue/fileupload';
 import RadioButton from 'primevue/radiobutton';
 import Fieldset from 'primevue/fieldset';
 import InputMask from 'primevue/inputmask';
+import Avatar from 'primevue/avatar';
+import Chip from 'primevue/chip';
+import Badge from 'primevue/badge';
+import BadgeDirective from 'primevue/badgedirective';
+import Listbox from 'primevue/listbox';
+import SplitButton from 'primevue/splitbutton';
+import TabView from 'primevue/tabview';
+import TabPanel from 'primevue/tabpanel';
+import Tag from 'primevue/tag';
 
 // Idiomas
 import { createI18n } from 'vue-i18n';
@@ -60,7 +69,11 @@ const i18n = createI18n({
 
 const app = createApp(App);
 
+// Directives Primevue
+app.directive('badge', BadgeDirective);
 app.directive('tooltip', Tooltip);
+
+// Components Primevue
 app.component('Card', Card);
 app.component('Button', Button);
 app.component('InputText', InputText);
@@ -86,6 +99,14 @@ app.component('FileUpload', FileUpload);
 app.component('RadioButton', RadioButton);
 app.component('Fieldset', Fieldset);
 app.component('InputMask', InputMask);
+app.component('Avatar', Avatar);
+app.component('Chip', Chip);
+app.component('Badge', Badge);
+app.component('Listbox', Listbox);
+app.component('SplitButton', SplitButton);
+app.component('TabView', TabView);
+app.component('TabPanel', TabPanel);
+app.component('Tag', Tag);
 
 // Register Helpers
 app.provide('$helpers', Helpers);
