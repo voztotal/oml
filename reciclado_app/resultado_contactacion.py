@@ -29,6 +29,7 @@ from django.db.models import Count
 from ominicontacto_app.models import Campana, CalificacionCliente
 from reportes_app.models import LlamadaLog
 
+from functools import lru_cache
 
 class EstadisticasContactacion():
 
@@ -123,6 +124,7 @@ class EstadisticasContactacion():
                 cantidad_contactacion = CantidadContactacion(id_estado, estado, cantidad)
                 count_estados.update({id_estado: cantidad_contactacion})
 
+    @lru_cache(maxsize=10)
     def obtener_cantidad_no_contactados(self, campana):
         """
         Obtiene los llamados no contactados por campana de contactos de la base actual
@@ -153,6 +155,7 @@ class EstadisticasContactacion():
 
         return count_estados
 
+    @lru_cache(maxsize=10)
     def obtener_cantidad_calificacion(self, campana):
         """
         Obtiene las cantidad de llamadas por calificacion de la campana de

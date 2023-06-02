@@ -43,15 +43,18 @@ class ReciclarCampanaMixin(object):
     form_class = RecicladoForm
     template_name = 'nuevo_reciclado.html'
 
+    initial = {
+        "estadisticas": EstadisticasContactacion()
+    }
+
     def get_form_kwargs(self):
         kwargs = super(ReciclarCampanaMixin, self).get_form_kwargs()
-        estadisticas = EstadisticasContactacion()
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
 
-        contactados = estadisticas.obtener_cantidad_calificacion(campana)
+        contactados = self.initial["estadisticas"].obtener_cantidad_calificacion(campana)
         contactados_choice = [(contactacion.id, contactacion.label_checkbox)
                               for contactacion in contactados]
-        no_contactados = estadisticas.obtener_cantidad_no_contactados(campana)
+        no_contactados = self.initial["estadisticas"].obtener_cantidad_no_contactados(campana)
         no_contactados_choice = [(value.id, value.label_checkbox)
                                  for key, value in no_contactados.items()]
         kwargs['reciclado_choice'] = contactados_choice
@@ -105,12 +108,11 @@ class ReciclarCampanaMixin(object):
 
     def get_context_data(self, **kwargs):
         context = super(ReciclarCampanaMixin, self).get_context_data(**kwargs)
-        estadisticas = EstadisticasContactacion()
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        contactados = estadisticas.obtener_cantidad_calificacion(campana)
+        contactados = self.initial["estadisticas"].obtener_cantidad_calificacion(campana)
         contactados_choice = [(contactacion.id, contactacion.nombre, contactacion.cantidad)
                               for contactacion in contactados]
-        no_contactados = estadisticas.obtener_cantidad_no_contactados(campana)
+        no_contactados = self.initial["estadisticas"].obtener_cantidad_no_contactados(campana)
         no_contactados_choice = [(value.id, value.nombre, value.cantidad)
                                  for key, value in no_contactados.items()]
         context['contactados'] = contactados_choice
