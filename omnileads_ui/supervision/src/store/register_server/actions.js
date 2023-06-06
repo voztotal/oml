@@ -4,8 +4,12 @@ const service = new Service();
 
 export default {
     async initRegisterServer ({ commit }) {
-        const { registered, registerServer, adminName } = await service.registerInfo();
-        commit('initRegisterServer', { registered, registerServer, adminName });
+        try {
+            const { registered, registerServer, adminName, isAdmin } = await service.registerInfo();
+            await commit('initRegisterServer', { registered, registerServer, adminName, isAdmin });
+        } catch (error) {
+            await commit('initRegisterServer', {});
+        }
     },
     async createRegisterServer ({ commit }, data) {
         return await service.create(data);

@@ -287,7 +287,7 @@ class ApiAppConfig(AppConfig):
             {'nombre': 'api_ivrs_destination_types_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_register_server_detail',
-             'roles': ['Administrador']},
+             'roles': ['Administrador', 'Supervisor']},
             {'nombre': 'api_register_server_create',
              'roles': ['Administrador']},
             {'nombre': 'api_log_survey_transfer',
