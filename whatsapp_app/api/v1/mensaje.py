@@ -27,13 +27,38 @@ from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 
-from ominicontacto_app.models import Campana
 
-
-class ListSerializer(serializers.Serializer):
+class MensajeListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    name = serializers.CharField(source='nombre')
-    type = serializers.IntegerField()
+    conversation = serializers.IntegerField()
+    content = serializers.CharField()
+    status = serializers.CharField()
+    date = serializers.DateTimeField()
+    sender = serializers.CharField()
+
+
+class MensajeTextCreateSerializer(serializers.Serializer):
+    conversation = serializers.IntegerField()
+    content = serializers.CharField()
+    sender = serializers.CharField()
+
+
+class MensajeAtachmentCreateSerializer(serializers.Serializer):
+    conversation = serializers.IntegerField()
+    content = serializers.CharField()
+    sender = serializers.CharField()
+
+
+class MensajePlantillaCreateSerializer(serializers.Serializer):
+    conversation = serializers.IntegerField()
+    content = serializers.CharField()
+    sender = serializers.CharField()
+
+
+class MensajeWhatsappTemplateCreateSerializer(serializers.Serializer):
+    conversation = serializers.IntegerField()
+    content = serializers.CharField()
+    sender = serializers.CharField()
 
 
 class ViewSet(viewsets.ViewSet):
@@ -42,16 +67,16 @@ class ViewSet(viewsets.ViewSet):
 
     def list(self, request):
         try:
-            queryset = Campana.objects.filter(estado=Campana.ESTADO_ACTIVA)
-            serializer = ListSerializer(queryset, many=True)
+            queryset = []
+            serializer = MensajeListSerializer(queryset, many=True)
             return response.Response(
                 data=get_response_data(
                     status=HttpResponseStatus.SUCCESS,
-                    message=_('Se obtuvieron las campanas de forma exitosa'),
+                    message=_('Se obtuvieron los mensajes de forma exitosa'),
                     data=serializer.data),
                 status=status.HTTP_200_OK)
         except Exception:
             return response.Response(
                 data=get_response_data(
-                    message=_('Error al obtener campanas')),
+                    message=_('Error al obtener los mensajes')),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
